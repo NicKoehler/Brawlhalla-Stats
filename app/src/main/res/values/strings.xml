@@ -12,4 +12,6 @@
     <string name="defense">Defense</string>
     <string name="dexterity">Dexterity</string>
     <string name="speed">Speed</string>
+    <string name="weapons">Weapons</string>
+    <string name="stats">Stats</string>
 </resources>
