@@ -4,9 +4,14 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +21,8 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
+import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
+import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
@@ -38,9 +45,44 @@ fun LazyLegendsCards(
                 label = "openFilters"
             ) { open ->
                 if (open) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        WeaponsFilter(state, onWeaponAction)
-                        StatFilter(state.selectedStatType, state.selectedStatValue, onLegendAction)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        SingleChoiceSegmentedButtonRow(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            FilterOptions.entries.forEachIndexed { index, currentFilter ->
+                                SegmentedButton(
+                                    selected = state.selectedFilter == currentFilter,
+                                    onClick = {
+                                        onLegendAction(
+                                            LegendAction.SelectFilter(
+                                                currentFilter
+                                            )
+                                        )
+                                    },
+                                    shape = SegmentedButtonDefaults.itemShape(
+                                        index,
+                                        FilterOptions.entries.size
+                                    )
+                                ) {
+                                    Text(currentFilter.toLocalizedString())
+                                }
+                            }
+                        }
+                        AnimatedContent(
+                            state.selectedFilter,
+                            label = "selectedFilter"
+                        ) { filter ->
+                            when (filter) {
+                                FilterOptions.WEAPONS -> WeaponsFilter(state, onWeaponAction)
+                                FilterOptions.STATS -> StatFilter(
+                                    state.selectedStatType,
+                                    state.selectedStatValue,
+                                    onLegendAction
+                                )
+                            }
+                        }
                     }
                 }
             }

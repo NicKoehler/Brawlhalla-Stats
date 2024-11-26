@@ -9,6 +9,7 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 import com.nickoehler.brawlhalla.legends.presentation.models.getStat
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
@@ -107,11 +108,12 @@ class LegendsViewModel(
 
     private fun toggleFilters() {
         _state.update { state ->
-            val new = !state.openFilters
+            val isOpening = !state.openFilters
             state.copy(
-                openFilters = new,
-                legends = if (!new) _legends else state.legends,
-                weapons = if (!new) _weapons else state.weapons
+                openFilters = isOpening,
+                selectedFilter = if (isOpening) FilterOptions.WEAPONS else state.selectedFilter,
+                legends = if (!isOpening) _legends else state.legends,
+                weapons = if (isOpening) _weapons else state.weapons,
             )
         }
     }
@@ -190,7 +192,8 @@ class LegendsViewModel(
             }
             result.copy(
                 openFilters = true,
-                openSearch = false
+                openSearch = false,
+                selectedFilter = FilterOptions.WEAPONS
             )
         }
     }
@@ -213,6 +216,25 @@ class LegendsViewModel(
         }
     }
 
+
+    private fun selectFilter(filter: FilterOptions) {
+        _state.update { state ->
+            when (filter) {
+                FilterOptions.WEAPONS -> state.copy(
+                    selectedFilter = filter,
+                    weapons = _weapons,
+                    legends = _legends
+                )
+
+                FilterOptions.STATS -> state.copy(
+                    selectedFilter = filter,
+                    legends = filterLegendsByStat(state.selectedStatType, state.selectedStatValue)
+                )
+            }
+        }
+    }
+
+
     private fun filterLegendsByStat(
         stat: Stat,
         value: Int
@@ -225,18 +247,13 @@ class LegendsViewModel(
 
     fun onLegendAction(action: LegendAction) {
         when (action) {
-            is LegendAction.SelectLegend -> {
-                selectLegend(action.legendId)
-            }
-
-            is LegendAction.SearchQuery -> {
-                applyFilters(action.text)
-            }
-
+            is LegendAction.SelectLegend -> selectLegend(action.legendId)
+            is LegendAction.SearchQuery -> applyFilters(action.text)
             is LegendAction.ToggleSearch -> toggleSearch(action.isOpen)
             is LegendAction.ToggleFilters -> toggleFilters()
             is LegendAction.SelectStat -> selectStat(action.stat)
             is LegendAction.SlideStat -> slideStat(action.value)
+            is LegendAction.SelectFilter -> selectFilter(action.filter)
         }
     }
 
