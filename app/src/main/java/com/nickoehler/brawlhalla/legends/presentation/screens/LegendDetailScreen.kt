@@ -37,18 +37,14 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
+import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.components.StatRow
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawlhalla.ui.theme.DefenseColor
-import com.nickoehler.brawlhalla.ui.theme.DexterityColor
-import com.nickoehler.brawlhalla.ui.theme.SpeedColor
-import com.nickoehler.brawlhalla.ui.theme.StrengthColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,17 +121,10 @@ fun LegendDetailScreen(
                     WeaponButton(legend.weaponOne, onWeaponAction)
                     WeaponButton(legend.weaponTwo, onWeaponAction)
                 }
-
-                StatRow(
-                    R.drawable.strength, legend.strength, StrengthColor,
-                )
-
-                StatRow(R.drawable.defense, legend.defense, DefenseColor)
-
-
-                StatRow(R.drawable.dexterity, legend.dexterity, DexterityColor)
-
-                StatRow(R.drawable.speed, legend.speed, SpeedColor)
+                StatRow(Stat.STRENGTH, legend.strength)
+                StatRow(Stat.DEFENSE, legend.defense)
+                StatRow(Stat.DEXTERITY, legend.dexterity)
+                StatRow(Stat.SPEED, legend.speed)
                 Spacer(Modifier.size(0.dp))
             }
         }

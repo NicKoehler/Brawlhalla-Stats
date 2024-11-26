@@ -1,6 +1,5 @@
 package com.nickoehler.brawlhalla.legends.presentation.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -25,24 +24,16 @@ fun WeaponsFilter(
     onWeaponAction: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    AnimatedContent(
-        state.openFilters,
-        modifier = modifier,
-        label = "openFilters"
+    LazyHorizontalStaggeredGrid(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 40.dp, max = 100.dp),
+        rows = StaggeredGridCells.Adaptive(30.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalItemSpacing = 4.dp,
     ) {
-        if (it) {
-            LazyHorizontalStaggeredGrid(
-                modifier = Modifier.Companion
-                    .fillMaxWidth()
-                    .heightIn(min = 40.dp, max = 100.dp),
-                rows = StaggeredGridCells.Adaptive(30.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalItemSpacing = 4.dp,
-            ) {
-                items(state.weapons) { weapon ->
-                    WeaponChip(weapon, onWeaponAction)
-                }
-            }
+        items(state.weapons) { weapon ->
+            WeaponChip(weapon, onWeaponAction)
         }
     }
 }

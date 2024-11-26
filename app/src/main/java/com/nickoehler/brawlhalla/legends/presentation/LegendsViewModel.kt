@@ -8,7 +8,9 @@ import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
+import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.getStat
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import kotlinx.coroutines.channels.Channel
@@ -105,8 +107,11 @@ class LegendsViewModel(
 
     private fun toggleFilters() {
         _state.update { state ->
+            val new = !state.openFilters
             state.copy(
-                openFilters = !state.openFilters,
+                openFilters = new,
+                legends = if (!new) _legends else state.legends,
+                weapons = if (!new) _weapons else state.weapons
             )
         }
     }
@@ -190,6 +195,33 @@ class LegendsViewModel(
         }
     }
 
+    private fun selectStat(stat: Stat) {
+        _state.update { state ->
+            state.copy(
+                selectedStatType = stat,
+                legends = filterLegendsByStat(stat, state.selectedStatValue)
+            )
+        }
+    }
+
+    private fun slideStat(value: Int) {
+        _state.update { state ->
+            state.copy(
+                selectedStatValue = value,
+                legends = filterLegendsByStat(state.selectedStatType, value)
+            )
+        }
+    }
+
+    private fun filterLegendsByStat(
+        stat: Stat,
+        value: Int
+    ): List<LegendUi> {
+        val legends = _legends.filter { legend ->
+            legend.getStat(stat) == value
+        }
+        return legends
+    }
 
     fun onLegendAction(action: LegendAction) {
         when (action) {
@@ -203,6 +235,8 @@ class LegendsViewModel(
 
             is LegendAction.ToggleSearch -> toggleSearch(action.isOpen)
             is LegendAction.ToggleFilters -> toggleFilters()
+            is LegendAction.SelectStat -> selectStat(action.stat)
+            is LegendAction.SlideStat -> slideStat(action.value)
         }
     }
 
@@ -212,5 +246,4 @@ class LegendsViewModel(
             is WeaponAction.Select -> onWeaponSelect(action.weapon)
         }
     }
-
 }
