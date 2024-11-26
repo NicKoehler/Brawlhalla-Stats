@@ -1,6 +1,8 @@
 package com.nickoehler.brawlhalla.legends.presentation.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +33,17 @@ fun LazyLegendsCards(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            WeaponsFilter(state, onWeaponAction)
+            AnimatedContent(
+                state.openFilters,
+                label = "openFilters"
+            ) { open ->
+                if (open) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        WeaponsFilter(state, onWeaponAction)
+                        StatFilter(state.selectedStatType, state.selectedStatValue, onLegendAction)
+                    }
+                }
+            }
         }
 
         items(state.legends, key = { legend -> legend.legendId }) { legend ->
@@ -48,6 +60,7 @@ private fun LazyLegendsCardsPreview() {
         Surface {
             LazyLegendsCards(
                 LegendsListState(
+                    openFilters = true,
                     legends = listOf(legendSample.toLegendUi()),
                     weapons = listOf("sword".toWeaponUi()),
                 ), {}, {})

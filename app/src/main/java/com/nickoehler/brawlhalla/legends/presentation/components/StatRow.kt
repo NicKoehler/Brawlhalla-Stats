@@ -12,20 +12,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.nickoehler.brawlhalla.R
+import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
+import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
+import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawlhalla.ui.theme.StrengthColor
 import com.nickoehler.brawltool.presentation.ui.components.CustomCard
 
 
 @Composable
 fun StatRow(
-    iconResource: Int, statValue: String, color: Color, modifier: Modifier = Modifier
+    stat: Stat, statValue: Int, modifier: Modifier = Modifier
 ) {
     CustomCard(modifier = modifier) {
         Row(
@@ -41,25 +41,25 @@ fun StatRow(
                 color = MaterialTheme.colorScheme.surfaceBright
             ) {
                 Text(
-                    statValue,
+                    statValue.toString(),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
-            Row (
+            Row(
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                repeat(statValue.toInt()) {
+                repeat(statValue) {
                     StatDot(MaterialTheme.colorScheme.primary)
                 }
-                repeat(10 - statValue.toInt()) {
+                repeat(10 - statValue) {
                     StatDot(MaterialTheme.colorScheme.surfaceBright)
                 }
             }
             Icon(
-                painterResource(iconResource),
-                "",
-                tint = color,
+                stat.toIcon(),
+                stat.toLocalizedString(),
+                tint = stat.toColor(),
                 modifier = modifier.size(50.dp)
             )
         }
@@ -77,9 +77,8 @@ private fun StatRowPreview() {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             StatRow(
-                R.drawable.strength,
-                "7",
-                StrengthColor
+                Stat.STRENGTH,
+                7,
             )
         }
     }

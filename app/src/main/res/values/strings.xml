@@ -8,4 +8,8 @@
     <string name="error_unknown">Unknown error</string>
     <string name="search">Search</string>
     <string name="legends">Legends</string>
+    <string name="strength">Strength</string>
+    <string name="defense">Defense</string>
+    <string name="dexterity">Dexterity</string>
+    <string name="speed">Speed</string>
 </resources>

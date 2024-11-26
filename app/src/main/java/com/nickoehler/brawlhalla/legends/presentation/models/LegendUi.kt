@@ -2,8 +2,9 @@ package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.Legend
-import com.nickoehler.brawltool.util.getMiniImageUrlFromLegendNameKey
-import com.nickoehler.brawltool.util.getWeaponImageUrlFromWeaponName
+import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.presentation.util.getMiniImageUrlFromLegendNameKey
+import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
 
 
 data class LegendUi(
@@ -13,10 +14,10 @@ data class LegendUi(
     val bioAka: String,
     val weaponOne: WeaponUi,
     val weaponTwo: WeaponUi,
-    val strength: String,
-    val dexterity: String,
-    val defense: String,
-    val speed: String,
+    val strength: Int,
+    val dexterity: Int,
+    val defense: Int,
+    val speed: Int,
     val image: String,
 )
 
@@ -28,10 +29,19 @@ fun Legend.toLegendUi(): LegendUi {
         bioAka = bioAka,
         weaponOne = WeaponUi(weaponOne, getWeaponImageUrlFromWeaponName(weaponOne)),
         weaponTwo = WeaponUi(weaponTwo, getWeaponImageUrlFromWeaponName(weaponTwo)),
-        strength = strength,
-        dexterity = dexterity,
-        defense = defense,
-        speed = speed,
+        strength = strength.toInt(),
+        dexterity = dexterity.toInt(),
+        defense = defense.toInt(),
+        speed = speed.toInt(),
         image = getMiniImageUrlFromLegendNameKey(legendNameKey),
     )
+}
+
+fun LegendUi.getStat(stat: Stat): Int {
+    return when (stat) {
+        Stat.STRENGTH -> this.strength
+        Stat.DEFENSE -> this.defense
+        Stat.DEXTERITY -> this.dexterity
+        Stat.SPEED -> this.speed
+    }
 }

@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation
 
 import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 
@@ -15,4 +16,6 @@ data class LegendsListState(
     val openSearch: Boolean = false,
     val openFilters: Boolean = false,
     val searchQuery: String = "",
+    val selectedStatType: Stat = Stat.STRENGTH,
+    val selectedStatValue: Int = 3,
 )
