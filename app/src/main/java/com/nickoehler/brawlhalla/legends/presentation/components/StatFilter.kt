@@ -53,7 +53,7 @@ fun StatFilter(
                         modifier = modifier
                             .size(50.dp)
                             .clickable {
-                                onLegendAction(LegendAction.SelectStat(stat))
+                                onLegendAction(LegendAction.SelectStat(stat, currentStatValue))
                             }
                     )
                 }
@@ -62,7 +62,14 @@ fun StatFilter(
             Slider(
                 valueRange = 3f..9f,
                 value = currentStatValue.toFloat(),
-                onValueChange = { onLegendAction(LegendAction.SlideStat(it.toInt())) }
+                onValueChange = {
+                    onLegendAction(
+                        LegendAction.SelectStat(
+                            currentStatType,
+                            it.toInt()
+                        )
+                    )
+                }
             )
             Text(
                 "${currentStatType.toLocalizedString()} $currentStatValue",

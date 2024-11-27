@@ -41,6 +41,7 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.components.StatRow
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
@@ -51,6 +52,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 fun LegendDetailScreen(
     state: LegendsListState,
     onWeaponAction: (WeaponAction) -> Unit,
+    onLegendAction: (LegendAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -121,10 +123,10 @@ fun LegendDetailScreen(
                     WeaponButton(legend.weaponOne, onWeaponAction)
                     WeaponButton(legend.weaponTwo, onWeaponAction)
                 }
-                StatRow(Stat.STRENGTH, legend.strength)
-                StatRow(Stat.DEFENSE, legend.defense)
-                StatRow(Stat.DEXTERITY, legend.dexterity)
-                StatRow(Stat.SPEED, legend.speed)
+                StatRow(Stat.STRENGTH, legend.strength, onLegendAction)
+                StatRow(Stat.DEFENSE, legend.defense, onLegendAction)
+                StatRow(Stat.DEXTERITY, legend.dexterity, onLegendAction)
+                StatRow(Stat.SPEED, legend.speed, onLegendAction)
                 Spacer(Modifier.size(0.dp))
             }
         }
@@ -148,6 +150,7 @@ private fun LegendDetailScreenPreview() {
                         selectedLegendUi = legendDetailSample
                             .toLegendDetailUi(),
                     ),
+                    {},
                     {}
                 )
             }
