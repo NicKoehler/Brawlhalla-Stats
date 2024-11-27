@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
@@ -25,9 +26,17 @@ import com.nickoehler.brawltool.presentation.ui.components.CustomCard
 
 @Composable
 fun StatRow(
-    stat: Stat, statValue: Int, modifier: Modifier = Modifier
+    stat: Stat,
+    statValue: Int,
+    onLegendAction: (LegendAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    CustomCard(modifier = modifier) {
+    CustomCard(
+        modifier = modifier,
+        onClick = {
+            onLegendAction(LegendAction.SelectStat(stat, statValue))
+        }
+    ) {
         Row(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
@@ -79,6 +88,7 @@ private fun StatRowPreview() {
             StatRow(
                 Stat.STRENGTH,
                 7,
+                {}
             )
         }
     }

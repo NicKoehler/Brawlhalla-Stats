@@ -200,20 +200,14 @@ class LegendsViewModel(
         }
     }
 
-    private fun selectStat(stat: Stat) {
+    private fun selectStat(stat: Stat, value: Int) {
         _state.update { state ->
             state.copy(
+                openFilters = true,
+                selectedFilter = FilterOptions.STATS,
                 selectedStatType = stat,
-                legends = filterLegendsByStat(stat, state.selectedStatValue)
-            )
-        }
-    }
-
-    private fun slideStat(value: Int) {
-        _state.update { state ->
-            state.copy(
                 selectedStatValue = value,
-                legends = filterLegendsByStat(state.selectedStatType, value)
+                legends = filterLegendsByStat(stat, value)
             )
         }
     }
@@ -253,8 +247,7 @@ class LegendsViewModel(
             is LegendAction.SearchQuery -> applyFilters(action.text)
             is LegendAction.ToggleSearch -> toggleSearch(action.isOpen)
             is LegendAction.ToggleFilters -> toggleFilters()
-            is LegendAction.SelectStat -> selectStat(action.stat)
-            is LegendAction.SlideStat -> slideStat(action.value)
+            is LegendAction.SelectStat -> selectStat(action.stat, action.value)
             is LegendAction.SelectFilter -> selectFilter(action.filter)
         }
     }
