@@ -62,17 +62,19 @@ class LegendsViewModel(
 
     private fun selectLegend(legendId: Int) {
         viewModelScope.launch {
-            _state.update { it.copy(isDetailLoading = true) }
-            legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
-                _state.update { state ->
-                    state.copy(
-                        isDetailLoading = false,
-                        selectedLegendUi = legend.toLegendDetailUi()
-                    )
+            if (_state.value.selectedLegendUi?.legendId != legendId) {
+                _state.update { it.copy(isDetailLoading = true) }
+                legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
+                    _state.update { state ->
+                        state.copy(
+                            isDetailLoading = false,
+                            selectedLegendUi = legend.toLegendDetailUi()
+                        )
+                    }
+                }.onError { error ->
+                    _state.update { it.copy(isDetailLoading = false) }
+                    _events.send(LegendsEvent.Error(error))
                 }
-            }.onError { error ->
-                _state.update { it.copy(isDetailLoading = false) }
-                _events.send(LegendsEvent.Error(error))
             }
         }
     }
@@ -89,7 +91,7 @@ class LegendsViewModel(
     }
 
     private fun filterLegend(query: String, legend: LegendUi): Boolean {
-        if (query == "") {
+        if (query.isEmpty()) {
             return false
         }
         return legend.legendNameKey.lowercase().contains(query.lowercase())
