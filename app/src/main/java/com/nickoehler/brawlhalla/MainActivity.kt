@@ -4,27 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.nickoehler.brawlhalla.core.presentation.util.toNavString
-import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
+import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
+import com.nickoehler.brawlhalla.search.presentation.screens.SearchScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -35,10 +33,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel by viewModel<LegendsViewModel>()
+            val legendsViewModel by viewModel<LegendsViewModel>()
+
             val navController = rememberNavController()
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination
+
+            val navBackStackEntry = navController.currentBackStackEntryAsState().value
+            val currentDestination = navBackStackEntry?.destination
 
             enableEdgeToEdge()
             BrawlhallaTheme {
@@ -46,14 +46,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.imePadding(),
                     navigationSuiteItems = {
                         Screens.entries.forEach { currentScreen ->
-                            if (currentRoute != null) {
+                            if (currentDestination != null) {
                                 item(
-                                    selected = currentRoute.toNavString() == currentScreen.route.toString(),
+                                    currentDestination.hierarchy.any {
+                                        it.hasRoute(route = currentScreen.route::class)
+                                    },
                                     onClick = {
-                                        if (currentRoute.toNavString() != currentScreen.route.toString()) {
+                                        if (currentDestination != currentScreen.route) {
                                             navController.navigate(currentScreen.route) {
                                                 popUpTo(navController.graph.startDestinationId)
+                                                {
+                                                    saveState = true
+                                                }
                                                 launchSingleTop = true
+                                                restoreState = true
                                             }
                                         }
                                     },
@@ -63,6 +69,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+
                     }
                 ) {
                     NavHost(
@@ -70,27 +77,23 @@ class MainActivity : ComponentActivity() {
                             .safeDrawingPadding()
                             .padding(horizontal = 8.dp),
                         navController = navController,
-                        startDestination = Route.Home,
+                        startDestination = Route.Legend(),
                     ) {
-                        composable<Route.Home> {
-                            AdaptiveLegendsPane(
-                                viewModel = viewModel,
-                            )
-                        }
-                        composable<Route.Legend> {
-                            val args = it.toRoute<Route.Legend>()
-                            viewModel.onLegendAction(LegendAction.SelectLegend(legendId = args.id))
-                            AdaptiveLegendsPane(
-                                viewModel = viewModel
-                            )
-                        }
                         composable<Route.Search> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Search Screen")
+                            SearchScreen()
+                        }
+                        composable<Route.Legend>(
+                            deepLinks = listOf(
+                                navDeepLink<Route.Legend>("bh://legend")
+                            )
+                        ) {
+                            val legend = it.toRoute<Route.Legend>()
+                            if (legend.id != null) {
+                                legendsViewModel.onLegendAction(LegendAction.SelectLegend(legendId = legend.id))
                             }
+                            AdaptiveLegendsPane(
+                                viewModel = legendsViewModel
+                            )
                         }
                     }
                 }
