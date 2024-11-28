@@ -27,8 +27,8 @@ class LegendsViewModel(
     private val legendsDataSource: LegendsDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(LegendsListState())
-    private var _legends: List<LegendUi> = emptyList()
-    private var _weapons: List<WeaponUi> = emptyList()
+    private var allLegends: List<LegendUi> = emptyList()
+    private var allWeapons: List<WeaponUi> = emptyList()
     val state = _state.onStart { loadLegends() }
         .stateIn(
             viewModelScope,
@@ -43,14 +43,14 @@ class LegendsViewModel(
             _state.update { it.copy(isListLoading = true) }
 
             legendsDataSource.getLegends().onSuccess { legends ->
-                _legends = legends.map { it.toLegendUi() }
-                _weapons = getAllWeapons()
+                allLegends = legends.map { it.toLegendUi() }
+                allWeapons = getAllWeapons()
 
                 _state.update { state ->
                     state.copy(
                         isListLoading = false,
-                        legends = _legends,
-                        weapons = _weapons
+                        legends = allLegends,
+                        weapons = allWeapons
                     )
                 }
             }.onError { error ->
@@ -79,11 +79,11 @@ class LegendsViewModel(
         }
     }
 
-    private fun applyFilters(query: String) {
+    private fun searchQuery(query: String) {
         _state.update { state ->
             state.copy(
                 searchQuery = query,
-                legends = _legends.filter {
+                legends = allLegends.filter {
                     filterLegend(query, it)
                 },
             )
@@ -101,9 +101,10 @@ class LegendsViewModel(
         _state.update { state ->
             state.copy(
                 openSearch = isOpen,
+                openFilters = false,
                 searchQuery = "",
-                weapons = if (isOpen) emptyList() else _weapons,
-                legends = if (isOpen) emptyList() else _legends
+                weapons = if (isOpen) emptyList() else allWeapons,
+                legends = if (isOpen) emptyList() else allLegends
             )
         }
     }
@@ -114,96 +115,108 @@ class LegendsViewModel(
             state.copy(
                 openFilters = isOpening,
                 selectedFilter = if (isOpening) FilterOptions.WEAPONS else state.selectedFilter,
-                legends = if (!isOpening) _legends else state.legends,
-                weapons = if (isOpening) _weapons else state.weapons,
+                legends = if (!isOpening) allLegends else state.legends,
+                weapons = if (isOpening) allWeapons else state.weapons,
             )
         }
     }
 
     private fun getAllWeapons(): List<WeaponUi> {
-        return _legends.flatMap { legend ->
+        return allLegends.flatMap { legend ->
             listOf(legend.weaponOne, legend.weaponTwo)
         }.distinct().sortedBy { it.name }
     }
 
-    private fun onWeaponSelect(weapon: WeaponUi) {
+
+    private fun onWeaponSelect(weapon: WeaponUi, checkWeaponsState: Boolean = true) {
         _state.update { state ->
-            val weaponState = state.weapons.map { w ->
-                if (w == weapon) {
-                    w.copy(selected = !w.selected)
-                } else {
-                    w
-                }
-            }
+            val updatedWeaponsState = updateWeaponsState(
+                if (checkWeaponsState) state.weapons else allWeapons,
+                weapon
+            )
+            val selected = updatedWeaponsState.filter { it.selected }.map { it.name }
+            val filteredLegends = getFilteredLegends(selected)
+            val filteredWeapons = getFilteredWeapons(filteredLegends, updatedWeaponsState, selected)
 
-            val selected = weaponState.filter { it.selected }.map { it.name }
-
-            val result = when (selected.size) {
-                1 -> {
-                    val filteredLegends = _legends.filter { legend ->
-                        selected.any { selectedWeapon ->
-                            legend.weaponOne.name == selectedWeapon || legend.weaponTwo.name == selectedWeapon
-                        }
-                    }
-
-                    val filteredWeapons = _weapons.filter { weapon ->
-                        filteredLegends.any { legend -> legend.weaponOne.name == weapon.name || legend.weaponTwo.name == weapon.name }
-                    }.map { weapon ->
-                        if (selected.contains(weapon.name)) {
-                            weapon.copy(
-                                selected = true
-                            )
-                        } else {
-                            weapon
-                        }
-                    }.sortedBy { it.name }.sortedBy { !it.selected }
-                    state.copy(
-                        legends = filteredLegends,
-                        weapons = filteredWeapons
-                    )
-                }
-
-                2 -> {
-                    val filteredLegends = _legends.filter { legend ->
-                        (
-                                legend.weaponOne.name == selected[0]
-                                        && legend.weaponTwo.name == selected[1])
-                                || (
-                                legend.weaponOne.name == selected[1]
-                                        && legend.weaponTwo.name == selected[0]
-                                )
-                    }
-                    val filteredWeapons = weaponState.filter { weapon ->
-                        filteredLegends.any { legend ->
-                            legend.weaponOne.name == weapon.name
-                                    || legend.weaponTwo.name == weapon.name
-                        }
-                    }.sortedBy { it.name }.sortedBy { !it.selected }
-
-                    state.copy(
-                        legends = filteredLegends,
-                        weapons = filteredWeapons
-                    )
-                }
-
-                else -> state.copy(
-                    weapons = _weapons,
-                    legends = _legends
-                )
-
-            }
-            result.copy(
+            state.copy(
                 openFilters = true,
                 openSearch = false,
-                selectedFilter = FilterOptions.WEAPONS
+                selectedFilter = FilterOptions.WEAPONS,
+                legends = filteredLegends,
+                weapons = filteredWeapons
             )
         }
     }
+
+    private fun updateWeaponsState(
+        weapons: List<WeaponUi>,
+        weapon: WeaponUi
+    ) = weapons.map { w ->
+        if (w == weapon) {
+            w.copy(selected = !w.selected)
+        } else {
+            w
+        }
+    }
+
+    private fun getFilteredWeapons(
+        filteredLegends: List<LegendUi>,
+        updatedWeaponsState: List<WeaponUi>,
+        selected: List<String>
+    ): List<WeaponUi> {
+        return when (selected.size) {
+            1 -> allWeapons.filter { weapon ->
+                filteredLegends.any { legend ->
+                    legend.weaponOne.name == weapon.name
+                            || legend.weaponTwo.name == weapon.name
+                }
+            }.map { weapon ->
+                if (selected.contains(weapon.name)) {
+                    weapon.copy(
+                        selected = true
+                    )
+                } else {
+                    weapon
+                }
+            }.sortedBy { it.name }.sortedBy { !it.selected }
+
+            2 -> updatedWeaponsState.filter { weapon ->
+                filteredLegends.any { legend ->
+                    legend.weaponOne.name == weapon.name
+                            || legend.weaponTwo.name == weapon.name
+                }
+            }.sortedBy { it.name }.sortedBy { !it.selected }
+
+            else -> allWeapons
+        }
+    }
+
+    private fun getFilteredLegends(selectedWeaponsNames: List<String>): List<LegendUi> {
+        return when (selectedWeaponsNames.size) {
+            1 -> allLegends.filter { legend ->
+                selectedWeaponsNames.any { selectedWeapon ->
+                    legend.weaponOne.name == selectedWeapon || legend.weaponTwo.name == selectedWeapon
+                }
+            }
+
+            2 -> allLegends.filter { legend ->
+                (legend.weaponOne.name == selectedWeaponsNames[0]
+                        && legend.weaponTwo.name == selectedWeaponsNames[1])
+                        || (legend.weaponOne.name == selectedWeaponsNames[1]
+                        && legend.weaponTwo.name == selectedWeaponsNames[0])
+            }
+
+            else -> allLegends
+        }
+
+    }
+
 
     private fun selectStat(stat: Stat, value: Int) {
         _state.update { state ->
             state.copy(
                 openFilters = true,
+                openSearch = false,
                 selectedFilter = FilterOptions.STATS,
                 selectedStatType = stat,
                 selectedStatValue = value,
@@ -218,8 +231,8 @@ class LegendsViewModel(
             when (filter) {
                 FilterOptions.WEAPONS -> state.copy(
                     selectedFilter = filter,
-                    weapons = _weapons,
-                    legends = _legends
+                    weapons = allWeapons,
+                    legends = allLegends
                 )
 
                 FilterOptions.STATS -> state.copy(
@@ -235,7 +248,7 @@ class LegendsViewModel(
         stat: Stat,
         value: Int
     ): List<LegendUi> {
-        val legends = _legends.filter { legend ->
+        val legends = allLegends.filter { legend ->
             legend.getStat(stat) == value
         }
         return legends
@@ -244,7 +257,7 @@ class LegendsViewModel(
     fun onLegendAction(action: LegendAction) {
         when (action) {
             is LegendAction.SelectLegend -> selectLegend(action.legendId)
-            is LegendAction.SearchQuery -> applyFilters(action.text)
+            is LegendAction.SearchQuery -> searchQuery(action.text)
             is LegendAction.ToggleSearch -> toggleSearch(action.isOpen)
             is LegendAction.ToggleFilters -> toggleFilters()
             is LegendAction.SelectStat -> selectStat(action.stat, action.value)
@@ -254,7 +267,7 @@ class LegendsViewModel(
 
     fun onWeaponAction(action: WeaponAction) {
         when (action) {
-            is WeaponAction.Click -> onWeaponSelect(action.weapon)
+            is WeaponAction.Click -> onWeaponSelect(action.weapon, false)
             is WeaponAction.Select -> onWeaponSelect(action.weapon)
         }
     }

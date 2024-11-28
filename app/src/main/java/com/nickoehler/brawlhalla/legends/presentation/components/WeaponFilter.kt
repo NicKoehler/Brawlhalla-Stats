@@ -32,7 +32,7 @@ fun WeaponsFilter(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalItemSpacing = 4.dp,
     ) {
-        items(weapons) { weapon ->
+        items(weapons, key = { weapon -> weapon.name }) { weapon ->
             WeaponChip(weapon, onWeaponAction)
         }
     }
