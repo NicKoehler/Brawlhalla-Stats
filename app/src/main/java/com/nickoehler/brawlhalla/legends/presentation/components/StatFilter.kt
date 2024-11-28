@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -14,16 +15,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawltool.presentation.ui.components.CustomCard
 
 @Composable
 fun StatFilter(
@@ -52,7 +54,8 @@ fun StatFilter(
                         },
                         modifier = modifier
                             .size(50.dp)
-                            .clickable {
+                            .clip(RoundedCornerShape(38f))
+                            .clickable(onClickLabel = stat.toLocalizedString()) {
                                 onLegendAction(LegendAction.SelectStat(stat, currentStatValue))
                             }
                     )
@@ -69,7 +72,8 @@ fun StatFilter(
                             it.toInt()
                         )
                     )
-                }
+                },
+                steps = 5
             )
             Text(
                 "${currentStatType.toLocalizedString()} $currentStatValue",
