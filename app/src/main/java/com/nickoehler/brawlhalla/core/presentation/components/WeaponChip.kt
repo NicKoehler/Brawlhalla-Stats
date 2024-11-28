@@ -27,14 +27,19 @@ fun WeaponChip(
     onClick: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val defaults = FilterChipDefaults.filterChipColors()
+    val selectedColor = if (weapon.selected)
+        MaterialTheme.colorScheme.surface
+    else
+        MaterialTheme.colorScheme.onSurface
     FilterChip(
         weapon.selected,
         modifier = modifier,
         onClick = {
             onClick(WeaponAction.Select(weapon))
         },
-        colors = defaults,
+        colors = FilterChipDefaults.filterChipColors().copy(
+            selectedLabelColor = selectedColor
+        ),
         label = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -44,12 +49,7 @@ fun WeaponChip(
                     weapon.imageUrl,
                     weapon.name,
                     modifier = Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(
-                        if (weapon.selected)
-                            MaterialTheme.colorScheme.surface
-                        else
-                            MaterialTheme.colorScheme.onSurface
-                    )
+                    colorFilter = ColorFilter.tint(selectedColor)
                 )
                 Text(weapon.name)
             }
