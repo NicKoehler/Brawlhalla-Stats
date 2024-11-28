@@ -1,6 +1,5 @@
 package com.nickoehler.brawlhalla.core.presentation.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -19,12 +18,11 @@ fun WeaponButton(
     modifier: Modifier = Modifier
 ) {
     CustomCard(
+        modifier = modifier.size(40.dp),
         horizontalArrangement = Arrangement.Center,
         contentPadding = 8.dp,
         borderRadius = 15.dp,
-        modifier = modifier
-            .size(40.dp)
-            .clickable { onClick(WeaponAction.Click(weapon)) },
+        onClick = { onClick(WeaponAction.Click(weapon)) },
         color = MaterialTheme.colorScheme.primary,
     ) {
         AsyncImage(
