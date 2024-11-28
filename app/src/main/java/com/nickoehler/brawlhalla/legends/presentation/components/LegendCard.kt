@@ -28,7 +28,7 @@ import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.legends.domain.Legend
-import com.nickoehler.brawltool.presentation.ui.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 
 @Composable
 fun LegendCard(

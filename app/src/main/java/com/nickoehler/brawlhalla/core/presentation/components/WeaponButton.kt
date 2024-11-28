@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
-import com.nickoehler.brawltool.presentation.ui.components.CustomCard
 
 @Composable
 fun WeaponButton(

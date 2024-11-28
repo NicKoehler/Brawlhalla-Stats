@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
+import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.util.getFullImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
 
@@ -45,4 +46,13 @@ fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
         speed = speed.toInt(),
         image = getFullImageUrlFromLegendNameKey(legendNameKey)
     )
+}
+
+fun LegendDetailUi.getStat(stat: Stat): Int {
+    return when (stat) {
+        Stat.STRENGTH -> this.strength
+        Stat.DEFENSE -> this.defense
+        Stat.DEXTERITY -> this.dexterity
+        Stat.SPEED -> this.speed
+    }
 }
