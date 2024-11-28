@@ -1,20 +1,19 @@
 package com.nickoehler.brawlhalla.core.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.size.Size
+import coil3.svg.SvgDecoder
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
@@ -27,32 +26,27 @@ fun WeaponChip(
     onClick: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedColor = if (weapon.selected)
-        MaterialTheme.colorScheme.surface
-    else
-        MaterialTheme.colorScheme.onSurface
     FilterChip(
         weapon.selected,
         modifier = modifier,
         onClick = {
             onClick(WeaponAction.Select(weapon))
         },
-        colors = FilterChipDefaults.filterChipColors().copy(
-            selectedLabelColor = selectedColor
-        ),
+        leadingIcon = {
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .decoderFactory(SvgDecoder.Factory())
+                    .data(weapon.imageUrl).size(Size.ORIGINAL)
+                    .build()
+            )
+            Icon(
+                painter,
+                weapon.name,
+                modifier = Modifier.requiredSize(FilterChipDefaults.IconSize),
+            )
+        },
         label = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    weapon.imageUrl,
-                    weapon.name,
-                    modifier = Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(selectedColor)
-                )
-                Text(weapon.name)
-            }
+            Text(weapon.name)
         },
     )
 }
