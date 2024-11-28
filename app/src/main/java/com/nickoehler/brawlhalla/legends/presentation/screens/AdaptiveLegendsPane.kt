@@ -56,13 +56,10 @@ fun AdaptiveLegendsPane(
                     onWeaponAction = viewModel::onWeaponAction,
                     onLegendAction = { action ->
                         viewModel.onLegendAction(action)
-                        when (action) {
-                            is LegendAction.SelectLegend -> navigator.navigateTo(
+                        if (action is LegendAction.SelectLegend)
+                            navigator.navigateTo(
                                 ListDetailPaneScaffoldRole.Detail
                             )
-
-                            else -> {}
-                        }
                     },
                 )
             }
