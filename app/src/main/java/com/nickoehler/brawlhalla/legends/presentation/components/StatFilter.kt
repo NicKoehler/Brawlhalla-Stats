@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
@@ -29,7 +29,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun StatFilter(
-    currentStatType: Stat,
+    currentStatType: LegendStat,
     currentStatValue: Int,
     onLegendAction: (LegendAction) -> Unit,
     modifier: Modifier = Modifier
@@ -43,7 +43,7 @@ fun StatFilter(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Stat.entries.forEach { stat ->
+                LegendStat.entries.forEach { stat ->
                     Icon(
                         stat.toIcon(),
                         stat.toLocalizedString(),
@@ -89,7 +89,7 @@ private fun StatFilterPreview() {
     BrawlhallaTheme {
         Surface {
             StatFilter(
-                Stat.STRENGTH,
+                LegendStat.STRENGTH,
                 3,
                 {}
             )

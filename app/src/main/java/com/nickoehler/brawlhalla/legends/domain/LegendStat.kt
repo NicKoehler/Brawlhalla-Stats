@@ -1,6 +1,6 @@
 package com.nickoehler.brawlhalla.legends.domain
 
-enum class Stat {
+enum class LegendStat {
     STRENGTH,
     DEFENSE,
     DEXTERITY,
