@@ -6,40 +6,40 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.ui.theme.DefenseColor
 import com.nickoehler.brawlhalla.ui.theme.DexterityColor
 import com.nickoehler.brawlhalla.ui.theme.SpeedColor
 import com.nickoehler.brawlhalla.ui.theme.StrengthColor
 
 @Composable
-fun Stat.toIcon(): Painter {
+fun LegendStat.toIcon(): Painter {
     return painterResource(
         when (this) {
-            Stat.STRENGTH -> R.drawable.strength
-            Stat.DEFENSE -> R.drawable.defense
-            Stat.DEXTERITY -> R.drawable.dexterity
-            Stat.SPEED -> R.drawable.speed
+            LegendStat.STRENGTH -> R.drawable.strength
+            LegendStat.DEFENSE -> R.drawable.defense
+            LegendStat.DEXTERITY -> R.drawable.dexterity
+            LegendStat.SPEED -> R.drawable.speed
         }
     )
 }
 
-fun Stat.toColor(): Color {
+fun LegendStat.toColor(): Color {
     return when (this) {
-        Stat.STRENGTH -> StrengthColor
-        Stat.DEFENSE -> DefenseColor
-        Stat.DEXTERITY -> DexterityColor
-        Stat.SPEED -> SpeedColor
+        LegendStat.STRENGTH -> StrengthColor
+        LegendStat.DEFENSE -> DefenseColor
+        LegendStat.DEXTERITY -> DexterityColor
+        LegendStat.SPEED -> SpeedColor
     }
 }
 
 @Composable
-fun Stat.toLocalizedString(): String {
+fun LegendStat.toLocalizedString(): String {
     return when (this) {
-        Stat.STRENGTH -> stringResource(R.string.strength)
-        Stat.DEFENSE -> stringResource(R.string.defense)
-        Stat.DEXTERITY -> stringResource(R.string.dexterity)
-        Stat.SPEED -> stringResource(R.string.speed)
+        LegendStat.STRENGTH -> stringResource(R.string.strength)
+        LegendStat.DEFENSE -> stringResource(R.string.defense)
+        LegendStat.DEXTERITY -> stringResource(R.string.dexterity)
+        LegendStat.SPEED -> stringResource(R.string.speed)
     }
 }
 

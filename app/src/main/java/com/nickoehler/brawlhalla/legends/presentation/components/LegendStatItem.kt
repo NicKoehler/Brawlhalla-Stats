@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
@@ -27,7 +27,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun LegendStatItem(
-    stat: Stat,
+    stat: LegendStat,
     statValue: Int,
     onLegendAction: (LegendAction) -> Unit,
     delayMillis: Int = 0,
@@ -72,7 +72,7 @@ private fun StatRowPreview() {
     BrawlhallaTheme {
         Surface {
             LegendStatItem(
-                Stat.STRENGTH,
+                LegendStat.STRENGTH,
                 10,
                 {}
             )

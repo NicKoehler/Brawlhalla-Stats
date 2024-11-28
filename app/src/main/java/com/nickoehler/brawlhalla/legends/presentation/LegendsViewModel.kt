@@ -7,8 +7,8 @@ import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
-import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 import com.nickoehler.brawlhalla.legends.presentation.models.getStat
@@ -212,7 +212,7 @@ class LegendsViewModel(
     }
 
 
-    private fun selectStat(stat: Stat, value: Int) {
+    private fun selectStat(stat: LegendStat, value: Int) {
         _state.update { state ->
             state.copy(
                 openFilters = true,
@@ -245,7 +245,7 @@ class LegendsViewModel(
 
 
     private fun filterLegendsByStat(
-        stat: Stat,
+        stat: LegendStat,
         value: Int
     ): List<LegendUi> {
         val legends = allLegends.filter { legend ->

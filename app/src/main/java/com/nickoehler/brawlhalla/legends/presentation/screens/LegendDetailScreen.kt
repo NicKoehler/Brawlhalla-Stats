@@ -40,7 +40,7 @@ import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
-import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendStatItem
@@ -118,7 +118,7 @@ fun LegendDetailScreen(
                     WeaponButton(legend.weaponOne, onWeaponAction)
                     WeaponButton(legend.weaponTwo, onWeaponAction)
                 }
-                Stat.entries.forEachIndexed { index, stat ->
+                LegendStat.entries.forEachIndexed { index, stat ->
                     LegendStatItem(
                         stat,
                         legend.getStat(stat),

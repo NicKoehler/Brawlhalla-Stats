@@ -2,7 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.Legend
-import com.nickoehler.brawlhalla.legends.domain.Stat
+import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.util.getMiniImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
 
@@ -37,11 +37,11 @@ fun Legend.toLegendUi(): LegendUi {
     )
 }
 
-fun LegendUi.getStat(stat: Stat): Int {
+fun LegendUi.getStat(stat: LegendStat): Int {
     return when (stat) {
-        Stat.STRENGTH -> this.strength
-        Stat.DEFENSE -> this.defense
-        Stat.DEXTERITY -> this.dexterity
-        Stat.SPEED -> this.speed
+        LegendStat.STRENGTH -> this.strength
+        LegendStat.DEFENSE -> this.defense
+        LegendStat.DEXTERITY -> this.dexterity
+        LegendStat.SPEED -> this.speed
     }
 }
