@@ -33,16 +33,12 @@ fun AdaptiveLegendsPane(
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
-            is LegendsEvent.Error -> {
-                Toast.makeText(
-                    context,
-                    event.error.toString(context),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            else -> {}
+        if (event is LegendsEvent.Error) {
+            Toast.makeText(
+                context,
+                event.error.toString(context),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

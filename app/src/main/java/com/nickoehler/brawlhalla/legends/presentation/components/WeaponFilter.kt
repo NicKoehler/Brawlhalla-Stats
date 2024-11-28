@@ -33,7 +33,7 @@ fun WeaponsFilter(
         horizontalItemSpacing = 4.dp,
     ) {
         items(weapons, key = { weapon -> weapon.name }) { weapon ->
-            WeaponChip(weapon, onWeaponAction)
+            WeaponChip(weapon, onWeaponAction, modifier = Modifier.animateItem())
         }
     }
 }
