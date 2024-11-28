@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,18 +20,21 @@ import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
+
 @Composable
 fun WeaponChip(
     weapon: WeaponUi,
     onClick: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val defaults = FilterChipDefaults.filterChipColors()
     FilterChip(
         weapon.selected,
         modifier = modifier,
         onClick = {
             onClick(WeaponAction.Select(weapon))
         },
+        colors = defaults,
         label = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -40,9 +44,14 @@ fun WeaponChip(
                     weapon.imageUrl,
                     weapon.name,
                     modifier = Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                    colorFilter = ColorFilter.tint(
+                        if (weapon.selected)
+                            MaterialTheme.colorScheme.surface
+                        else
+                            MaterialTheme.colorScheme.onSurface
+                    )
                 )
-                Text(weapon.name, color = MaterialTheme.colorScheme.onBackground)
+                Text(weapon.name)
             }
         },
     )
