@@ -22,16 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import kotlinx.coroutines.delay
 
 @Composable
-fun AnimatedLinearProgressIndicator(
+fun AnimatedLinearProgressBar(
     indicatorProgress: Float,
     label: String,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     progressAnimDuration: Int = 1_500,
     height: Dp = 10.dp,
-    millisDelay: Long = 0,
+    delayMillis: Int = 0,
     modifier: Modifier = Modifier
 ) {
     var progress by remember {
@@ -41,6 +40,7 @@ fun AnimatedLinearProgressIndicator(
     val progressAnimation by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(
+            delayMillis = delayMillis,
             durationMillis = progressAnimDuration,
             easing = FastOutSlowInEasing
         ),
@@ -55,7 +55,6 @@ fun AnimatedLinearProgressIndicator(
             .clip(CircleShape),
     )
     LaunchedEffect(lifecycleOwner) {
-        delay(millisDelay)
         progress = indicatorProgress
     }
 }
@@ -65,7 +64,7 @@ fun AnimatedLinearProgressIndicator(
 private fun PreviewCircularProgressBar() {
     BrawlhallaTheme {
         Surface {
-            AnimatedLinearProgressIndicator(
+            AnimatedLinearProgressBar(
                 0.5f,
                 "test"
             )

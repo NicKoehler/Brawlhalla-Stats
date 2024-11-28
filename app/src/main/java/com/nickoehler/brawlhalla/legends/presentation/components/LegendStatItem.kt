@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressIndicator
+import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
@@ -30,7 +30,7 @@ fun LegendStatItem(
     stat: Stat,
     statValue: Int,
     onLegendAction: (LegendAction) -> Unit,
-    millisDelay: Long = 0,
+    delayMillis: Int = 0,
     modifier: Modifier = Modifier
 ) {
     CustomCard(
@@ -50,11 +50,11 @@ fun LegendStatItem(
                 tint = stat.toColor(),
                 modifier = modifier.size(40.dp)
             )
-            AnimatedLinearProgressIndicator(
+            AnimatedLinearProgressBar(
                 statValue.toFloat() / 10f,
                 stat.toString(),
                 height = 40.dp,
-                millisDelay = millisDelay
+                delayMillis = delayMillis
             )
             Text(
                 statValue.toString(),
