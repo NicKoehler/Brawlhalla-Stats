@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">brawlhalla</string>
+    <string name="app_name">Brawlhalla</string>
     <string name="error_request_timeout">Request timed out</string>
     <string name="error_too_many_requests">Too many requests</string>
     <string name="error_no_internet">No internet connection</string>
