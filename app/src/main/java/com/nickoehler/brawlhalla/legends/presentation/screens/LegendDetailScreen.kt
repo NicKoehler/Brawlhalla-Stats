@@ -43,7 +43,8 @@ import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.Stat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
-import com.nickoehler.brawlhalla.legends.presentation.components.StatRow
+import com.nickoehler.brawlhalla.legends.presentation.components.LegendStatItem
+import com.nickoehler.brawlhalla.legends.presentation.models.getStat
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
@@ -69,7 +70,8 @@ fun LegendDetailScreen(
                 ModalBottomSheet(
                     onDismissRequest = {
                         showBottomSheet = false
-                    }) {
+                    }
+                ) {
                     Text(
                         legend.bioText,
                         modifier = Modifier
@@ -85,7 +87,7 @@ fun LegendDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier.size(20.dp))
+                Spacer(modifier.size(0.dp))
                 Text(
                     legend.bioName,
                     fontWeight = FontWeight.Bold,
@@ -98,20 +100,13 @@ fun LegendDetailScreen(
                     fontStyle = FontStyle.Italic,
                     textAlign = TextAlign.Center
                 )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    AsyncImage(
-                        legend.image,
-                        contentDescription = "image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                    )
-                }
-
+                AsyncImage(
+                    legend.image,
+                    contentDescription = legend.bioName,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -123,10 +118,14 @@ fun LegendDetailScreen(
                     WeaponButton(legend.weaponOne, onWeaponAction)
                     WeaponButton(legend.weaponTwo, onWeaponAction)
                 }
-                StatRow(Stat.STRENGTH, legend.strength, onLegendAction)
-                StatRow(Stat.DEFENSE, legend.defense, onLegendAction)
-                StatRow(Stat.DEXTERITY, legend.dexterity, onLegendAction)
-                StatRow(Stat.SPEED, legend.speed, onLegendAction)
+                Stat.entries.forEachIndexed { index, stat ->
+                    LegendStatItem(
+                        stat,
+                        legend.getStat(stat),
+                        onLegendAction,
+                        millisDelay = 100 * index.toLong()
+                    )
+                }
                 Spacer(Modifier.size(0.dp))
             }
         }

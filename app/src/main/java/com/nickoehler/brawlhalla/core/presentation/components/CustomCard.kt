@@ -1,4 +1,4 @@
-package com.nickoehler.brawltool.presentation.ui.components
+package com.nickoehler.brawlhalla.core.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,20 +43,16 @@ fun CustomCard(
         }
     }
 
-    Box(
-        modifier = cardModifier
-            .background(
-                color
-            )
+    Row(
+        modifier = cardModifier.background(
+            color
+        ).padding(contentPadding),
+        verticalAlignment = verticalAlignment,
+        horizontalArrangement = horizontalArrangement,
     ) {
-        Row(
-            modifier = cardModifier.padding(contentPadding),
-            verticalAlignment = verticalAlignment,
-            horizontalArrangement = horizontalArrangement,
-        ) {
-            content()
-        }
+        content()
     }
+
 }
 
 @PreviewLightDark
