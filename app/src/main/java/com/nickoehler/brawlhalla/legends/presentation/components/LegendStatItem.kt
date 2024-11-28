@@ -1,7 +1,6 @@
 package com.nickoehler.brawlhalla.legends.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -13,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
@@ -31,39 +31,38 @@ fun LegendStatItem(
     statValue: Int,
     onLegendAction: (LegendAction) -> Unit,
     delayMillis: Int = 0,
+    height: Dp = 40.dp,
     modifier: Modifier = Modifier
 ) {
     CustomCard(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = 15.dp,
         onClick = {
             onLegendAction(LegendAction.SelectStat(stat, statValue))
-        }
+        },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Icon(
-                stat.toIcon(),
-                stat.toLocalizedString(),
-                tint = stat.toColor(),
-                modifier = modifier.size(40.dp)
-            )
-            AnimatedLinearProgressBar(
-                statValue.toFloat() / 10f,
-                stat.toString(),
-                height = 40.dp,
-                delayMillis = delayMillis
-            )
-            Text(
-                statValue.toString(),
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        Icon(
+            stat.toIcon(),
+            stat.toLocalizedString(),
+            tint = stat.toColor(),
+            modifier = modifier.size(height)
+        )
+        AnimatedLinearProgressBar(
+            statValue.toFloat() / 10f,
+            stat.toString(),
+            height = height,
+            delayMillis = delayMillis
+        )
+        Text(
+            statValue.toString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 25.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
+
 }
 
 @PreviewLightDark
