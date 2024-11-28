@@ -75,7 +75,11 @@ fun LazyLegendsCards(
                             label = "selectedFilter"
                         ) { filter ->
                             when (filter) {
-                                FilterOptions.WEAPONS -> WeaponsFilter(state, onWeaponAction)
+                                FilterOptions.WEAPONS -> WeaponsFilter(
+                                    state.weapons,
+                                    onWeaponAction
+                                )
+
                                 FilterOptions.STATS -> StatFilter(
                                     state.selectedStatType,
                                     state.selectedStatValue,

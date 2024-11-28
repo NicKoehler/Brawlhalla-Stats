@@ -13,14 +13,14 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponChip
+import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
 import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
-import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 
 @Composable
 fun WeaponsFilter(
-    state: LegendsListState,
+    weapons: List<WeaponUi>,
     onWeaponAction: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -32,7 +32,7 @@ fun WeaponsFilter(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalItemSpacing = 4.dp,
     ) {
-        items(state.weapons) { weapon ->
+        items(weapons) { weapon ->
             WeaponChip(weapon, onWeaponAction)
         }
     }
@@ -44,10 +44,7 @@ private fun WeaponsFilterPreview() {
     BrawlhallaTheme {
         Surface {
             WeaponsFilter(
-                state = LegendsListState(
-                    openFilters = true,
-                    weapons = (0..30).map { "hammer".toWeaponUi() }
-                ),
+                weapons = (0..30).map { "hammer".toWeaponUi() },
                 {}
             )
         }
