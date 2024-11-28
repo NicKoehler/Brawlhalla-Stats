@@ -123,7 +123,7 @@ fun LegendDetailScreen(
                         stat,
                         legend.getStat(stat),
                         onLegendAction,
-                        millisDelay = 100 * index.toLong()
+                        delayMillis = 100 * index
                     )
                 }
                 Spacer(Modifier.size(0.dp))
