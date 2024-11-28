@@ -42,7 +42,7 @@ fun LazyLegendsCards(
         item {
             AnimatedContent(
                 state.openFilters,
-                label = "openFilters"
+                label = "openFilters",
             ) { open ->
                 if (open) {
                     Column(
