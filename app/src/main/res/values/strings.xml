@@ -17,4 +17,12 @@
     <string name="error_not_found">Not found</string>
     <string name="more">More</string>
     <string name="no_players_found">No players found</string>
+    <string name="tier_valhallan">Valhallan</string>
+    <string name="tier_diamond">Diamond</string>
+    <string name="tier_platinum">Platinum</string>
+    <string name="tier_gold">Gold</string>
+    <string name="tier_silver">Silver</string>
+    <string name="tier_bronze">Bronze</string>
+    <string name="tier_tin">Tin</string>
+    <string name="tier_unknown">Unknown</string>
 </resources>

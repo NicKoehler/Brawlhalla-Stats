@@ -20,16 +20,15 @@ fun Region.toUrlString(): String {
 
 fun String.toRegion(): Region {
     return when (this) {
-        "all" -> Region.ALL
-        "us_e" -> Region.US_E
-        "eu" -> Region.EU
-        "sea" -> Region.SEA
-        "brz" -> Region.BRZ
-        "aus" -> Region.AUS
-        "us_w" -> Region.US_W
-        "jpn" -> Region.JPN
-        "sa" -> Region.SA
-        "me" -> Region.ME
+        "US-E" -> Region.US_E
+        "EU" -> Region.EU
+        "SEA" -> Region.SEA
+        "BRZ" -> Region.BRZ
+        "AUS" -> Region.AUS
+        "US-W" -> Region.US_W
+        "JPN" -> Region.JPN
+        "SA" -> Region.SA
+        "ME" -> Region.ME
         else -> Region.UNKNOWN
     }
 }

@@ -5,7 +5,7 @@ import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.search.domain.Ranking
 
 data class RankingUi(
-    val rank: Int,
+    val rank: DisplayableNumber,
     val name: String,
     val brawlhallaId: Int,
     val bestLegend: Int,
@@ -22,7 +22,7 @@ data class RankingUi(
 
 fun Ranking.toRankingUi(): RankingUi {
     return RankingUi(
-        rank,
+        rank.toDisplayableNumber(),
         name,
         brawlhallaId,
         bestLegend,
