@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -47,10 +48,11 @@ class MainActivity : ComponentActivity() {
                     navigationSuiteItems = {
                         Screens.entries.forEach { currentScreen ->
                             if (currentDestination != null) {
+                                val isSelected = currentDestination.hierarchy.any {
+                                    it.hasRoute(route = currentScreen.route::class)
+                                }
                                 item(
-                                    currentDestination.hierarchy.any {
-                                        it.hasRoute(route = currentScreen.route::class)
-                                    },
+                                    selected = isSelected,
                                     onClick = {
                                         if (currentDestination != currentScreen.route) {
                                             navController.navigate(currentScreen.route) {
@@ -64,8 +66,13 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     icon = {
-                                        Icon(currentScreen.icon, currentScreen.title)
+                                        Icon(
+                                            if (isSelected) currentScreen.selectedIcon
+                                            else currentScreen.unselectedIcon,
+                                            currentScreen.title
+                                        )
                                     },
+                                    label = { Text(currentScreen.title) }
                                 )
                             }
                         }
