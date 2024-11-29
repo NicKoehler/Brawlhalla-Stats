@@ -102,7 +102,7 @@ private fun RankingCardPreview() {
 
 internal val rankingSample = Ranking(
     rank = 1,
-    name = "Nic",
+    name = "Kororonâ\u0098\u0086",
     brawlhallaId = 1,
     bestLegend = 3,
     bestLegendGames = 3,

@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.search.presentation.models
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.search.domain.Ranking
+import com.nickoehler.brawlhalla.search.presentation.util.toFixedUtf8
 
 data class RankingUi(
     val rank: DisplayableNumber,
@@ -23,7 +24,7 @@ data class RankingUi(
 fun Ranking.toRankingUi(): RankingUi {
     return RankingUi(
         rank.toDisplayableNumber(),
-        name,
+        name.toFixedUtf8(),
         brawlhallaId,
         bestLegend,
         bestLegendGames,
