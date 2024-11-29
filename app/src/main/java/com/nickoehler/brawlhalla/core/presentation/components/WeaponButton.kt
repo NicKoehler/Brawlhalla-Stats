@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 
 @Composable
 fun WeaponButton(

@@ -33,7 +33,6 @@ fun LegendListScreen(
     onWeaponAction: (WeaponAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
@@ -41,6 +40,8 @@ fun LegendListScreen(
         if (state.isListLoading) {
             CircularProgressIndicator()
         } else {
+            val scrollBehavior =
+                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             Scaffold(
                 topBar = {
                     LegendsTopBar(

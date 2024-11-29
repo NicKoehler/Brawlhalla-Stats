@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.core.presentation.domain
+package com.nickoehler.brawlhalla.core.presentation.models
 
 import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
 

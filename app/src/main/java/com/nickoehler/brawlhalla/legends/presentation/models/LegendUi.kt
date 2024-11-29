@@ -1,6 +1,6 @@
 package com.nickoehler.brawlhalla.legends.presentation.models
 
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.Legend
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.util.getMiniImageUrlFromLegendNameKey

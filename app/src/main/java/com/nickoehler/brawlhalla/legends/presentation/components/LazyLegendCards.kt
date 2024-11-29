@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString

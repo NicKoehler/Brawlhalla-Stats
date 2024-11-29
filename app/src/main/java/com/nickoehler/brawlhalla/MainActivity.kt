@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
@@ -23,7 +24,8 @@ import androidx.navigation.toRoute
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
-import com.nickoehler.brawlhalla.search.presentation.screens.SearchScreen
+import com.nickoehler.brawlhalla.search.presentation.RankingViewModel
+import com.nickoehler.brawlhalla.search.presentation.screens.RankingScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -34,7 +36,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val legendsViewModel by viewModel<LegendsViewModel>()
 
             val navController = rememberNavController()
 
@@ -87,13 +88,19 @@ class MainActivity : ComponentActivity() {
                         startDestination = Route.Legend(),
                     ) {
                         composable<Route.Search> {
-                            SearchScreen()
+                            val rankingViewModel by viewModel<RankingViewModel>()
+                            RankingScreen(
+                                rankingViewModel.state.collectAsStateWithLifecycle().value,
+                                onRankingAction = rankingViewModel::onRankingAction
+                            )
                         }
                         composable<Route.Legend>(
                             deepLinks = listOf(
                                 navDeepLink<Route.Legend>("bh://legend")
                             )
                         ) {
+                            val legendsViewModel by viewModel<LegendsViewModel>()
+
                             val legend = it.toRoute<Route.Legend>()
                             if (legend.id != null) {
                                 legendsViewModel.onLegendAction(LegendAction.SelectLegend(legendId = legend.id))
