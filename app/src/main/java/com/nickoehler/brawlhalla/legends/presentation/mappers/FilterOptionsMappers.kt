@@ -7,8 +7,10 @@ import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 
 @Composable
 fun FilterOptions.toLocalizedString(): String {
-    return when (this) {
-        FilterOptions.WEAPONS -> stringResource(R.string.weapons)
-        FilterOptions.STATS -> stringResource(R.string.stats)
-    }
+    return stringResource(
+        when (this) {
+            FilterOptions.WEAPONS -> R.string.weapons
+            FilterOptions.STATS -> R.string.stats
+        }
+    )
 }
