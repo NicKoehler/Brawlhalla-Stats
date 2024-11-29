@@ -13,8 +13,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponChip
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
-import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 

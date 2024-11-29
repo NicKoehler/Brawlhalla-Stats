@@ -15,4 +15,6 @@
     <string name="weapons">Weapons</string>
     <string name="stats">Stats</string>
     <string name="error_not_found">Not found</string>
+    <string name="more">More</string>
+    <string name="no_players_found">No players found</string>
 </resources>

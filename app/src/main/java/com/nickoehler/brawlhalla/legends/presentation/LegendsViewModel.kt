@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions

@@ -15,8 +15,8 @@ import coil3.request.ImageRequest
 import coil3.size.Size
 import coil3.svg.SvgDecoder
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
-import com.nickoehler.brawlhalla.core.presentation.domain.toWeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 

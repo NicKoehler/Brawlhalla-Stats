@@ -1,7 +1,7 @@
 package com.nickoehler.brawlhalla.legends.presentation
 
 import androidx.compose.runtime.Immutable
-import com.nickoehler.brawlhalla.core.presentation.domain.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
