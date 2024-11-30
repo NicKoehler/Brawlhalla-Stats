@@ -22,3 +22,6 @@ val GoldColor = Color(0xFFFDBF55)
 val SilverColor = Color(0xFFC9C9C9)
 val BronzeColor = Color(0xFFFF9544)
 val TinColor = Color(0xFFCCFF90)
+
+val WinColor = Color(0xFFADFC5A)
+val LoseColor = Color(0xFFFC5A5A)

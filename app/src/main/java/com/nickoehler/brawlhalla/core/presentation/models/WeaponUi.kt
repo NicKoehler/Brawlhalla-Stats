@@ -1,6 +1,6 @@
 package com.nickoehler.brawlhalla.core.presentation.models
 
-import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
+import com.nickoehler.brawlhalla.core.presentation.util.getWeaponImageUrlFromWeaponName
 
 data class WeaponUi(
     val name: String,

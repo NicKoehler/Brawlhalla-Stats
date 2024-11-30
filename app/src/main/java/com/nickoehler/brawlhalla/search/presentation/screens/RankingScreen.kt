@@ -65,7 +65,7 @@ fun RankingScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.padding(it)
                     ) {
-                        items(state.players, { ranking -> ranking.brawlhallaId }) { ranking ->
+                        items(state.players, { ranking -> ranking.rank.value }) { ranking ->
                             RankingCard(
                                 ranking = ranking,
                                 modifier = Modifier

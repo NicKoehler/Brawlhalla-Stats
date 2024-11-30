@@ -1,10 +1,10 @@
 package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
+import com.nickoehler.brawlhalla.core.presentation.util.getWeaponImageUrlFromWeaponName
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.util.getFullImageUrlFromLegendNameKey
-import com.nickoehler.brawlhalla.legends.presentation.util.getWeaponImageUrlFromWeaponName
 
 data class LegendDetailUi(
     val legendId: Int,

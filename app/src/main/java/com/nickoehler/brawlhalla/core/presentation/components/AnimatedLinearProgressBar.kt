@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
@@ -31,6 +33,8 @@ fun AnimatedLinearProgressBar(
     progressAnimDuration: Int = 1_500,
     height: Dp = 10.dp,
     delayMillis: Int = 0,
+    backgroundColor: Color = ProgressIndicatorDefaults.linearTrackColor,
+    foregroundColor: Color = ProgressIndicatorDefaults.linearColor,
     modifier: Modifier = Modifier
 ) {
     var progress by remember {
@@ -49,6 +53,8 @@ fun AnimatedLinearProgressBar(
     LinearProgressIndicator(
         drawStopIndicator = {},
         strokeCap = StrokeCap.Butt,
+        color = foregroundColor,
+        trackColor = backgroundColor,
         progress = { progressAnimation },
         modifier = modifier
             .height(height)
@@ -61,7 +67,7 @@ fun AnimatedLinearProgressBar(
 
 @PreviewLightDark
 @Composable
-private fun PreviewCircularProgressBar() {
+private fun AnimatedLinearProgressBarPreview() {
     BrawlhallaTheme {
         Surface {
             AnimatedLinearProgressBar(

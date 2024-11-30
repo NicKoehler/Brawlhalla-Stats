@@ -3,6 +3,8 @@ package com.nickoehler.brawlhalla.search.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.search.domain.Ranking
 import com.nickoehler.brawlhalla.search.domain.Region
@@ -29,6 +32,8 @@ import com.nickoehler.brawlhalla.search.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.search.presentation.models.toColor
 import com.nickoehler.brawlhalla.search.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.LoseColor
+import com.nickoehler.brawlhalla.ui.theme.WinColor
 
 @Composable
 fun RankingCard(
@@ -38,50 +43,74 @@ fun RankingCard(
     CustomCard(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        contentPadding = 0.dp
+        contentPadding = 10.dp
     ) {
         Box(
             Modifier
                 .size(50.dp)
-                .padding(10.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceBright),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 ranking.rank.formatted,
-                fontSize = 10.sp
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center
             )
         }
-        Text(
-            ranking.region.name.name,
-            fontSize = 10.sp
-        )
-        Spacer(Modifier.size(10.dp))
-        Text(
-            ranking.name,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-
         Spacer(Modifier.size(10.dp))
 
-        Box(
-            Modifier
-                .size(50.dp)
-                .weight(0.4f)
-                .padding(10.dp)
-                .clip(CircleShape)
-                .background(ranking.tier.toColor()),
-            contentAlignment = Alignment.Center
+
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+
         ) {
-            Text(
-                ranking.rating.formatted,
-                color = Color.Black.copy(alpha = 0.5f),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium
-            )
+            Row {
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text(
+                        ranking.name,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                }
+                Box(
+                    Modifier
+                        .clip(CircleShape)
+                        .background(ranking.tier.toColor())
+                        .padding(horizontal = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        ranking.rating.formatted,
+                        color = Color.Black.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
+                    )
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    ranking.region.name.name,
+                    fontSize = 10.sp
+                )
+                AnimatedLinearProgressBar(
+                    ranking.wins.value.toFloat() / ranking.games.value.toFloat(),
+                    "ratio",
+                    backgroundColor = LoseColor,
+                    foregroundColor = WinColor,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
+        Spacer(Modifier.size(10.dp))
     }
 }
 
@@ -108,9 +137,9 @@ internal val rankingSample = Ranking(
     bestLegendGames = 3,
     bestLegendWins = 3,
     rating = 2000,
-    tier = Tier.DIAMOND,
-    games = 23849,
-    wins = 23445,
+    tier = Tier.VALHALLAN,
+    games = 53841,
+    wins = 33424,
     region = Region.EU,
     peakRating = 2000
 )

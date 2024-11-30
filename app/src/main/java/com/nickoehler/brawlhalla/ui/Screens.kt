@@ -1,10 +1,10 @@
 package com.nickoehler.brawlhalla.ui
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.People
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.serialization.Serializable
 
@@ -21,10 +21,10 @@ enum class Screens(
         unselectedIcon = Icons.Outlined.People
     ),
     SEARCH(
-        title = "Search",
+        title = "Rankings",
         route = Route.Search,
-        selectedIcon = Icons.Default.Search,
-        unselectedIcon = Icons.Outlined.Search
+        selectedIcon = Icons.Default.Leaderboard,
+        unselectedIcon = Icons.Outlined.Leaderboard
     );
 }
 
