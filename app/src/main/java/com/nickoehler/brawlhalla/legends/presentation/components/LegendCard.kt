@@ -90,7 +90,6 @@ private fun LegendCardPreview() {
             LegendCard(legendSample.toLegendUi(), {}, {})
         }
     }
-
 }
 
 

@@ -70,10 +70,14 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             if (isSelected) currentScreen.selectedIcon
                                             else currentScreen.unselectedIcon,
-                                            currentScreen.title
+                                            currentScreen.title,
                                         )
                                     },
-                                    label = { Text(currentScreen.title) }
+                                    label = {
+                                        if (isSelected) {
+                                            Text(currentScreen.title)
+                                        }
+                                    }
                                 )
                             }
                         }

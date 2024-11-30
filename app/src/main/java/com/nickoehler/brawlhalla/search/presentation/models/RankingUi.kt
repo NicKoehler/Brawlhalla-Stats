@@ -10,16 +10,16 @@ data class RankingUi(
     val name: String,
     val brawlhallaId: Int,
     val bestLegend: Int,
-    val bestLegendGames: Int,
-    val bestLegendWins: Int,
+    val bestLegendGames: DisplayableNumber,
+    val bestLegendWins: DisplayableNumber,
     val rating: DisplayableNumber,
     val tier: TierUi,
     val games: DisplayableNumber,
     val wins: DisplayableNumber,
+    val losses: DisplayableNumber,
     val region: RegionUi,
     val peakRating: DisplayableNumber,
-
-    )
+)
 
 fun Ranking.toRankingUi(): RankingUi {
     return RankingUi(
@@ -27,12 +27,13 @@ fun Ranking.toRankingUi(): RankingUi {
         name.toFixedUtf8(),
         brawlhallaId,
         bestLegend,
-        bestLegendGames,
-        bestLegendWins,
+        bestLegendGames.toDisplayableNumber(),
+        bestLegendWins.toDisplayableNumber(),
         rating.toDisplayableNumber(),
         tier.toTierUi(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
+        (games - wins).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
     )
