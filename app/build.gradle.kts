@@ -33,7 +33,8 @@ android {
             buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
             buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
 
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -81,6 +82,8 @@ dependencies {
     implementation(libs.coil.svg)
     implementation(libs.coil.network.okhttp)
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.logging)

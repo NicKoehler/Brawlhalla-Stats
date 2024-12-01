@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.legends.presentation.screens
+package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -14,17 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
-import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.util.toString
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
+import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
+import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun AdaptiveLegendsPane(
-    viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>(),
+fun AdaptiveRankingPane(
+    viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -47,13 +46,12 @@ fun AdaptiveLegendsPane(
         navigator = navigator,
         listPane = {
             AnimatedPane {
-                LegendListScreen(
+                RankingScreen(
                     state,
-                    onWeaponAction = viewModel::onWeaponAction,
                     onAppBarAction = viewModel::onAppBarAction,
-                    onLegendAction = { action ->
-                        viewModel.onLegendAction(action)
-                        if (action is LegendAction.SelectLegend)
+                    onRankingAction = { action ->
+                        viewModel.onRankingAction(action)
+                        if (action is RankingAction.SelectRanking)
                             navigator.navigateTo(
                                 ListDetailPaneScaffoldRole.Detail
                             )
@@ -64,18 +62,18 @@ fun AdaptiveLegendsPane(
         detailPane = {
             AnimatedPane {
                 Box(contentAlignment = Alignment.Center) {
-                    LegendDetailScreen(
-                        state,
-                        onWeaponAction = { action ->
-                            viewModel.onWeaponAction(action)
-                            if (action is WeaponAction.Click)
-                                navigator.navigateBack()
-                        },
-                        onLegendAction = { action ->
-                            viewModel.onLegendAction(action)
-                            if (action is LegendAction.SelectStat)
-                                navigator.navigateBack()
-                        }
+                    RankingDetailScreen(
+//                        state,
+//                        onWeaponAction = { action ->
+//                            viewModel.onWeaponAction(action)
+//                            if (action is WeaponAction.Click)
+//                                navigator.navigateBack()
+//                        },
+//                        onLegendAction = { action ->
+//                            viewModel.onLegendAction(action)
+//                            if (action is LegendAction.SelectStat)
+//                                navigator.navigateBack()
+//                        }
                     )
                 }
             }

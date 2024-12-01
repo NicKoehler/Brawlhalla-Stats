@@ -1,12 +1,12 @@
 package com.nickoehler.brawlhalla.legends.presentation
 
-import LegendsEvent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
+import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
@@ -37,7 +37,7 @@ class LegendsViewModel(
             SharingStarted.WhileSubscribed(5000L),
             LegendsListState()
         )
-    private val _events = Channel<LegendsEvent>()
+    private val _events = Channel<ErrorEvent>()
     val events = _events.receiveAsFlow()
 
     private fun loadLegends() {
@@ -57,7 +57,7 @@ class LegendsViewModel(
                 }
             }.onError { error ->
                 _state.update { it.copy(isListLoading = false) }
-                _events.send(LegendsEvent.Error(error))
+                _events.send(ErrorEvent.Error(error))
             }
         }
     }
@@ -75,7 +75,7 @@ class LegendsViewModel(
                     }
                 }.onError { error ->
                     _state.update { it.copy(isDetailLoading = false) }
-                    _events.send(LegendsEvent.Error(error))
+                    _events.send(ErrorEvent.Error(error))
                 }
             }
         }
