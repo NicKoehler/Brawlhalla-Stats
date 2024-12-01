@@ -25,4 +25,5 @@
     <string name="tier_bronze">Bronze</string>
     <string name="tier_tin">Tin</string>
     <string name="tier_unknown">Unknown</string>
+    <string name="rankings">Rankings</string>
 </resources>

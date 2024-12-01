@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
+import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
@@ -29,7 +31,7 @@ class LegendsViewModel(
     private val _state = MutableStateFlow(LegendsListState())
     private var allLegends: List<LegendUi> = emptyList()
     private var allWeapons: List<WeaponUi> = emptyList()
-    val state = _state.onStart { loadLegends() }
+    val state = _state.onStart { if (allLegends.isEmpty()) loadLegends() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
@@ -82,7 +84,10 @@ class LegendsViewModel(
     private fun searchQuery(query: String) {
         _state.update { state ->
             state.copy(
-                searchQuery = query,
+                appBarState = CustomAppBarState(
+                    isOpenSearch = true,
+                    searchQuery = query
+                ),
                 legends = allLegends.filter {
                     filterLegend(query, it)
                 },
@@ -100,9 +105,11 @@ class LegendsViewModel(
     private fun toggleSearch(isOpen: Boolean) {
         _state.update { state ->
             state.copy(
-                openSearch = isOpen,
+                appBarState = CustomAppBarState(
+                    isOpenSearch = isOpen,
+                    searchQuery = ""
+                ),
                 openFilters = false,
-                searchQuery = "",
                 weapons = if (isOpen) emptyList() else allWeapons,
                 legends = if (isOpen) emptyList() else allLegends
             )
@@ -140,7 +147,7 @@ class LegendsViewModel(
 
             state.copy(
                 openFilters = true,
-                openSearch = false,
+                appBarState = CustomAppBarState(),
                 selectedFilter = FilterOptions.WEAPONS,
                 legends = filteredLegends,
                 weapons = filteredWeapons
@@ -216,7 +223,7 @@ class LegendsViewModel(
         _state.update { state ->
             state.copy(
                 openFilters = true,
-                openSearch = false,
+                appBarState = CustomAppBarState(),
                 selectedFilter = FilterOptions.STATS,
                 selectedStatType = stat,
                 selectedStatValue = value,
@@ -257,8 +264,6 @@ class LegendsViewModel(
     fun onLegendAction(action: LegendAction) {
         when (action) {
             is LegendAction.SelectLegend -> selectLegend(action.legendId)
-            is LegendAction.SearchQuery -> searchQuery(action.text)
-            is LegendAction.ToggleSearch -> toggleSearch(action.isOpen)
             is LegendAction.ToggleFilters -> toggleFilters()
             is LegendAction.SelectStat -> selectStat(action.stat, action.value)
             is LegendAction.SelectFilter -> selectFilter(action.filter)
@@ -269,6 +274,15 @@ class LegendsViewModel(
         when (action) {
             is WeaponAction.Click -> onWeaponSelect(action.weapon, false)
             is WeaponAction.Select -> onWeaponSelect(action.weapon)
+        }
+    }
+
+    fun onAppBarAction(action: AppBarAction) {
+        when (action) {
+            is AppBarAction.CloseSearch -> toggleSearch(false)
+            is AppBarAction.OpenSearch -> toggleSearch(true)
+            is AppBarAction.QueryChange -> searchQuery(action.query)
+            is AppBarAction.Search -> {}
         }
     }
 }

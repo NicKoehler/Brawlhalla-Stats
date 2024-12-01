@@ -95,7 +95,8 @@ class MainActivity : ComponentActivity() {
                             val rankingViewModel by viewModel<RankingViewModel>()
                             RankingScreen(
                                 rankingViewModel.state.collectAsStateWithLifecycle().value,
-                                onRankingAction = rankingViewModel::onRankingAction
+                                onRankingAction = rankingViewModel::onRankingAction,
+                                onAppBarAction = rankingViewModel::onAppBarAction
                             )
                         }
                         composable<Route.Legend>(
