@@ -3,7 +3,7 @@ package com.nickoehler.brawlhalla.core.presentation.components
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
@@ -44,9 +44,13 @@ fun CustomTopAppBar(
     actions: @Composable (RowScope.() -> Unit) = {}
 ) {
     AnimatedContent(
-        state.isOpenSearch, label = "topBarAnimation", modifier = modifier
+        state.isOpenSearch,
+        label = "topBarAnimation",
+        modifier = modifier
     ) { open ->
         TopAppBar(
+            expandedHeight = 80.dp,
+            windowInsets = WindowInsets(10.dp),
             colors = TopAppBarDefaults.topAppBarColors().copy(
                 scrolledContainerColor = MaterialTheme.colorScheme.background,
             ),
@@ -58,9 +62,6 @@ fun CustomTopAppBar(
                     }
                     SearchBar(
                         modifier = Modifier
-                            .padding(
-                                bottom = 10.dp
-                            )
                             .focusRequester(focusRequester),
                         inputField = {
                             SearchBarDefaults.InputField(
@@ -81,6 +82,7 @@ fun CustomTopAppBar(
                         expanded = false,
                         onExpandedChange = { }
                     ) { }
+
                 } else {
                     Text(title)
                 }
@@ -122,6 +124,16 @@ private fun LegendsTopBarPreview() {
 
                 CustomTopAppBar(
                     "Action",
+                    onAppBarAction = {},
+                    actions = {
+                        Icon(Icons.Default.FilterAlt, null)
+                    }
+                )
+
+
+                CustomTopAppBar(
+                    "Action",
+                    state = CustomAppBarState(isOpenSearch = true),
                     onAppBarAction = {},
                     actions = {
                         Icon(Icons.Default.FilterAlt, null)
