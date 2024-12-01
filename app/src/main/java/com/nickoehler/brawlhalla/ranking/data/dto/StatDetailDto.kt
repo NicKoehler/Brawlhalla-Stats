@@ -15,7 +15,7 @@ data class StatDetailDto(
     @SerialName("level")
     val level: Int,
     @SerialName("xp_percentage")
-    val xpPercentage: Int,
+    val xpPercentage: Float,
     @SerialName("games")
     val games: Int,
     @SerialName("wins")
