@@ -1,6 +1,9 @@
 package com.nickoehler.brawlhalla.core.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,23 +20,30 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun WeaponButton(
-    weapon: WeaponUi,
-    onClick: (WeaponAction) -> Unit,
+    weapon: WeaponUi? = null,
+    onClick: (WeaponAction) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CustomCard(
         modifier = modifier.size(35.dp),
         horizontalArrangement = Arrangement.Center,
-        contentPadding = 8.dp,
+        contentPadding = if (weapon != null) 8.dp else 0.dp,
         borderRadius = 12.dp,
-        onClick = { onClick(WeaponAction.Click(weapon)) },
+        onClick = { if (weapon != null) onClick(WeaponAction.Click(weapon)) },
         color = MaterialTheme.colorScheme.primary,
     ) {
-        AsyncImage(
-            weapon.imageUrl,
-            weapon.name,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surfaceBright),
-        )
+        if (weapon != null) {
+            AsyncImage(
+                weapon.imageUrl,
+                weapon.name,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surfaceBright),
+            )
+        } else {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .shimmerEffect())
+        }
     }
 }
 
@@ -43,10 +53,17 @@ private fun WeaponButtonPreview() {
 
     BrawlhallaTheme {
         Surface {
-            WeaponButton(
-                "hammer".toWeaponUi(),
-                {}
-            )
+
+            Column {
+
+                WeaponButton(
+                    "hammer".toWeaponUi(),
+                    {}
+                )
+
+                WeaponButton()
+            }
+
         }
     }
 }

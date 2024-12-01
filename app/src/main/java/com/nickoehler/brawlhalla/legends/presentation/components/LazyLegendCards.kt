@@ -92,9 +92,21 @@ fun LazyLegendsCards(
             }
         }
 
-        items(state.legends, key = { legend -> legend.legendId }) { legend ->
-            LegendCard(legend, onLegendAction, onWeaponAction, modifier = Modifier.animateItem())
+        if (state.isListLoading) {
+            items(50) {
+                LegendCard()
+            }
+        } else {
+            items(state.legends, key = { legend -> legend.legendId }) { legend ->
+                LegendCard(
+                    legend,
+                    onLegendAction,
+                    onWeaponAction,
+                    modifier = Modifier.animateItem()
+                )
+            }
         }
+
     }
 }
 

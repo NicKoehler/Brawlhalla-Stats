@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -22,57 +25,93 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
+import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
+import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
+import com.nickoehler.brawlhalla.legends.domain.Legend
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawlhalla.legends.domain.Legend
-import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 
 @Composable
 fun LegendCard(
-    legend: LegendUi,
-    onLegendAction: (LegendAction) -> Unit,
-    onWeaponAction: (WeaponAction) -> Unit,
+    legend: LegendUi? = null,
+    onLegendAction: (LegendAction) -> Unit = {},
+    onWeaponAction: (WeaponAction) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CustomCard(
-        onClick = { onLegendAction(LegendAction.SelectLegend(legend.legendId)) },
+        onClick = { if (legend != null) onLegendAction(LegendAction.SelectLegend(legend.legendId)) },
         modifier = modifier,
     ) {
-        AsyncImage(
-            legend.image,
-            contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colorScheme.surfaceBright)
-        )
+        if (legend != null) {
+            AsyncImage(
+                legend.image,
+                contentDescription = legend.bioName,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colorScheme.surfaceBright),
+                onLoading = {}
+            )
+        } else {
+            Box(
+                Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .shimmerEffect()
+            )
+        }
         Spacer(Modifier.size(20.dp))
-        Column(Modifier.weight(1f)) {
-            Text(
-                legend.bioName,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Text(
-                legend.bioAka,
-                fontSize = 14.sp,
-                fontStyle = FontStyle.Italic,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+        Column(
+            Modifier.weight(1f),
+            verticalArrangement = Arrangement.Top,
+        ) {
+            if (legend != null) {
+                Text(
+                    legend.bioName,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    legend.bioAka,
+                    fontSize = 14.sp,
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            } else {
+                Box(
+                    Modifier
+                        .height(20.dp)
+                        .padding(end = 40.dp)
+                        .clip(CircleShape)
+                        .fillMaxWidth()
+                        .shimmerEffect()
+                )
+                Spacer(Modifier.size(20.dp))
+                Box(
+                    Modifier
+                        .height(10.dp)
+                        .clip(CircleShape)
+                        .fillMaxWidth()
+                        .shimmerEffect()
+                )
+                Spacer(Modifier.size(10.dp))
+
+            }
 
         }
+        Spacer(Modifier.size(20.dp))
         Column(verticalArrangement = Arrangement.SpaceAround) {
             WeaponButton(
-                legend.weaponOne,
-                { onWeaponAction(WeaponAction.Click(legend.weaponOne)) })
+                legend?.weaponOne,
+                { if (legend != null) onWeaponAction(WeaponAction.Click(legend.weaponOne)) })
             Spacer(modifier = Modifier.size(10.dp))
-            WeaponButton(legend.weaponTwo,
-                { onWeaponAction(WeaponAction.Click(legend.weaponTwo)) })
+            WeaponButton(legend?.weaponTwo,
+                { if (legend != null) onWeaponAction(WeaponAction.Click(legend.weaponTwo)) })
         }
     }
 }
@@ -81,13 +120,13 @@ fun LegendCard(
 @Composable
 private fun LegendCardPreview() {
     BrawlhallaTheme {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            LegendCard(legendSample.toLegendUi(), {}, {})
+        Surface {
+
+            Column {
+
+                LegendCard(legend = legendSample.toLegendUi(), {}, {})
+                LegendCard()
+            }
         }
     }
 }
