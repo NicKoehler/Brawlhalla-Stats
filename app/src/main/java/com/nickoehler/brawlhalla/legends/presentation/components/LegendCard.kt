@@ -54,7 +54,6 @@ fun LegendCard(
                     .size(80.dp)
                     .clip(RoundedCornerShape(25.dp))
                     .background(MaterialTheme.colorScheme.surfaceBright),
-                onLoading = {}
             )
         } else {
             Box(
