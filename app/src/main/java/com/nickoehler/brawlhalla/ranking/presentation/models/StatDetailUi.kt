@@ -1,6 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableFloat
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableFloat
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
@@ -11,7 +13,7 @@ data class StatDetailUi(
     val name: String,
     val xp: Double,
     val level: Int,
-    val xpPercentage: Int,
+    val xpPercentage: DisplayableFloat,
     val games: DisplayableNumber,
     val wins: DisplayableNumber,
     val damageBomb: DisplayableNumber,
@@ -35,7 +37,7 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
         name.toFixedUtf8(),
         xp,
         level,
-        xpPercentage,
+        xpPercentage.toDisplayableFloat(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
         damageBomb.toDisplayableNumber(),
