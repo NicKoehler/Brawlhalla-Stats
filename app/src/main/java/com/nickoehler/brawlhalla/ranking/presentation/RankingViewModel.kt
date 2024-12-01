@@ -9,6 +9,7 @@ import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +18,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+// https://dev.brawlhalla.com/#version-08
+// rankings endpoint has a page limit of 1000 (50k players).
+const val MAX_PAGE = 1_000
 
 class RankingViewModel(
     private val rankingsDataSource: RankingsDataSource
@@ -52,7 +57,7 @@ class RankingViewModel(
             ).onSuccess { players ->
                 _state.update { state ->
                     state.copy(
-                        showLoadMore = currentSearch == null,
+                        shouldLoadMore = currentSearch == null,
                         isListLoading = false,
                         isLoadingMore = false,
                         appBarState = _state.value.appBarState.copy(
@@ -67,13 +72,44 @@ class RankingViewModel(
 
                     )
                 }
-            }.onError {
+            }.onError { error ->
                 _state.update { state ->
                     state.copy(
                         isListLoading = false,
                         isLoadingMore = false
                     )
                 }
+                _events.send(ErrorEvent.Error(error))
+            }
+        }
+    }
+
+
+    private fun selectRanking(id: Int) {
+
+        if (_state.value.selectedRanking?.brawlhallaId == id) {
+            return
+        }
+
+        _state.update { state ->
+            state.copy(isDetailLoading = true)
+        }
+
+        viewModelScope.launch {
+            rankingsDataSource.getStat(id).onSuccess { stat ->
+                _state.update { state ->
+                    state.copy(
+                        isDetailLoading = false,
+                        selectedRanking = stat.toStatDetailUi()
+                    )
+                }
+            }.onError { error ->
+                _state.update { state ->
+                    state.copy(
+                        isDetailLoading = false,
+                    )
+                }
+                _events.send(ErrorEvent.Error(error))
             }
         }
     }
@@ -111,6 +147,7 @@ class RankingViewModel(
         }
     }
 
+
     private fun openSearch() {
         _state.update { state ->
             state.copy(appBarState = CustomAppBarState(isOpenSearch = true))
@@ -120,13 +157,13 @@ class RankingViewModel(
     fun onRankingAction(action: RankingAction) {
         when (action) {
             is RankingAction.LoadMore -> {
-                currentPage++
-                loadRankings()
+                if (currentPage <= MAX_PAGE) {
+                    currentPage++
+                    loadRankings()
+                }
             }
 
-            is RankingAction.SelectRanking -> {
-                TODO()
-            }
+            is RankingAction.SelectRanking -> selectRanking(action.id)
         }
     }
 

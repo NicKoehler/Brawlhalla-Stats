@@ -30,14 +30,13 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RankingScreen(
+fun RankingListScreen(
     state: RankingState,
-    onRankingAction: (RankingAction) -> Unit,
-    onAppBarAction: (AppBarAction) -> Unit,
+    onRankingAction: (RankingAction) -> Unit = {},
+    onAppBarAction: (AppBarAction) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -71,7 +70,8 @@ fun RankingScreen(
                         ranking = ranking,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .animateItem()
+                            .animateItem(),
+                        onRankingAction = onRankingAction
                     )
                 }
                 item {
@@ -79,13 +79,13 @@ fun RankingScreen(
                         RankingCard(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .animateItem()
+                                .animateItem(),
                         )
                     }
                 }
 
                 item {
-                    if (state.showLoadMore) {
+                    if (state.shouldLoadMore) {
                         LaunchedEffect(true) {
                             onRankingAction(RankingAction.LoadMore)
                         }
@@ -106,10 +106,8 @@ fun RankingScreen(
 private fun SearchScreenPreview() {
     BrawlhallaTheme {
         Surface {
-            RankingScreen(
+            RankingListScreen(
                 state = RankingState(),
-                {},
-                {}
             )
         }
     }

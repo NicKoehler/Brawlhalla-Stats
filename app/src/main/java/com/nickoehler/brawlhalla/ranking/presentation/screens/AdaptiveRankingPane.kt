@@ -46,11 +46,12 @@ fun AdaptiveRankingPane(
         navigator = navigator,
         listPane = {
             AnimatedPane {
-                RankingScreen(
+                RankingListScreen(
                     state,
                     onAppBarAction = viewModel::onAppBarAction,
                     onRankingAction = { action ->
                         viewModel.onRankingAction(action)
+                        println(action)
                         if (action is RankingAction.SelectRanking)
                             navigator.navigateTo(
                                 ListDetailPaneScaffoldRole.Detail
@@ -63,6 +64,9 @@ fun AdaptiveRankingPane(
             AnimatedPane {
                 Box(contentAlignment = Alignment.Center) {
                     RankingDetailScreen(
+                        state,
+
+                        )
 //                        state,
 //                        onWeaponAction = { action ->
 //                            viewModel.onWeaponAction(action)
@@ -74,7 +78,6 @@ fun AdaptiveRankingPane(
 //                            if (action is LegendAction.SelectStat)
 //                                navigator.navigateBack()
 //                        }
-                    )
                 }
             }
         }

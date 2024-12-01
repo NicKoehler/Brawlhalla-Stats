@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +31,7 @@ import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.domain.Tier
+import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toColor
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
@@ -40,12 +42,20 @@ import com.nickoehler.brawlhalla.ui.theme.WinColor
 @Composable
 fun RankingCard(
     modifier: Modifier = Modifier,
-    ranking: RankingUi? = null
+    ranking: RankingUi? = null,
+    onRankingAction: (RankingAction) -> Unit = {}
 ) {
     CustomCard(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        contentPadding = 10.dp
+        contentPadding = 10.dp,
+        onClick = {
+            if (ranking != null) {
+                onRankingAction(
+                    RankingAction.SelectRanking(ranking.brawlhallaId)
+                )
+            }
+        }
     ) {
         Box(
             Modifier
@@ -76,7 +86,10 @@ fun RankingCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
 
         ) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 10.dp),
+            ) {
                 Column(modifier = Modifier.weight(1f)) {
                     if (ranking != null) {
                         Text(
@@ -86,7 +99,9 @@ fun RankingCard(
                     } else {
                         Box(
                             Modifier
-                                .size(height = 10.dp, width = 80.dp)
+                                .height(10.dp)
+                                .padding(end = 10.dp)
+                                .fillMaxWidth()
                                 .clip(CircleShape)
                                 .shimmerEffect()
                         )
@@ -111,7 +126,7 @@ fun RankingCard(
                 } else {
                     Box(
                         Modifier
-                            .size(height = 10.dp, width = 80.dp)
+                            .size(height = 20.dp, width = 60.dp)
                             .clip(CircleShape)
                             .shimmerEffect()
                     )
@@ -120,6 +135,7 @@ fun RankingCard(
             }
 
             Row(
+                modifier = Modifier.padding(end = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -138,7 +154,7 @@ fun RankingCard(
                 } else {
                     Box(
                         Modifier
-                            .size(height = 10.dp, width = 80.dp)
+                            .size(height = 10.dp, width = 15.dp)
                             .clip(CircleShape)
                             .shimmerEffect()
                     )
@@ -153,7 +169,6 @@ fun RankingCard(
                 }
             }
         }
-        Spacer(Modifier.size(10.dp))
     }
 }
 

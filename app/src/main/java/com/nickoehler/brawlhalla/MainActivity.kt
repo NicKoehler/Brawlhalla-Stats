@@ -23,11 +23,12 @@ import androidx.navigation.toRoute
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
+import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,15 +91,17 @@ class MainActivity : ComponentActivity() {
                         startDestination = Route.Legend(),
                     ) {
                         composable<Route.Search> {
-                            AdaptiveRankingPane()
+                            val rankingViewModel = koinViewModel<RankingViewModel>()
+                            AdaptiveRankingPane(
+                                rankingViewModel
+                            )
                         }
                         composable<Route.Legend>(
                             deepLinks = listOf(
                                 navDeepLink<Route.Legend>("bh://legend")
                             )
                         ) {
-                            val legendsViewModel by viewModel<LegendsViewModel>()
-
+                            val legendsViewModel = koinViewModel<LegendsViewModel>()
                             val legend = it.toRoute<Route.Legend>()
                             if (legend.id != null) {
                                 legendsViewModel.onLegendAction(LegendAction.SelectLegend(legendId = legend.id))

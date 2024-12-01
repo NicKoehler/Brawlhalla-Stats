@@ -10,4 +10,6 @@ interface RankingsDataSource {
         page: Int,
         name: String?
     ): Result<List<Ranking>, NetworkError>
+
+    suspend fun getStat(brawlhallaId: Int): Result<StatDetail, NetworkError>
 }
