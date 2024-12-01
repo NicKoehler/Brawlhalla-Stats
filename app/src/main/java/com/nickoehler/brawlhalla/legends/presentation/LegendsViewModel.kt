@@ -65,7 +65,7 @@ class LegendsViewModel(
     private fun selectLegend(legendId: Int) {
         viewModelScope.launch {
             if (_state.value.selectedLegendUi?.legendId != legendId) {
-                _state.update { it.copy(isDetailLoading = true) }
+                _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }
                 legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
                     _state.update { state ->
                         state.copy(

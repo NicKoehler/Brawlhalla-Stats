@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
+import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
@@ -52,8 +55,8 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LegendDetailScreen(
     state: LegendsListState,
-    onWeaponAction: (WeaponAction) -> Unit,
-    onLegendAction: (LegendAction) -> Unit,
+    onWeaponAction: (WeaponAction) -> Unit = {},
+    onLegendAction: (LegendAction) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -61,17 +64,27 @@ fun LegendDetailScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        if (state.isDetailLoading) {
-            CircularProgressIndicator()
-        } else if (state.selectedLegendUi != null) {
-            var showBottomSheet by remember { mutableStateOf(false) }
-            val legend = state.selectedLegendUi
-            if (showBottomSheet) {
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        showBottomSheet = false
+
+        var showBottomSheet by remember { mutableStateOf(false) }
+        val legend = state.selectedLegendUi
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                }
+            ) {
+                if (state.isDetailLoading) {
+                    repeat(20) {
+                        Box(
+                            Modifier
+                                .height(20.dp)
+                                .padding(20.dp, 5.dp)
+                                .clip(CircleShape)
+                                .fillMaxSize()
+                                .shimmerEffect()
+                        )
                     }
-                ) {
+                } else if (legend != null) {
                     Text(
                         legend.bioText,
                         modifier = Modifier
@@ -80,14 +93,38 @@ fun LegendDetailScreen(
                     )
                 }
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier.size(0.dp))
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier.size(0.dp))
+
+            if (state.isDetailLoading) {
+                Box(
+                    Modifier
+                        .size(height = 40.dp, width = 120.dp)
+                        .clip(CircleShape)
+                        .shimmerEffect()
+                )
+                Box(
+                    Modifier
+                        .size(height = 20.dp, width = 300.dp)
+                        .clip(CircleShape)
+                        .fillMaxSize()
+                        .shimmerEffect()
+                )
+                Box(
+                    Modifier
+                        .size(250.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                        .fillMaxSize()
+                        .shimmerEffect()
+                )
+            } else if (legend != null) {
                 Text(
                     legend.bioName,
                     fontWeight = FontWeight.Bold,
@@ -107,27 +144,27 @@ fun LegendDetailScreen(
                         .fillMaxWidth()
                         .height(250.dp)
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    IconButton(onClick = { showBottomSheet = true }) {
-                        Icon(Icons.Default.Info, "lore")
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    WeaponButton(legend.weaponOne, onWeaponAction)
-                    WeaponButton(legend.weaponTwo, onWeaponAction)
-                }
-                LegendStat.entries.forEachIndexed { index, stat ->
-                    LegendStatItem(
-                        stat,
-                        legend.getStat(stat),
-                        onLegendAction,
-                        delayMillis = 100 * index
-                    )
-                }
-                Spacer(Modifier.size(0.dp))
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                IconButton(onClick = { showBottomSheet = true }) {
+                    Icon(Icons.Default.Info, "lore")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                WeaponButton(legend?.weaponOne, onWeaponAction)
+                WeaponButton(legend?.weaponTwo, onWeaponAction)
+            }
+            LegendStat.entries.forEachIndexed { index, stat ->
+                LegendStatItem(
+                    stat,
+                    legend?.getStat(stat),
+                    onLegendAction,
+                    delayMillis = 100 * index
+                )
+            }
+            Spacer(Modifier.size(0.dp))
         }
     }
 }
@@ -149,6 +186,25 @@ private fun LegendDetailScreenPreview() {
                         selectedLegendUi = legendDetailSample
                             .toLegendDetailUi(),
                     ),
+                )
+            }
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun LegendDetailScreenLoadingPreview() {
+    BrawlhallaTheme {
+        Surface {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+            ) {
+                LegendDetailScreen(
+                    state = LegendsListState(),
                     {},
                     {}
                 )
@@ -156,6 +212,7 @@ private fun LegendDetailScreenPreview() {
         }
     }
 }
+
 
 internal val legendDetailSample: LegendDetail = LegendDetail(
     legendId = 3,
