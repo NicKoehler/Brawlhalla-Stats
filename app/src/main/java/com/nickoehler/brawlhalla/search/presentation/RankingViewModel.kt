@@ -29,18 +29,18 @@ class RankingViewModel(
         RankingState()
     )
 
-    private fun loadRankings(shouldResetPlayers: Boolean = false, page: Int = 1) {
+    private fun loadRankings(shouldResetPlayers: Boolean = false) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    isListLoading = page == 1,
-                    isLoadingMore = page != 1
+                    isListLoading = currentPage == 1,
+                    isLoadingMore = currentPage != 1
                 )
             }
             rankingsDataSource.getRankings(
                 _state.value.selectedBracket,
                 _state.value.selectedRegion,
-                page,
+                currentPage,
                 currentSearch
             ).onSuccess { players ->
                 _state.update { state ->
@@ -112,7 +112,10 @@ class RankingViewModel(
 
     fun onRankingAction(action: RankingAction) {
         when (action) {
-            is RankingAction.LoadMore -> loadRankings(page = ++currentPage)
+            is RankingAction.LoadMore -> {
+                currentPage++
+                loadRankings()
+            }
         }
     }
 
