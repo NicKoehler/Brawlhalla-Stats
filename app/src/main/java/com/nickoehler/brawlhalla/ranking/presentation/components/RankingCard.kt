@@ -91,20 +91,22 @@ fun RankingCard(
                 modifier = Modifier.padding(end = 10.dp),
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    if (ranking != null) {
-                        Text(
-                            ranking.name,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    } else {
-                        Box(
-                            Modifier
-                                .height(10.dp)
-                                .padding(end = 10.dp)
-                                .fillMaxWidth()
-                                .clip(CircleShape)
-                                .shimmerEffect()
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (ranking != null) {
+                            Text(
+                                "${ranking.region.flag} · ${ranking.name}",
+                                fontWeight = FontWeight.Bold,
+                            )
+                        } else {
+                            Box(
+                                Modifier
+                                    .height(10.dp)
+                                    .padding(end = 10.dp)
+                                    .fillMaxWidth()
+                                    .clip(CircleShape)
+                                    .shimmerEffect()
+                            )
+                        }
                     }
                 }
                 if (ranking != null) {
@@ -136,29 +138,30 @@ fun RankingCard(
 
             Row(
                 modifier = Modifier.padding(end = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (ranking != null) {
                     Text(
-                        ranking.region.name.name,
-                        fontSize = 10.sp
+                        "${ranking.winRate.formatted}%",
+                        fontSize = 10.sp,
+                        lineHeight = 1.sp
                     )
                     AnimatedLinearProgressBar(
-                        ranking.wins.value.toFloat() / ranking.games.value.toFloat(),
+                        ranking.winRate.value / 100,
                         "ratio",
                         backgroundColor = LoseColor,
                         foregroundColor = WinColor,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                     )
                 } else {
                     Box(
                         Modifier
-                            .size(height = 10.dp, width = 15.dp)
+                            .size(height = 10.dp, width = 30.dp)
                             .clip(CircleShape)
                             .shimmerEffect()
                     )
-
                     Box(
                         Modifier
                             .size(height = 10.dp, width = 80.dp)

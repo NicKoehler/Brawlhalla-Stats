@@ -8,6 +8,11 @@ data class DisplayableNumber(
     val formatted: String,
 )
 
+data class DisplayableFloat(
+    val value: Float,
+    val formatted: String
+)
+
 fun Int.toDisplayableNumber(): DisplayableNumber {
     val formatter = NumberFormat.getNumberInstance(
         Locale.getDefault()
@@ -18,3 +23,15 @@ fun Int.toDisplayableNumber(): DisplayableNumber {
     )
 }
 
+fun Float.toDisplayableFloat(): DisplayableFloat {
+    val formatter = NumberFormat.getNumberInstance(
+        Locale.getDefault()
+    ).apply {
+        maximumFractionDigits = 2
+        minimumIntegerDigits = 2
+    }
+    return DisplayableFloat(
+        this,
+        formatted = formatter.format(this)
+    )
+}
