@@ -1,6 +1,8 @@
-package com.nickoehler.brawlhalla.legends.presentation.components
+package com.nickoehler.brawlhalla.core.presentation.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -9,7 +11,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -28,20 +29,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
+import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun LegendsTopBar(
-    state: LegendsListState,
-    onLegendAction: (LegendAction) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior,
-    modifier: Modifier = Modifier
+fun CustomTopAppBar(
+    title: String,
+    onAppBarAction: (AppBarAction) -> Unit,
+    state: CustomAppBarState = CustomAppBarState(),
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    actions: @Composable (RowScope.() -> Unit) = {}
 ) {
     AnimatedContent(
-        state.openSearch, label = "topBarAnimation", modifier = modifier
+        state.isOpenSearch, label = "topBarAnimation", modifier = modifier
     ) { open ->
         TopAppBar(
             colors = TopAppBarDefaults.topAppBarColors().copy(
@@ -62,10 +65,8 @@ fun LegendsTopBar(
                         inputField = {
                             SearchBarDefaults.InputField(
                                 query = state.searchQuery,
-                                onQueryChange = { query ->
-                                    onLegendAction(LegendAction.SearchQuery(query))
-                                },
-                                onSearch = {},
+                                onQueryChange = { onAppBarAction(AppBarAction.QueryChange(it)) },
+                                onSearch = { onAppBarAction(AppBarAction.Search) },
                                 expanded = false,
                                 placeholder = { Text(stringResource(R.string.search)) },
                                 leadingIcon = {
@@ -81,19 +82,13 @@ fun LegendsTopBar(
                         onExpandedChange = { }
                     ) { }
                 } else {
-                    Text(stringResource(R.string.legends))
+                    Text(title)
                 }
             },
             actions = {
                 if (open) {
                     IconButton(
-                        onClick = {
-                            onLegendAction(
-                                LegendAction.ToggleSearch(
-                                    false
-                                )
-                            )
-                        }
+                        onClick = { onAppBarAction(AppBarAction.CloseSearch) }
                     ) {
                         Icon(
                             Icons.Default.Close,
@@ -101,36 +96,14 @@ fun LegendsTopBar(
                         )
                     }
                 } else {
-                    IconButton(onClick = {
-                        onLegendAction(
-                            LegendAction.ToggleFilters
-                        )
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.FilterAlt,
-                            contentDescription = null,
-                            tint = if (state.openFilters) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                LocalContentColor.current
-                            }
-                        )
-                    }
+                    actions()
                     IconButton(
-                        onClick = {
-                            onLegendAction(
-                                LegendAction.ToggleSearch(
-                                    true
-                                )
-                            )
-                        },
-
-                        ) {
+                        onClick = { onAppBarAction(AppBarAction.OpenSearch) }
+                    ) {
                         Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = stringResource(R.string.search)
+                            Icons.Default.Search,
+                            null
                         )
-
                     }
                 }
             },
@@ -145,13 +118,16 @@ fun LegendsTopBar(
 private fun LegendsTopBarPreview() {
     BrawlhallaTheme {
         Surface {
-            LegendsTopBar(
-                state = LegendsListState(
+            Column {
 
-                ),
-                {},
-                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-            )
+                CustomTopAppBar(
+                    "Action",
+                    onAppBarAction = {},
+                    actions = {
+                        Icon(Icons.Default.FilterAlt, null)
+                    }
+                )
+            }
         }
     }
 }

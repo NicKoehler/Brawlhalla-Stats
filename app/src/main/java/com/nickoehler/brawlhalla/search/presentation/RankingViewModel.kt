@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
+import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.search.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.search.presentation.models.toRankingUi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +48,9 @@ class RankingViewModel(
                         showLoadMore = currentSearch == null,
                         isListLoading = false,
                         isLoadingMore = false,
-                        searchQuery = if (currentSearch == null) "" else currentSearch!!,
+                        appBarState = _state.value.appBarState.copy(
+                            searchQuery = if (currentSearch == null) "" else currentSearch!!,
+                        ),
                         players = (if (shouldResetPlayers)
                             emptyList()
                         else
@@ -70,36 +74,54 @@ class RankingViewModel(
     private fun updateSearchQuery(query: String) {
         viewModelScope.launch {
             _state.update { state ->
-                state.copy(searchQuery = query)
+                state.copy(
+                    appBarState = CustomAppBarState(
+                        searchQuery = query,
+                        isOpenSearch = true
+                    )
+                )
             }
         }
     }
 
     private fun search() {
         currentPage = 1
-        currentSearch = _state.value.searchQuery
+        currentSearch = _state.value.appBarState.searchQuery
         loadRankings(true)
     }
 
     private fun resetSearch() {
-        if (currentSearch != null) {
-            currentPage = 1
-            currentSearch = null
-            loadRankings(true)
-        } else {
-            _state.update { state ->
-                state.copy(searchQuery = "")
-            }
+        currentPage = 1
+        currentSearch = null
+        loadRankings(true)
+        _state.update { state ->
+            state.copy(
+                appBarState = CustomAppBarState(
+                    isOpenSearch = false,
+                    searchQuery = ""
+                )
+            )
         }
     }
 
+    private fun openSearch() {
+        _state.update { state ->
+            state.copy(appBarState = CustomAppBarState(isOpenSearch = true))
+        }
+    }
 
     fun onRankingAction(action: RankingAction) {
         when (action) {
             is RankingAction.LoadMore -> loadRankings(page = ++currentPage)
-            is RankingAction.SearchQuery -> updateSearchQuery(action.query)
-            is RankingAction.Search -> search()
-            is RankingAction.ResetSearch -> resetSearch()
+        }
+    }
+
+    fun onAppBarAction(action: AppBarAction) {
+        when (action) {
+            is AppBarAction.CloseSearch -> resetSearch()
+            is AppBarAction.OpenSearch -> openSearch()
+            is AppBarAction.QueryChange -> updateSearchQuery(action.query)
+            is AppBarAction.Search -> search()
         }
     }
 }

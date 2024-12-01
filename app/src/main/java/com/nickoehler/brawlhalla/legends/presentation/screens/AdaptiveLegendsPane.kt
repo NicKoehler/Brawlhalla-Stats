@@ -50,6 +50,7 @@ fun AdaptiveLegendsPane(
                 LegendListScreen(
                     state,
                     onWeaponAction = viewModel::onWeaponAction,
+                    onAppBarAction = viewModel::onAppBarAction,
                     onLegendAction = { action ->
                         viewModel.onLegendAction(action)
                         if (action is LegendAction.SelectLegend)
