@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.search.domain.Ranking
 import com.nickoehler.brawlhalla.search.domain.Region
 import com.nickoehler.brawlhalla.search.domain.Tier
@@ -38,7 +40,7 @@ import com.nickoehler.brawlhalla.ui.theme.WinColor
 @Composable
 fun RankingCard(
     modifier: Modifier = Modifier,
-    ranking: RankingUi
+    ranking: RankingUi? = null
 ) {
     CustomCard(
         modifier = modifier,
@@ -52,11 +54,19 @@ fun RankingCard(
                 .background(MaterialTheme.colorScheme.surfaceBright),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                ranking.rank.formatted,
-                fontSize = 10.sp,
-                textAlign = TextAlign.Center
-            )
+            if (ranking != null) {
+                Text(
+                    ranking.rank.formatted,
+                    fontSize = 10.sp,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .shimmerEffect()
+                )
+            }
         }
         Spacer(Modifier.size(10.dp))
 
@@ -67,47 +77,80 @@ fun RankingCard(
 
         ) {
             Row {
-
                 Column(modifier = Modifier.weight(1f)) {
-
-                    Text(
-                        ranking.name,
-                        fontWeight = FontWeight.Bold,
-                    )
-
+                    if (ranking != null) {
+                        Text(
+                            ranking.name,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    } else {
+                        Box(
+                            Modifier
+                                .size(height = 10.dp, width = 80.dp)
+                                .clip(CircleShape)
+                                .shimmerEffect()
+                        )
+                    }
                 }
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .background(ranking.tier.toColor())
-                        .padding(horizontal = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        ranking.rating.formatted,
-                        color = Color.Black.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1
+                if (ranking != null) {
+                    Box(
+                        Modifier
+                            .clip(CircleShape)
+                            .background(ranking.tier.toColor())
+                            .padding(horizontal = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            ranking.rating.formatted,
+                            color = Color.Black.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1
+                        )
+                    }
+                } else {
+                    Box(
+                        Modifier
+                            .size(height = 10.dp, width = 80.dp)
+                            .clip(CircleShape)
+                            .shimmerEffect()
                     )
                 }
+
             }
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    ranking.region.name.name,
-                    fontSize = 10.sp
-                )
-                AnimatedLinearProgressBar(
-                    ranking.wins.value.toFloat() / ranking.games.value.toFloat(),
-                    "ratio",
-                    backgroundColor = LoseColor,
-                    foregroundColor = WinColor,
-                    modifier = Modifier.weight(1f)
-                )
+                if (ranking != null) {
+                    Text(
+                        ranking.region.name.name,
+                        fontSize = 10.sp
+                    )
+                    AnimatedLinearProgressBar(
+                        ranking.wins.value.toFloat() / ranking.games.value.toFloat(),
+                        "ratio",
+                        backgroundColor = LoseColor,
+                        foregroundColor = WinColor,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    Box(
+                        Modifier
+                            .size(height = 10.dp, width = 80.dp)
+                            .clip(CircleShape)
+                            .shimmerEffect()
+                    )
+
+                    Box(
+                        Modifier
+                            .size(height = 10.dp, width = 80.dp)
+                            .clip(CircleShape)
+                            .weight(1f)
+                            .shimmerEffect()
+                    )
+                }
             }
         }
         Spacer(Modifier.size(10.dp))
@@ -120,10 +163,16 @@ fun RankingCard(
 private fun RankingCardPreview() {
     BrawlhallaTheme {
         Surface {
-            RankingCard(
-                modifier = Modifier.fillMaxWidth(),
-                ranking = rankingSample.toRankingUi()
-            )
+            Column {
+                RankingCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    ranking = rankingSample.toRankingUi()
+                )
+
+                RankingCard(
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }

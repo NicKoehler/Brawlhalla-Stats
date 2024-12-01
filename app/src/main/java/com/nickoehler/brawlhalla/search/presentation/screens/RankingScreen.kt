@@ -3,11 +3,9 @@ package com.nickoehler.brawlhalla.search.presentation.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -18,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -26,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
-import com.nickoehler.brawlhalla.core.presentation.components.ShimmerEffect
 import com.nickoehler.brawlhalla.search.presentation.RankingAction
 import com.nickoehler.brawlhalla.search.presentation.RankingState
 import com.nickoehler.brawlhalla.search.presentation.components.RankingCard
@@ -46,11 +42,6 @@ fun RankingScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-//            RankingTopAppBar(
-//                state = state,
-//                onRankingAction = onRankingAction,
-//                scrollBehavior = scrollBehavior,
-//            )
             CustomTopAppBar(
                 stringResource(R.string.rankings),
                 state = state.appBarState,
@@ -67,12 +58,11 @@ fun RankingScreen(
                 .padding(it)
         ) {
             if (state.isListLoading) {
-                items(50, key = { key -> key }) {
-                    ShimmerEffect(
+                items(50) {
+                    RankingCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(75.dp)
-                            .clip(CircleShape)
+                            .animateItem()
                     )
                 }
             } else if (state.players.isNotEmpty()) {
@@ -86,11 +76,10 @@ fun RankingScreen(
                 }
                 item {
                     if (state.isLoadingMore) {
-                        ShimmerEffect(
+                        RankingCard(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(75.dp)
-                                .clip(CircleShape)
+                                .animateItem()
                         )
                     }
                 }
