@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,45 +45,42 @@ fun LegendListScreen(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        if (state.isListLoading) {
-            CircularProgressIndicator()
-        } else {
-            val scrollBehavior =
-                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-            Scaffold(
-                topBar = {
-                    CustomTopAppBar(
-                        title = stringResource(R.string.legends),
-                        state = state.appBarState,
-                        onAppBarAction = onAppBarAction,
-                        scrollBehavior = scrollBehavior,
-                    ) {
-                        IconButton(
-                            onClick = { onLegendAction(LegendAction.ToggleFilters) },
-                            colors = if (state.openFilters) {
-                                IconButtonDefaults.iconButtonColors().copy(
-                                    contentColor = MaterialTheme.colorScheme.primary
-                                )
-                            } else {
-                                IconButtonDefaults.iconButtonColors()
-                            }
-                        ) {
-                            Icon(
-                                Icons.Default.FilterAlt,
-                                null,
+
+        val scrollBehavior =
+            TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+        Scaffold(
+            topBar = {
+                CustomTopAppBar(
+                    title = stringResource(R.string.legends),
+                    state = state.appBarState,
+                    onAppBarAction = onAppBarAction,
+                    scrollBehavior = scrollBehavior,
+                ) {
+                    IconButton(
+                        onClick = { onLegendAction(LegendAction.ToggleFilters) },
+                        colors = if (state.openFilters) {
+                            IconButtonDefaults.iconButtonColors().copy(
+                                contentColor = MaterialTheme.colorScheme.primary
                             )
+                        } else {
+                            IconButtonDefaults.iconButtonColors()
                         }
+                    ) {
+                        Icon(
+                            Icons.Default.FilterAlt,
+                            null,
+                        )
                     }
-                },
-                modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-            ) {
-                LazyLegendsCards(
-                    state,
-                    onLegendAction,
-                    onWeaponAction,
-                    modifier = modifier.padding(it),
-                )
-            }
+                }
+            },
+            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) {
+            LazyLegendsCards(
+                state,
+                onLegendAction,
+                onWeaponAction,
+                modifier = modifier.padding(it),
+            )
         }
     }
 }
