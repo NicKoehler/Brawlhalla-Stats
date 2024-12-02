@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -22,10 +27,19 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.components.CustomDropdownMenu
 import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
+import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingState
 import com.nickoehler.brawlhalla.ranking.presentation.components.RankingCard
+import com.nickoehler.brawlhalla.ranking.presentation.components.rankingSoloSample
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRegionUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,24 +62,68 @@ fun RankingListScreen(
                 onAppBarAction = onAppBarAction,
             )
         }
-    ) {
+    ) { padding ->
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
         ) {
             if (state.isListLoading) {
                 items(50) {
                     RankingCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .animateItem()
+                            .animateItem(),
+                        selectedBracket = state.selectedBracket
                     )
                 }
             } else if (state.players.isNotEmpty()) {
-                items(state.players, { ranking -> ranking.rank.value }) { ranking ->
+
+                item {
+                    var isRegionSelectorOpen by remember {
+                        mutableStateOf(false)
+                    }
+                    var isBracketSelectorOpen by remember {
+                        mutableStateOf(false)
+                    }
+                    Row(
+                        modifier.fillParentMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        CustomDropdownMenu(
+                            stringResource(R.string.region),
+                            state.selectedRegion,
+                            items = Region.entries.filter { it != Region.UNKNOWN }
+                                .map { it.toRegionUi() },
+                            onSelect = { selection ->
+                                onRankingAction(
+                                    RankingAction.SelectRegion(
+                                        selection
+                                    )
+                                )
+                            }
+                        )
+                        CustomDropdownMenu(
+                            stringResource(R.string.bracket),
+                            state.selectedBracket,
+                            items = Bracket.entries.map { it.toBracketUi() },
+                            onSelect = { selection ->
+                                onRankingAction(
+                                    RankingAction.SelectBracket(selection)
+                                )
+                            }
+                        )
+                    }
+                }
+
+                items(state.players, { ranking ->
+                    when (ranking) {
+                        is RankingUi.RankingSoloUi -> ranking.rank.value
+                        is RankingUi.RankingTeamUi -> ranking.rank.value
+                    }
+                }) { ranking ->
                     RankingCard(
                         ranking = ranking,
                         modifier = Modifier
@@ -107,7 +165,11 @@ private fun SearchScreenPreview() {
     BrawlhallaTheme {
         Surface {
             RankingListScreen(
-                state = RankingState(),
+                state = RankingState(
+                    players = (1..50).map {
+                        rankingSoloSample.toRankingSoloUi().copy(rank = it.toDisplayableNumber())
+                    }
+                ),
             )
         }
     }

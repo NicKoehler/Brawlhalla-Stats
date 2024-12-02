@@ -5,12 +5,12 @@ import com.nickoehler.brawlhalla.ranking.domain.Region
 fun Region.toUrlString(): String {
     return when (this) {
         Region.ALL -> "all"
-        Region.US_E -> "us_e"
+        Region.US_E -> "us-e"
         Region.EU -> "eu"
         Region.SEA -> "sea"
         Region.BRZ -> "brz"
         Region.AUS -> "aus"
-        Region.US_W -> "us_w"
+        Region.US_W -> "us-w"
         Region.JPN -> "jpn"
         Region.SA -> "sa"
         Region.ME -> "me"

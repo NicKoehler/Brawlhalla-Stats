@@ -4,9 +4,10 @@ import com.nickoehler.brawlhalla.core.data.networking.safeCall
 import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.core.domain.util.Result
 import com.nickoehler.brawlhalla.core.domain.util.map
-import com.nickoehler.brawlhalla.ranking.data.dto.RankingsDto
+import com.nickoehler.brawlhalla.ranking.data.dto.RankingSoloDto
+import com.nickoehler.brawlhalla.ranking.data.dto.RankingTeamDto
 import com.nickoehler.brawlhalla.ranking.data.dto.StatDetailDto
-import com.nickoehler.brawlhalla.ranking.data.mappers.toRankings
+import com.nickoehler.brawlhalla.ranking.data.mappers.toRanking
 import com.nickoehler.brawlhalla.ranking.data.mappers.toStatDetail
 import com.nickoehler.brawlhalla.ranking.data.util.constructRankingsUrl
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
@@ -27,17 +28,34 @@ class RemoteRankingDataSource(
         page: Int,
         name: String?
     ): Result<List<Ranking>, NetworkError> {
-        return safeCall<List<RankingsDto>> {
-            httpClient.get(
-                constructRankingsUrl(bracket, regions, page)
-            ) {
-                if (name != null) {
-                    parameter("name", name)
+
+        when (bracket) {
+            Bracket.ONE_VS_ONE, Bracket.ROTATING -> return safeCall<List<RankingSoloDto>> {
+                httpClient.get(
+                    constructRankingsUrl(bracket, regions, page)
+                ) {
+                    if (name != null) {
+                        parameter("name", name)
+                    }
+                }
+            }.map { response ->
+                response.map {
+                    it.toRanking()
                 }
             }
-        }.map { response ->
-            response.map {
-                it.toRankings()
+
+            Bracket.TWO_VS_TWO -> return safeCall<List<RankingTeamDto>> {
+                httpClient.get(
+                    constructRankingsUrl(bracket, regions, page)
+                ) {
+                    if (name != null) {
+                        parameter("name", name)
+                    }
+                }
+            }.map { response ->
+                response.map {
+                    it.toRanking()
+                }
             }
         }
     }

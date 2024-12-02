@@ -3,13 +3,17 @@ package com.nickoehler.brawlhalla.ranking.presentation.models
 import com.nickoehler.brawlhalla.ranking.domain.Region
 
 data class RegionUi(
-    val name: Region,
+    val value: Region,
     val flag: String
-)
+) {
+    override fun toString(): String {
+        return this.flag
+    }
+}
 
 fun Region.toRegionUi(): RegionUi {
     return RegionUi(
-        name = this,
+        value = this,
         flag = when (this) {
             Region.US_E -> "🇺🇸"
             Region.EU -> "🇪🇺"
@@ -20,6 +24,7 @@ fun Region.toRegionUi(): RegionUi {
             Region.JPN -> "🇯🇵"
             Region.SA -> "🇿🇦"
             Region.ME -> "🇰🇼"
+            Region.ALL -> "🌍"
             else -> "?"
         }
     )

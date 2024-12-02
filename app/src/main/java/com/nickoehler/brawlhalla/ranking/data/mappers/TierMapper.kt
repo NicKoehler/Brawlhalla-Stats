@@ -3,7 +3,7 @@ package com.nickoehler.brawlhalla.ranking.data.mappers
 import com.nickoehler.brawlhalla.ranking.domain.Tier
 
 fun String.toTier(): Tier {
-    return when (this) {
+    return when (this.split(" ").first()) {
         "Valhallan" -> Tier.VALHALLAN
         "Diamond" -> Tier.DIAMOND
         "Platinum" -> Tier.PLATINUM

@@ -3,21 +3,8 @@ package com.nickoehler.brawlhalla.ranking.data.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-//val rank: Int,
-//val name: String,
-//val brawlhallaId: Int,
-//val bestLegend: Int,
-//val bestLegendGames: Int,
-//val bestLegendWins: Int,
-//val rating: Int,
-//val tier: String,
-//val games: Int,
-//val wins: Int,
-//val region: String,
-//val peakRating: Int,
-
 @Serializable
-data class RankingsDto(
+data class RankingSoloDto(
     @SerialName("rank")
     val rank: Int,
 
@@ -28,13 +15,13 @@ data class RankingsDto(
     val brawlhallaId: Int,
 
     @SerialName("best_legend")
-    val bestLegend: Int,
+    val bestLegend: Int? = null,
 
     @SerialName("best_legend_games")
-    val bestLegendGames: Int,
+    val bestLegendGames: Int? = null,
 
     @SerialName("best_legend_wins")
-    val bestLegendWins: Int,
+    val bestLegendWins: Int? = null,
 
     @SerialName("rating")
     val rating: Int,
@@ -52,6 +39,5 @@ data class RankingsDto(
     val region: String,
 
     @SerialName("peak_rating")
-    val peakRating: Int,
-
-    )
+    val peakRating: Int
+)

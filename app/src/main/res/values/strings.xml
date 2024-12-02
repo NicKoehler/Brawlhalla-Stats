@@ -26,4 +26,7 @@
     <string name="tier_tin">Tin</string>
     <string name="tier_unknown">Unknown</string>
     <string name="rankings">Rankings</string>
+    <string name="player">Player</string>
+    <string name="bracket">Bracket</string>
+    <string name="region">Region</string>
 </resources>
