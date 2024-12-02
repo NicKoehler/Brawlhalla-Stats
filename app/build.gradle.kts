@@ -91,4 +91,5 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.material.icons.extended)
+    implementation(libs.androidx.core.splashscreen)
 }
