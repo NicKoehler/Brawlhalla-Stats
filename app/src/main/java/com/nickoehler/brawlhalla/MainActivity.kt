@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
@@ -27,12 +28,18 @@ import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
+import com.nickoehler.brawlhalla.ui.splashScreenAnimation
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setOnExitAnimationListener {
+                splashScreenAnimation(it)
+            }
+        }
         enableEdgeToEdge()
         setContent {
 
@@ -41,7 +48,6 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry = navController.currentBackStackEntryAsState().value
             val currentDestination = navBackStackEntry?.destination
 
-            enableEdgeToEdge()
             BrawlhallaTheme {
                 NavigationSuiteScaffold(
                     modifier = Modifier.imePadding(),
