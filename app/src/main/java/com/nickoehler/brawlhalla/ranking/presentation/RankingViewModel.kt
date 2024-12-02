@@ -8,6 +8,8 @@ import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
+import com.nickoehler.brawlhalla.ranking.presentation.models.BracketUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.RegionUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
@@ -50,14 +52,14 @@ class RankingViewModel(
                 )
             }
             rankingsDataSource.getRankings(
-                _state.value.selectedBracket,
-                _state.value.selectedRegion,
+                _state.value.selectedBracket.value,
+                _state.value.selectedRegion.value,
                 currentPage,
                 currentSearch
             ).onSuccess { players ->
                 _state.update { state ->
                     state.copy(
-                        shouldLoadMore = currentSearch == null,
+                        shouldLoadMore = currentSearch == null && players.isNotEmpty(),
                         isListLoading = false,
                         isLoadingMore = false,
                         appBarState = _state.value.appBarState.copy(
@@ -114,6 +116,26 @@ class RankingViewModel(
         }
     }
 
+    private fun selectRegion(region: RegionUi) {
+        if (region == _state.value.selectedRegion) {
+            return
+        }
+        _state.update { state ->
+            state.copy(selectedRegion = region)
+        }
+        resetSearch()
+    }
+
+    private fun selectBracket(bracket: BracketUi) {
+        if (bracket == _state.value.selectedBracket) {
+            return
+        }
+        _state.update { state ->
+            state.copy(selectedBracket = bracket)
+        }
+        resetSearch()
+    }
+
     private fun updateSearchQuery(query: String) {
         viewModelScope.launch {
             _state.update { state ->
@@ -164,6 +186,8 @@ class RankingViewModel(
             }
 
             is RankingAction.SelectRanking -> selectRanking(action.id)
+            is RankingAction.SelectBracket -> selectBracket(action.bracket)
+            is RankingAction.SelectRegion -> selectRegion(action.region)
         }
     }
 

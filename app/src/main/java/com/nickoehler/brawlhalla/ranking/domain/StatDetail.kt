@@ -4,7 +4,7 @@ data class StatDetail(
 
     val brawlhallaId: Int,
     val name: String,
-    val xp: Double,
+    val xp: Int,
     val level: Int,
     val xpPercentage: Float,
     val games: Int,

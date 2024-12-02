@@ -11,7 +11,7 @@ data class StatDetailUi(
 
     val brawlhallaId: Int,
     val name: String,
-    val xp: Double,
+    val xp: DisplayableNumber,
     val level: Int,
     val xpPercentage: DisplayableFloat,
     val games: DisplayableNumber,
@@ -35,7 +35,7 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
     return StatDetailUi(
         brawlhallaId,
         name.toFixedUtf8(),
-        xp,
+        xp.toDisplayableNumber(),
         level,
         xpPercentage.toDisplayableFloat(),
         games.toDisplayableNumber(),
