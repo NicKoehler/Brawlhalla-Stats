@@ -85,7 +85,7 @@ fun LegendStatItem(
             )
             Box(
                 Modifier
-                    .size(40.dp)
+                    .size(30.dp)
                     .clip(CircleShape)
                     .shimmerEffect()
             )

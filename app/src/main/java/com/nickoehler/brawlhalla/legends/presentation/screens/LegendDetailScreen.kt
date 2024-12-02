@@ -106,7 +106,7 @@ fun LegendDetailScreen(
             if (state.isDetailLoading) {
                 Box(
                     Modifier
-                        .size(height = 40.dp, width = 120.dp)
+                        .size(height = 50.dp, width = 120.dp)
                         .clip(CircleShape)
                         .shimmerEffect()
                 )
@@ -119,7 +119,7 @@ fun LegendDetailScreen(
                 )
                 Box(
                     Modifier
-                        .size(250.dp)
+                        .height(250.dp)
                         .clip(RoundedCornerShape(40.dp))
                         .fillMaxSize()
                         .shimmerEffect()
@@ -204,7 +204,7 @@ private fun LegendDetailScreenLoadingPreview() {
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 LegendDetailScreen(
-                    state = LegendsListState(),
+                    state = LegendsListState(isDetailLoading = true),
                     {},
                     {}
                 )
