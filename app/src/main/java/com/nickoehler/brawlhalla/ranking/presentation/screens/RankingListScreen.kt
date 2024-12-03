@@ -34,8 +34,8 @@ import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingState
-import com.nickoehler.brawlhalla.ranking.presentation.components.RankingCard
-import com.nickoehler.brawlhalla.ranking.presentation.components.rankingSoloSample
+import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankingCard
+import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.rankingSoloSample
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
