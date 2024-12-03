@@ -15,10 +15,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -70,6 +66,38 @@ fun RankingListScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+
+            item {
+                Row(
+                    modifier.fillParentMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    CustomDropdownMenu(
+                        stringResource(R.string.region),
+                        state.selectedRegion,
+                        items = Region.entries.filter { it != Region.UNKNOWN }
+                            .map { it.toRegionUi() },
+                        onSelect = { selection ->
+                            onRankingAction(
+                                RankingAction.SelectRegion(
+                                    selection
+                                )
+                            )
+                        }
+                    )
+                    CustomDropdownMenu(
+                        stringResource(R.string.bracket),
+                        state.selectedBracket,
+                        items = Bracket.entries.map { it.toBracketUi() },
+                        onSelect = { selection ->
+                            onRankingAction(
+                                RankingAction.SelectBracket(selection)
+                            )
+                        }
+                    )
+                }
+            }
+
             if (state.isListLoading) {
                 items(50) {
                     RankingCard(
@@ -80,44 +108,6 @@ fun RankingListScreen(
                     )
                 }
             } else if (state.players.isNotEmpty()) {
-
-                item {
-                    var isRegionSelectorOpen by remember {
-                        mutableStateOf(false)
-                    }
-                    var isBracketSelectorOpen by remember {
-                        mutableStateOf(false)
-                    }
-                    Row(
-                        modifier.fillParentMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        CustomDropdownMenu(
-                            stringResource(R.string.region),
-                            state.selectedRegion,
-                            items = Region.entries.filter { it != Region.UNKNOWN }
-                                .map { it.toRegionUi() },
-                            onSelect = { selection ->
-                                onRankingAction(
-                                    RankingAction.SelectRegion(
-                                        selection
-                                    )
-                                )
-                            }
-                        )
-                        CustomDropdownMenu(
-                            stringResource(R.string.bracket),
-                            state.selectedBracket,
-                            items = Bracket.entries.map { it.toBracketUi() },
-                            onSelect = { selection ->
-                                onRankingAction(
-                                    RankingAction.SelectBracket(selection)
-                                )
-                            }
-                        )
-                    }
-                }
-
                 items(state.players, { ranking ->
                     when (ranking) {
                         is RankingUi.RankingSoloUi -> ranking.rank.value
