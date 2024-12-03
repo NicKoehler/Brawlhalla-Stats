@@ -29,4 +29,7 @@
     <string name="player">Player</string>
     <string name="bracket">Bracket</string>
     <string name="region">Region</string>
+    <string name="seasonal">Seasonal</string>
+    <string name="region_all">All</string>
+    <string name="region_unknown">Unknown</string>
 </resources>
