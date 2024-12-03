@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.ranking.presentation.components
+package com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
