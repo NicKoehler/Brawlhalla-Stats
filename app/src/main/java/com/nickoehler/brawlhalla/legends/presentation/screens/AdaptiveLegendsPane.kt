@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -9,6 +10,7 @@ import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneSca
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,8 +19,10 @@ import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
+import com.nickoehler.brawlhalla.legends.presentation.LegendEvent
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -28,17 +32,28 @@ fun AdaptiveLegendsPane(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
 
-    ObserveAsEvents(viewModel.events) { event ->
+    val lazyListState = rememberLazyListState()
+
+    ObserveAsEvents(viewModel.errorEvents) { event ->
         if (event is ErrorEvent.Error) {
             Toast.makeText(
                 context,
                 event.error.toString(context),
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    ObserveAsEvents(viewModel.legendsEvents) { event ->
+        if (event is LegendEvent.ScrollToTop) {
+            coroutineScope.launch {
+                lazyListState.animateScrollToItem(0)
+            }
         }
     }
 
@@ -49,6 +64,7 @@ fun AdaptiveLegendsPane(
             AnimatedPane {
                 LegendListScreen(
                     state,
+                    lazyListState = lazyListState,
                     onWeaponAction = viewModel::onWeaponAction,
                     onAppBarAction = viewModel::onAppBarAction,
                     onLegendAction = { action ->

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
@@ -38,6 +39,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LegendListScreen(
     state: LegendsListState,
+    lazyListState: LazyListState = rememberLazyListState(),
     onLegendAction: (LegendAction) -> Unit,
     onWeaponAction: (WeaponAction) -> Unit,
     onAppBarAction: (AppBarAction) -> Unit,
@@ -50,7 +52,6 @@ fun LegendListScreen(
 
         val scrollBehavior =
             TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-        val lazyColumnState = rememberLazyListState()
 
         Scaffold(
             topBar = {
@@ -78,13 +79,13 @@ fun LegendListScreen(
                 }
             },
             floatingActionButton = {
-                CustomFloatingActionButton(lazyColumnState)
+                CustomFloatingActionButton(lazyListState)
             },
             modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             LazyLegendsCards(
                 state,
-                lazyColumnState,
+                lazyListState,
                 onLegendAction,
                 onWeaponAction,
                 modifier = modifier.padding(it),

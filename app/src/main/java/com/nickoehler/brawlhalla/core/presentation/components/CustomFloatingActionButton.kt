@@ -7,7 +7,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -30,7 +30,7 @@ fun CustomFloatingActionButton(
                 scrollState.animateScrollToItem(0)
             }
         }) {
-            Icon(Icons.Default.ArrowDropUp, null)
+            Icon(Icons.Default.ArrowUpward, null)
         }
     }
 }
