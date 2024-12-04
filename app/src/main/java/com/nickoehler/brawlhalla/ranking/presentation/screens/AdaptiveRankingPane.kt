@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
+import com.nickoehler.brawlhalla.ranking.presentation.RankingEvent
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
@@ -28,16 +29,22 @@ fun AdaptiveRankingPane(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
 
-    ObserveAsEvents(viewModel.events) { event ->
+    ObserveAsEvents(viewModel.errorEvents) { event ->
         if (event is ErrorEvent.Error) {
             Toast.makeText(
                 context,
                 event.error.toString(context),
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    ObserveAsEvents(viewModel.rankingEvents) { event ->
+        when (event) {
+            RankingEvent.NavigateToDetail -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+            RankingEvent.NavigateToList -> navigator.navigateTo(ListDetailPaneScaffoldRole.List)
         }
     }
 
@@ -51,7 +58,6 @@ fun AdaptiveRankingPane(
                     onAppBarAction = viewModel::onAppBarAction,
                     onRankingAction = { action ->
                         viewModel.onRankingAction(action)
-                        println(action)
                         if (action is RankingAction.SelectRanking)
                             navigator.navigateTo(
                                 ListDetailPaneScaffoldRole.Detail
@@ -65,8 +71,8 @@ fun AdaptiveRankingPane(
                 Box(contentAlignment = Alignment.Center) {
                     RankingDetailScreen(
                         state,
-
-                        )
+                        viewModel::onRankingEvent
+                    )
 //                        state,
 //                        onWeaponAction = { action ->
 //                            viewModel.onWeaponAction(action)

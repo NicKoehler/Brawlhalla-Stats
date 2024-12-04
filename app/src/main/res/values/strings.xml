@@ -32,4 +32,5 @@
     <string name="seasonal">Seasonal</string>
     <string name="region_all">All</string>
     <string name="region_unknown">Unknown</string>
+    <string name="search_name_brawlhalla_id">Search a name or Brawlhalla ID</string>
 </resources>

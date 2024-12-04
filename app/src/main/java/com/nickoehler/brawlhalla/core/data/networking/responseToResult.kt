@@ -2,16 +2,16 @@ package com.nickoehler.brawlhalla.core.data.networking
 
 import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.core.domain.util.Result
-import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import io.ktor.serialization.JsonConvertException
 
 suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<T, NetworkError> {
     return when (response.status.value) {
         in 200..299 -> {
             try {
                 Result.Success(response.body<T>())
-            } catch (e: NoTransformationFoundException) {
+            } catch (e: JsonConvertException) {
                 Result.Error(NetworkError.SERIALIZATION)
             }
         }
