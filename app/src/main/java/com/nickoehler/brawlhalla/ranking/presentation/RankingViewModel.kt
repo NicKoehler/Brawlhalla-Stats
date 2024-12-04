@@ -39,8 +39,11 @@ class RankingViewModel(
         RankingState()
     )
 
-    private val _events = Channel<ErrorEvent>()
-    val events = _events.receiveAsFlow()
+    private val _errorEvents = Channel<ErrorEvent>()
+    val errorEvents = _errorEvents.receiveAsFlow()
+
+    private val _rankingEvents = Channel<RankingEvent>()
+    val rankingEvents = _rankingEvents.receiveAsFlow()
 
 
     private fun loadRankings(shouldResetPlayers: Boolean = false) {
@@ -81,7 +84,7 @@ class RankingViewModel(
                         isLoadingMore = false
                     )
                 }
-                _events.send(ErrorEvent.Error(error))
+                _errorEvents.send(ErrorEvent.Error(error))
             }
         }
     }
@@ -94,7 +97,7 @@ class RankingViewModel(
         }
 
         _state.update { state ->
-            state.copy(isDetailLoading = true)
+            state.copy(isDetailLoading = true, selectedRanking = null)
         }
 
         viewModelScope.launch {
@@ -111,7 +114,7 @@ class RankingViewModel(
                         isDetailLoading = false,
                     )
                 }
-                _events.send(ErrorEvent.Error(error))
+                _errorEvents.send(ErrorEvent.Error(error))
             }
         }
     }
@@ -150,9 +153,23 @@ class RankingViewModel(
     }
 
     private fun search() {
+        val currentQuery = _state.value.appBarState.searchQuery
         currentPage = 1
-        currentSearch = _state.value.appBarState.searchQuery
-        loadRankings(true)
+        currentSearch = currentQuery
+
+        if (currentQuery.all { it.isDigit() }) {
+            try {
+                val id = currentQuery.toInt()
+                selectRanking(id)
+                viewModelScope.launch {
+                    _rankingEvents.send(RankingEvent.NavigateToDetail)
+                }
+            } catch (e: NumberFormatException) {
+                loadRankings(true)
+            }
+        } else {
+            loadRankings(true)
+        }
     }
 
     private fun resetSearch() {
@@ -199,4 +216,11 @@ class RankingViewModel(
             is AppBarAction.Search -> search()
         }
     }
+
+    fun onRankingEvent(event: RankingEvent) {
+        viewModelScope.launch {
+            _rankingEvents.send(event)
+        }
+    }
+
 }

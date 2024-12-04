@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.ranking.domain.StatClan
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
+import com.nickoehler.brawlhalla.ranking.presentation.RankingEvent
 import com.nickoehler.brawlhalla.ranking.presentation.RankingState
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -22,6 +24,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun RankingDetailScreen(
     state: RankingState,
+    onRankingEvent: (RankingEvent) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val player = state.selectedRanking
@@ -40,6 +43,10 @@ fun RankingDetailScreen(
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )
+            }
+        } else {
+            LaunchedEffect(true) {
+                onRankingEvent(RankingEvent.NavigateToList)
             }
         }
     }

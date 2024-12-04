@@ -64,10 +64,11 @@ fun RankingListScreen(
         topBar = {
             CustomTopAppBar(
                 stringResource(R.string.rankings),
+                placeholder = stringResource(R.string.search_name_brawlhalla_id),
                 state = state.appBarState,
                 scrollBehavior = scrollBehavior,
                 onAppBarAction = onAppBarAction,
-                showSearch = state.selectedBracket != Bracket.TWO_VS_TWO
+                showSearch = state.selectedBracket != Bracket.TWO_VS_TWO,
             )
         }
     ) { padding ->

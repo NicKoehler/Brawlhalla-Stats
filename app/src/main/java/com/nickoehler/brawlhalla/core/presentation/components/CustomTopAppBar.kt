@@ -40,6 +40,7 @@ fun CustomTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     showSearch: Boolean = true,
+    placeholder: String = stringResource(R.string.search),
     onAppBarAction: (AppBarAction) -> Unit = {},
     state: CustomAppBarState = CustomAppBarState(),
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
@@ -71,7 +72,7 @@ fun CustomTopAppBar(
                                 onQueryChange = { onAppBarAction(AppBarAction.QueryChange(it)) },
                                 onSearch = { onAppBarAction(AppBarAction.Search) },
                                 expanded = false,
-                                placeholder = { Text(stringResource(R.string.search)) },
+                                placeholder = { Text(placeholder) },
                                 leadingIcon = {
                                     Icon(
                                         Icons.Default.Search,
