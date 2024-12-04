@@ -37,8 +37,11 @@ class LegendsViewModel(
             SharingStarted.WhileSubscribed(5000L),
             LegendsListState()
         )
-    private val _events = Channel<ErrorEvent>()
-    val events = _events.receiveAsFlow()
+    private val _errorEvents = Channel<ErrorEvent>()
+    val errorEvents = _errorEvents.receiveAsFlow()
+
+    private val _legendsEvents = Channel<LegendEvent>()
+    val legendsEvents = _legendsEvents.receiveAsFlow()
 
     private fun loadLegends() {
         viewModelScope.launch {
@@ -57,7 +60,7 @@ class LegendsViewModel(
                 }
             }.onError { error ->
                 _state.update { it.copy(isListLoading = false) }
-                _events.send(ErrorEvent.Error(error))
+                _errorEvents.send(ErrorEvent.Error(error))
             }
         }
     }
@@ -75,7 +78,7 @@ class LegendsViewModel(
                     }
                 }.onError { error ->
                     _state.update { it.copy(isDetailLoading = false) }
-                    _events.send(ErrorEvent.Error(error))
+                    _errorEvents.send(ErrorEvent.Error(error))
                 }
             }
         }
@@ -272,7 +275,13 @@ class LegendsViewModel(
 
     fun onWeaponAction(action: WeaponAction) {
         when (action) {
-            is WeaponAction.Click -> onWeaponSelect(action.weapon, false)
+            is WeaponAction.Click -> {
+                onWeaponSelect(action.weapon, false)
+                viewModelScope.launch {
+                    _legendsEvents.send(LegendEvent.ScrollToTop)
+                }
+            }
+
             is WeaponAction.Select -> onWeaponSelect(action.weapon)
         }
     }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,8 @@ fun StatFilter(
     onLegendAction: (LegendAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     CustomCard(modifier = modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -46,7 +49,7 @@ fun StatFilter(
                 LegendStat.entries.forEach { stat ->
                     Icon(
                         stat.toIcon(),
-                        stat.toLocalizedString(),
+                        stat.toLocalizedString(context),
                         tint = if (stat == currentStatType) {
                             stat.toColor()
                         } else {
@@ -55,7 +58,7 @@ fun StatFilter(
                         modifier = modifier
                             .size(50.dp)
                             .clip(RoundedCornerShape(38f))
-                            .clickable(onClickLabel = stat.toLocalizedString()) {
+                            .clickable(onClickLabel = stat.toLocalizedString(context)) {
                                 onLegendAction(LegendAction.SelectStat(stat, currentStatValue))
                             }
                     )
@@ -76,7 +79,7 @@ fun StatFilter(
                 steps = 5
             )
             Text(
-                "${currentStatType.toLocalizedString()} $currentStatValue",
+                "${currentStatType.toLocalizedString(context)} $currentStatValue",
                 textAlign = TextAlign.Center
             )
         }

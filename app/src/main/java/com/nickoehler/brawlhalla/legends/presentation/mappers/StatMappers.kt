@@ -1,10 +1,10 @@
 package com.nickoehler.brawlhalla.legends.presentation.mappers
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.ui.theme.DefenseColor
@@ -33,13 +33,12 @@ fun LegendStat.toColor(): Color {
     }
 }
 
-@Composable
-fun LegendStat.toLocalizedString(): String {
+fun LegendStat.toLocalizedString(context: Context): String {
     return when (this) {
-        LegendStat.STRENGTH -> stringResource(R.string.strength)
-        LegendStat.DEFENSE -> stringResource(R.string.defense)
-        LegendStat.DEXTERITY -> stringResource(R.string.dexterity)
-        LegendStat.SPEED -> stringResource(R.string.speed)
+        LegendStat.STRENGTH -> context.getString(R.string.strength)
+        LegendStat.DEFENSE -> context.getString(R.string.defense)
+        LegendStat.DEXTERITY -> context.getString(R.string.dexterity)
+        LegendStat.SPEED -> context.getString(R.string.speed)
     }
 }
 

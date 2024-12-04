@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
@@ -54,7 +55,7 @@ fun LegendStatItem(
         Spacer(Modifier.size(5.dp))
         Icon(
             stat.toIcon(),
-            stat.toLocalizedString(),
+            stat.toLocalizedString(LocalContext.current),
             tint = stat.toColor(),
             modifier = modifier.size(height)
         )

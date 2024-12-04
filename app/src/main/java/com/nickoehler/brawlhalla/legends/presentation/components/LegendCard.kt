@@ -107,10 +107,18 @@ fun LegendCard(
         Column(verticalArrangement = Arrangement.SpaceAround) {
             WeaponButton(
                 legend?.weaponOne,
-                { if (legend != null) onWeaponAction(WeaponAction.Click(legend.weaponOne)) })
+                {
+                    if (legend != null) {
+                        onWeaponAction(WeaponAction.Click(legend.weaponOne))
+                    }
+                })
             Spacer(modifier = Modifier.size(10.dp))
             WeaponButton(legend?.weaponTwo,
-                { if (legend != null) onWeaponAction(WeaponAction.Click(legend.weaponTwo)) })
+                {
+                    if (legend != null) {
+                        onWeaponAction(WeaponAction.Click(legend.weaponTwo))
+                    }
+                })
         }
     }
 }
@@ -123,7 +131,7 @@ private fun LegendCardPreview() {
 
             Column {
 
-                LegendCard(legend = legendSample.toLegendUi(), {}, {})
+                LegendCard(legend = legendSample.toLegendUi())
                 LegendCard()
             }
         }
