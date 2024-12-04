@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -29,12 +31,14 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LazyLegendsCards(
     state: LegendsListState,
-    onLegendAction: (LegendAction) -> Unit,
-    onWeaponAction: (WeaponAction) -> Unit,
+    lazyColumnState: LazyListState = rememberLazyListState(),
+    onLegendAction: (LegendAction) -> Unit = {},
+    onWeaponAction: (WeaponAction) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
+        state = lazyColumnState,
         contentPadding = PaddingValues(bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -121,7 +125,8 @@ private fun LazyLegendsCardsPreview() {
                     openFilters = true,
                     legends = listOf(legendSample.toLegendUi()),
                     weapons = listOf("sword".toWeaponUi()),
-                ), {}, {})
+                )
+            )
         }
     }
 }
