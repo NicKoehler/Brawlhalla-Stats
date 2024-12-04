@@ -7,7 +7,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.Localizable
 
 data class RegionUi(
     val value: Region,
-    val flag: String
+    val flag: String,
 ) : Localizable {
     override fun toString(context: Context): String {
         return "${this.flag} · ${

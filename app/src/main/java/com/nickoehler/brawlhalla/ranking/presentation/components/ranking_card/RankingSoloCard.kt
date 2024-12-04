@@ -57,9 +57,12 @@ fun RankingSoloCard(
 private fun RankingSoloCardPreview() {
     BrawlhallaTheme {
         Surface {
-            RankingSoloCard(
-                rankingSoloSample.toRankingSoloUi()
-            )
+            Column {
+                RankingSoloCard(
+                    rankingSoloSample.toRankingSoloUi()
+                )
+                RankingSoloCard()
+            }
         }
     }
 }

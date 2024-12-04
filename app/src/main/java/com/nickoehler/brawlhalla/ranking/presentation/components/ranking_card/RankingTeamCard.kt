@@ -48,7 +48,7 @@ fun RankingTeamCard(
         onClick = { expanded = !expanded }
     ) {
         Column {
-            Row {
+            Row (verticalAlignment = Alignment.CenterVertically) {
                 RankCircle(ranking)
                 Spacer(Modifier.size(10.dp))
                 Column(

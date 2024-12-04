@@ -4,12 +4,8 @@ import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.Region
-import com.nickoehler.brawlhalla.ranking.presentation.models.BracketUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.RegionUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRegionUi
 
 @Immutable
 data class RankingState(
@@ -18,8 +14,8 @@ data class RankingState(
     val isLoadingMore: Boolean = false,
     val selectedRanking: StatDetailUi? = null,
     val players: List<RankingUi> = emptyList(),
-    val selectedBracket: BracketUi = Bracket.ONE_VS_ONE.toBracketUi(),
-    val selectedRegion: RegionUi = Region.ALL.toRegionUi(),
+    val selectedBracket: Bracket = Bracket.ONE_VS_ONE,
+    val selectedRegion: Region = Region.ALL,
     val shouldLoadMore: Boolean = true,
     val appBarState: CustomAppBarState = CustomAppBarState()
 )
