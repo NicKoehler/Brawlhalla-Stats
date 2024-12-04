@@ -7,9 +7,9 @@ import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
+import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
-import com.nickoehler.brawlhalla.ranking.presentation.models.BracketUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.RegionUi
+import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
@@ -52,8 +52,8 @@ class RankingViewModel(
                 )
             }
             rankingsDataSource.getRankings(
-                _state.value.selectedBracket.value,
-                _state.value.selectedRegion.value,
+                _state.value.selectedBracket,
+                _state.value.selectedRegion,
                 currentPage,
                 currentSearch
             ).onSuccess { players ->
@@ -116,7 +116,7 @@ class RankingViewModel(
         }
     }
 
-    private fun selectRegion(region: RegionUi) {
+    private fun selectRegion(region: Region) {
         if (region == _state.value.selectedRegion) {
             return
         }
@@ -126,7 +126,7 @@ class RankingViewModel(
         resetSearch()
     }
 
-    private fun selectBracket(bracket: BracketUi) {
+    private fun selectBracket(bracket: Bracket) {
         if (bracket == _state.value.selectedBracket) {
             return
         }

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
@@ -37,9 +38,10 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 fun CustomTopAppBar(
     title: String,
-    onAppBarAction: (AppBarAction) -> Unit,
-    state: CustomAppBarState = CustomAppBarState(),
     modifier: Modifier = Modifier,
+    showSearch: Boolean = true,
+    onAppBarAction: (AppBarAction) -> Unit = {},
+    state: CustomAppBarState = CustomAppBarState(),
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     actions: @Composable (RowScope.() -> Unit) = {}
 ) {
@@ -84,7 +86,10 @@ fun CustomTopAppBar(
                     ) { }
 
                 } else {
-                    Text(title)
+                    Text(
+                        title,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             },
             actions = {
@@ -99,13 +104,15 @@ fun CustomTopAppBar(
                     }
                 } else {
                     actions()
-                    IconButton(
-                        onClick = { onAppBarAction(AppBarAction.OpenSearch) }
-                    ) {
-                        Icon(
-                            Icons.Default.Search,
-                            null
-                        )
+                    if (showSearch) {
+                        IconButton(
+                            onClick = { onAppBarAction(AppBarAction.OpenSearch) }
+                        ) {
+                            Icon(
+                                Icons.Default.Search,
+                                null
+                            )
+                        }
                     }
                 }
             },
@@ -124,9 +131,24 @@ private fun LegendsTopBarPreview() {
 
                 CustomTopAppBar(
                     "Action",
-                    onAppBarAction = {},
+                    showSearch = false,
                     actions = {
-                        Icon(Icons.Default.FilterAlt, null)
+                        IconButton(
+                            onClick = {}
+                        ) {
+                            Icon(Icons.Default.FilterAlt, null)
+                        }
+                    }
+                )
+
+                CustomTopAppBar(
+                    "Action",
+                    actions = {
+                        IconButton(
+                            onClick = {}
+                        ) {
+                            Icon(Icons.Default.FilterAlt, null)
+                        }
                     }
                 )
 
@@ -134,9 +156,12 @@ private fun LegendsTopBarPreview() {
                 CustomTopAppBar(
                     "Action",
                     state = CustomAppBarState(isOpenSearch = true),
-                    onAppBarAction = {},
                     actions = {
-                        Icon(Icons.Default.FilterAlt, null)
+                        IconButton(
+                            onClick = {}
+                        ) {
+                            Icon(Icons.Default.FilterAlt, null)
+                        }
                     }
                 )
             }
