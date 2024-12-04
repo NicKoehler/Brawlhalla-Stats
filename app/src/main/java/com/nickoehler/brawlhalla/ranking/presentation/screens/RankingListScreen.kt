@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -31,6 +32,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActionButton
 import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
@@ -58,6 +60,7 @@ fun RankingListScreen(
     val coroutineScope = rememberCoroutineScope()
     val gridState = rememberLazyStaggeredGridState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val lazyColumnState = rememberLazyListState()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -70,9 +73,13 @@ fun RankingListScreen(
                 onAppBarAction = onAppBarAction,
                 showSearch = state.selectedBracket != Bracket.TWO_VS_TWO,
             )
+        },
+        floatingActionButton = {
+            CustomFloatingActionButton(lazyColumnState)
         }
     ) { padding ->
         LazyColumn(
+            state = lazyColumnState,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
