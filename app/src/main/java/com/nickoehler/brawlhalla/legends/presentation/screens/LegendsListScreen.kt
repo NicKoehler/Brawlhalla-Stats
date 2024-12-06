@@ -50,8 +50,7 @@ fun LegendListScreen(
         modifier = modifier.fillMaxSize()
     ) {
 
-        val scrollBehavior =
-            TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
         Scaffold(
             topBar = {

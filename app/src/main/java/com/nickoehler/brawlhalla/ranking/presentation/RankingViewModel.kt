@@ -6,7 +6,7 @@ import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
-import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
@@ -39,11 +39,8 @@ class RankingViewModel(
         RankingState()
     )
 
-    private val _errorEvents = Channel<ErrorEvent>()
-    val errorEvents = _errorEvents.receiveAsFlow()
-
-    private val _rankingEvents = Channel<RankingEvent>()
-    val rankingEvents = _rankingEvents.receiveAsFlow()
+    private val _uiEvents = Channel<UiEvent>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
 
     private fun loadRankings(shouldResetPlayers: Boolean = false) {
@@ -84,7 +81,7 @@ class RankingViewModel(
                         isLoadingMore = false
                     )
                 }
-                _errorEvents.send(ErrorEvent.Error(error))
+                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }
@@ -114,7 +111,7 @@ class RankingViewModel(
                         isDetailLoading = false,
                     )
                 }
-                _errorEvents.send(ErrorEvent.Error(error))
+                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }
@@ -162,7 +159,7 @@ class RankingViewModel(
                 val id = currentQuery.toInt()
                 selectRanking(id)
                 viewModelScope.launch {
-                    _rankingEvents.send(RankingEvent.NavigateToDetail)
+                    _uiEvents.send(UiEvent.NavigateToDetail)
                 }
             } catch (e: NumberFormatException) {
                 loadRankings(true)
@@ -217,9 +214,9 @@ class RankingViewModel(
         }
     }
 
-    fun onRankingEvent(event: RankingEvent) {
+    fun onRankingEvent(event: UiEvent) {
         viewModelScope.launch {
-            _rankingEvents.send(event)
+            _uiEvents.send(event)
         }
     }
 

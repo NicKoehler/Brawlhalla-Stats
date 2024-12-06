@@ -21,28 +21,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
-import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
-import com.nickoehler.brawlhalla.ui.splashScreenAnimation
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setOnExitAnimationListener {
-                splashScreenAnimation(it)
-            }
-        }
+        installSplashScreen()
         enableEdgeToEdge()
         setContent {
-
+            val startRoute = Route.Legend()
             val navController = rememberNavController()
 
             val navBackStackEntry = navController.currentBackStackEntryAsState().value
@@ -53,40 +44,36 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.imePadding(),
                     navigationSuiteItems = {
                         Screens.entries.forEach { currentScreen ->
-                            if (currentDestination != null) {
-                                val isSelected = currentDestination.hierarchy.any {
-                                    it.hasRoute(route = currentScreen.route::class)
-                                }
-                                item(
-                                    selected = isSelected,
-                                    onClick = {
-                                        if (currentDestination != currentScreen.route) {
-                                            navController.navigate(currentScreen.route) {
-                                                popUpTo(navController.graph.startDestinationId)
-                                                {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
+                            val isSelected = currentDestination?.hierarchy?.any {
+                                it.hasRoute(route = currentScreen.route::class)
+                            } ?: false
+                            item(
+                                selected = isSelected,
+                                onClick = {
+                                    if (!isSelected)
+                                        navController.navigate(currentScreen.route) {
+                                            popUpTo(startRoute)
+                                            {
+                                                saveState = true
                                             }
+                                            launchSingleTop = true
+                                            restoreState = true
                                         }
-                                    },
-                                    icon = {
-                                        Icon(
-                                            if (isSelected) currentScreen.selectedIcon
-                                            else currentScreen.unselectedIcon,
-                                            currentScreen.title,
-                                        )
-                                    },
-                                    label = {
-                                        if (isSelected) {
-                                            Text(currentScreen.title)
-                                        }
+                                },
+                                icon = {
+                                    Icon(
+                                        if (isSelected) currentScreen.selectedIcon
+                                        else currentScreen.unselectedIcon,
+                                        currentScreen.title,
+                                    )
+                                },
+                                label = {
+                                    if (isSelected) {
+                                        Text(currentScreen.title)
                                     }
-                                )
-                            }
+                                }
+                            )
                         }
-
                     }
                 ) {
                     NavHost(
@@ -94,26 +81,24 @@ class MainActivity : ComponentActivity() {
                             .safeDrawingPadding()
                             .padding(horizontal = 8.dp),
                         navController = navController,
-                        startDestination = Route.Legend(),
+                        startDestination = startRoute,
                     ) {
-                        composable<Route.Search> {
-                            val rankingViewModel = koinViewModel<RankingViewModel>()
+                        composable<Route.Ranking>(
+                            deepLinks = listOf(
+                                navDeepLink<Route.Legend>("https://bh.it/player")
+                            )
+                        ) {
                             AdaptiveRankingPane(
-                                rankingViewModel
+                                it.toRoute<Route.Ranking>(),
                             )
                         }
                         composable<Route.Legend>(
                             deepLinks = listOf(
-                                navDeepLink<Route.Legend>("bh://legend")
+                                navDeepLink<Route.Legend>("https://bh.it/legend"),
                             )
                         ) {
-                            val legendsViewModel = koinViewModel<LegendsViewModel>()
-                            val legend = it.toRoute<Route.Legend>()
-                            if (legend.id != null) {
-                                legendsViewModel.onLegendAction(LegendAction.SelectLegend(legendId = legend.id))
-                            }
                             AdaptiveLegendsPane(
-                                viewModel = legendsViewModel
+                                it.toRoute<Route.Legend>(),
                             )
                         }
                     }

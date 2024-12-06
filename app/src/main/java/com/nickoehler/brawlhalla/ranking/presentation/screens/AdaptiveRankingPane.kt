@@ -1,29 +1,29 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
-import com.nickoehler.brawlhalla.ranking.presentation.RankingEvent
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
+import com.nickoehler.brawlhalla.ui.Route
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveRankingPane(
+    ranking: Route.Ranking,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -31,20 +31,37 @@ fun AdaptiveRankingPane(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
 
-    ObserveAsEvents(viewModel.errorEvents) { event ->
-        if (event is ErrorEvent.Error) {
-            Toast.makeText(
-                context,
-                event.error.toString(context),
-                Toast.LENGTH_LONG
-            ).show()
+    ObserveAsEvents(viewModel.uiEvents) { event ->
+        when (event) {
+            is UiEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.error.toString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            is UiEvent.NavigateToDetail -> navigator.navigateTo(
+                ListDetailPaneScaffoldRole.Detail
+            )
+
+            is UiEvent.NavigateToList -> navigator.navigateTo(
+                ListDetailPaneScaffoldRole.List
+            )
+
+            else -> {}
         }
     }
 
-    ObserveAsEvents(viewModel.rankingEvents) { event ->
-        when (event) {
-            RankingEvent.NavigateToDetail -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-            RankingEvent.NavigateToList -> navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+    // handle deeplink
+    LaunchedEffect(true) {
+        if (ranking.id != null) {
+            navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+            viewModel.onRankingAction(
+                RankingAction.SelectRanking(
+                    ranking.id
+                )
+            )
         }
     }
 
@@ -68,11 +85,10 @@ fun AdaptiveRankingPane(
         },
         detailPane = {
             AnimatedPane {
-                Box(contentAlignment = Alignment.Center) {
-                    RankingDetailScreen(
-                        state,
-                        viewModel::onRankingEvent
-                    )
+                RankingDetailScreen(
+                    state,
+                    viewModel::onRankingEvent
+                )
 //                        state,
 //                        onWeaponAction = { action ->
 //                            viewModel.onWeaponAction(action)
@@ -84,7 +100,6 @@ fun AdaptiveRankingPane(
 //                            if (action is LegendAction.SelectStat)
 //                                navigator.navigateBack()
 //                        }
-                }
             }
         }
 

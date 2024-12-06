@@ -22,7 +22,7 @@ enum class Screens(
     ),
     SEARCH(
         title = "Rankings",
-        route = Route.Search,
+        route = Route.Ranking(),
         selectedIcon = Icons.Default.Leaderboard,
         unselectedIcon = Icons.Outlined.Leaderboard
     );
@@ -32,7 +32,7 @@ enum class Screens(
 sealed interface Route {
 
     @Serializable
-    data object Search : Route
+    data class Ranking(val id: Int? = null) : Route
 
 
     @Serializable
