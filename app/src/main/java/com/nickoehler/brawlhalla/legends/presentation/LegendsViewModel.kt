@@ -6,7 +6,7 @@ import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
-import com.nickoehler.brawlhalla.core.presentation.ErrorEvent
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
@@ -37,11 +37,9 @@ class LegendsViewModel(
             SharingStarted.WhileSubscribed(5000L),
             LegendsListState()
         )
-    private val _errorEvents = Channel<ErrorEvent>()
-    val errorEvents = _errorEvents.receiveAsFlow()
 
-    private val _legendsEvents = Channel<LegendEvent>()
-    val legendsEvents = _legendsEvents.receiveAsFlow()
+    private val _uiEvents = Channel<UiEvent>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
     private fun loadLegends() {
         viewModelScope.launch {
@@ -60,7 +58,7 @@ class LegendsViewModel(
                 }
             }.onError { error ->
                 _state.update { it.copy(isListLoading = false) }
-                _errorEvents.send(ErrorEvent.Error(error))
+                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }
@@ -76,9 +74,10 @@ class LegendsViewModel(
                             selectedLegendUi = legend.toLegendDetailUi()
                         )
                     }
+                    _uiEvents.send(UiEvent.NavigateToDetail)
                 }.onError { error ->
-                    _state.update { it.copy(isDetailLoading = false) }
-                    _errorEvents.send(ErrorEvent.Error(error))
+                    _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
+                    _uiEvents.send(UiEvent.Error(error))
                 }
             }
         }
@@ -218,7 +217,6 @@ class LegendsViewModel(
 
             else -> allLegends
         }
-
     }
 
 
@@ -278,7 +276,7 @@ class LegendsViewModel(
             is WeaponAction.Click -> {
                 onWeaponSelect(action.weapon, false)
                 viewModelScope.launch {
-                    _legendsEvents.send(LegendEvent.ScrollToTop)
+                    _uiEvents.send(UiEvent.ScrollToTop)
                 }
             }
 
@@ -292,6 +290,12 @@ class LegendsViewModel(
             is AppBarAction.OpenSearch -> toggleSearch(true)
             is AppBarAction.QueryChange -> searchQuery(action.query)
             is AppBarAction.Search -> {}
+        }
+    }
+
+    fun onUiEvent(event: UiEvent) {
+        viewModelScope.launch {
+            _uiEvents.send(event)
         }
     }
 }

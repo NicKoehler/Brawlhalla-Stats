@@ -24,6 +24,7 @@ data class LegendDetailUi(
     val defense: Int,
     val speed: Int,
     val image: String,
+    val deepLink: String,
 )
 
 fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
@@ -44,7 +45,8 @@ fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
         dexterity = dexterity.toInt(),
         defense = defense.toInt(),
         speed = speed.toInt(),
-        image = getFullImageUrlFromLegendNameKey(legendNameKey)
+        image = getFullImageUrlFromLegendNameKey(legendNameKey),
+        deepLink = "legend?id=$legendId"
     )
 }
 

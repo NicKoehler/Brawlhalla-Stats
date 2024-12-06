@@ -25,6 +25,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +41,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
+import com.nickoehler.brawlhalla.core.presentation.components.CustomShare
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
@@ -55,9 +59,10 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LegendDetailScreen(
     state: LegendsListState,
+    modifier: Modifier = Modifier,
     onWeaponAction: (WeaponAction) -> Unit = {},
     onLegendAction: (LegendAction) -> Unit = {},
-    modifier: Modifier = Modifier,
+    uiEvent: (UiEvent) -> Unit = {},
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -103,72 +108,94 @@ fun LegendDetailScreen(
         ) {
             Spacer(modifier.size(0.dp))
 
-            if (state.isDetailLoading) {
-                Box(
-                    Modifier
-                        .size(height = 50.dp, width = 120.dp)
-                        .clip(CircleShape)
-                        .shimmerEffect()
-                )
-                Box(
-                    Modifier
-                        .size(height = 20.dp, width = 300.dp)
-                        .clip(CircleShape)
-                        .fillMaxSize()
-                        .shimmerEffect()
-                )
-                Box(
-                    Modifier
-                        .height(250.dp)
-                        .clip(RoundedCornerShape(40.dp))
-                        .fillMaxSize()
-                        .shimmerEffect()
-                )
-            } else if (legend != null) {
-                Text(
-                    legend.bioName,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 40.sp,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    legend.bioAka,
-                    fontSize = 18.sp,
-                    fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center
-                )
-                AsyncImage(
-                    legend.image,
-                    contentDescription = legend.bioName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
+            when {
+                state.isDetailLoading -> {
+                    Box(
+                        Modifier
+                            .size(height = 50.dp, width = 120.dp)
+                            .clip(CircleShape)
+                            .shimmerEffect()
+                    )
+                    Box(
+                        Modifier
+                            .size(height = 20.dp, width = 300.dp)
+                            .clip(CircleShape)
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                    Box(
+                        Modifier
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(40.dp))
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                }
+
+                legend != null -> {
+                    Text(
+                        legend.bioName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 40.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        legend.bioAka,
+                        fontSize = 18.sp,
+                        fontStyle = FontStyle.Italic,
+                        textAlign = TextAlign.Center
+                    )
+                    AsyncImage(
+                        legend.image,
+                        contentDescription = legend.bioName,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                    )
+                }
+
+                else -> {
+                    LaunchedEffect(true) {
+                        uiEvent(UiEvent.NavigateToList)
+                    }
+                }
             }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { showBottomSheet = true }) {
-                    Icon(Icons.Default.Info, "lore")
+
+                if (state.isDetailLoading || legend != null) {
+
+                    IconButton(onClick = { showBottomSheet = true }) {
+                        Icon(Icons.Default.Info, "lore")
+                    }
+                    CustomShare(
+                        legend?.bioName,
+                        legend?.deepLink,
+                        context = LocalContext.current
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    WeaponButton(legend?.weaponOne, onWeaponAction)
+                    WeaponButton(legend?.weaponTwo, onWeaponAction)
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                WeaponButton(legend?.weaponOne, onWeaponAction)
-                WeaponButton(legend?.weaponTwo, onWeaponAction)
             }
-            LegendStat.entries.forEachIndexed { index, stat ->
-                LegendStatItem(
-                    stat,
-                    legend?.getStat(stat),
-                    onLegendAction,
-                    delayMillis = 100 * index
-                )
+            if (state.isDetailLoading || legend != null) {
+                LegendStat.entries.forEachIndexed { index, stat ->
+                    LegendStatItem(
+                        stat,
+                        legend?.getStat(stat),
+                        onLegendAction,
+                        delayMillis = 100 * index
+                    )
+                }
             }
-            Spacer(Modifier.size(0.dp))
         }
+        Spacer(Modifier.size(0.dp))
     }
 }
-
 
 @PreviewLightDark
 @Composable
@@ -205,8 +232,6 @@ private fun LegendDetailScreenLoadingPreview() {
             ) {
                 LegendDetailScreen(
                     state = LegendsListState(isDetailLoading = true),
-                    {},
-                    {}
                 )
             }
         }
