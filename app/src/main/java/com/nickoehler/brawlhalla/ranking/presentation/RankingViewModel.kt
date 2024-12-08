@@ -10,6 +10,8 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
@@ -87,28 +89,64 @@ class RankingViewModel(
     }
 
 
-    private fun selectRanking(id: Int) {
+    private fun selectStatDetail(id: Int) {
 
-        if (_state.value.selectedRanking?.brawlhallaId == id) {
+        if (_state.value.selectedStatDetail?.brawlhallaId == id) {
             return
         }
 
         _state.update { state ->
-            state.copy(isDetailLoading = true, selectedRanking = null)
+            state.copy(
+                rankingEnabled = true,
+                selectedStatDetail = null,
+                isStatDetailLoading = true,
+                selectedStatType = StatType.General
+            )
         }
 
         viewModelScope.launch {
             rankingsDataSource.getStat(id).onSuccess { stat ->
                 _state.update { state ->
                     state.copy(
-                        isDetailLoading = false,
-                        selectedRanking = stat.toStatDetailUi()
+                        isStatDetailLoading = false,
+                        selectedStatDetail = stat.toStatDetailUi()
                     )
                 }
             }.onError { error ->
                 _state.update { state ->
                     state.copy(
-                        isDetailLoading = false,
+                        isStatDetailLoading = false,
+                    )
+                }
+                _uiEvents.send(UiEvent.Error(error))
+            }
+        }
+    }
+
+    private fun selectRankingDetail(id: Int) {
+
+        if (_state.value.selectedRankingDetail?.brawlhallaId == id) {
+            return
+        }
+
+        _state.update { state ->
+            state.copy(isRankingDetailLoading = true, selectedRankingDetail = null)
+        }
+
+        viewModelScope.launch {
+            rankingsDataSource.getRanked(id).onSuccess { stat ->
+                _state.update { state ->
+                    state.copy(
+                        isRankingDetailLoading = false,
+                        selectedRankingDetail = stat.toRankingDetailUi()
+                    )
+                }
+            }.onError { error ->
+                _state.update { state ->
+                    state.copy(
+                        isRankingDetailLoading = false,
+                        rankingEnabled = false,
+                        selectedStatType = StatType.General
                     )
                 }
                 _uiEvents.send(UiEvent.Error(error))
@@ -136,6 +174,17 @@ class RankingViewModel(
         resetSearch()
     }
 
+    private fun selectStatType(stat: StatType) {
+        if (stat == StatType.Ranking && _state.value.selectedStatDetail != null) {
+            selectRankingDetail(_state.value.selectedStatDetail!!.brawlhallaId)
+        }
+
+        _state.update { state ->
+            state.copy(selectedStatType = stat)
+        }
+    }
+
+
     private fun updateSearchQuery(query: String) {
         viewModelScope.launch {
             _state.update { state ->
@@ -157,7 +206,7 @@ class RankingViewModel(
         if (currentQuery.all { it.isDigit() }) {
             try {
                 val id = currentQuery.toInt()
-                selectRanking(id)
+                selectStatDetail(id)
                 viewModelScope.launch {
                     _uiEvents.send(UiEvent.NavigateToDetail)
                 }
@@ -199,9 +248,10 @@ class RankingViewModel(
                 }
             }
 
-            is RankingAction.SelectRanking -> selectRanking(action.id)
+            is RankingAction.SelectRanking -> selectStatDetail(action.id)
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.SelectRegion -> selectRegion(action.region)
+            is RankingAction.SelectStatType -> selectStatType(action.stat)
         }
     }
 

@@ -32,3 +32,7 @@ fun String.toRegion(): Region {
         else -> Region.UNKNOWN
     }
 }
+
+fun Int.toRegion(): Region {
+    return Region.entries.first { it.num == this }
+}

@@ -87,6 +87,7 @@ fun AdaptiveRankingPane(
             AnimatedPane {
                 RankingDetailScreen(
                     state,
+                    viewModel::onRankingAction,
                     viewModel::onRankingEvent
                 )
 //                        state,

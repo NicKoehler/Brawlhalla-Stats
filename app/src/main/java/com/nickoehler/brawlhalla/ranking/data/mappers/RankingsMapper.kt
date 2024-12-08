@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.data.mappers
 
+import com.nickoehler.brawlhalla.ranking.data.dto.RankingDetailTeamDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingSoloDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingTeamDto
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
@@ -36,3 +37,17 @@ fun RankingTeamDto.toRanking(): Ranking {
     )
 }
 
+fun RankingDetailTeamDto.toRankingTeam(): Ranking.RankingTeam {
+    return Ranking.RankingTeam(
+        rank,
+        teamName,
+        brawlhallaIdOne,
+        brawlhallaIdTwo,
+        rating,
+        tier.toTier(),
+        games,
+        wins,
+        region.toRegion(),
+        peakRating
+    )
+}
