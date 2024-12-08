@@ -31,8 +31,7 @@ fun CustomCard(
     borderRadius: Dp = 40.dp,
     contentPadding: Dp = 20.dp,
     content: @Composable (RowScope.() -> Unit),
-
-    ) {
+) {
     var cardModifier = modifier.clip(
         shape = RoundedCornerShape(size = borderRadius)
     )
@@ -44,9 +43,11 @@ fun CustomCard(
     }
 
     Row(
-        modifier = cardModifier.background(
-            color
-        ).padding(contentPadding),
+        modifier = cardModifier
+            .background(
+                color
+            )
+            .padding(contentPadding),
         verticalAlignment = verticalAlignment,
         horizontalArrangement = horizontalArrangement,
     ) {
