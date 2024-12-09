@@ -29,7 +29,6 @@ data class StatDetailUi(
     val koSnowball: DisplayableNumber,
     val legends: List<StatLegendUi>,
     val clan: StatClanUi?,
-    val deepLink: String
 )
 
 
@@ -57,6 +56,5 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
         clan = if (this.clan != null) {
             clan.toStatClanUi()
         } else null,
-        deepLink = "player?id=$brawlhallaId"
     )
 }

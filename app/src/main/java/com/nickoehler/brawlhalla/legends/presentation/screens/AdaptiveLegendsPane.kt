@@ -28,7 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveLegendsPane(
-    LegendId: Int? = null,
+    legendId: Int? = null,
     viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -67,13 +67,12 @@ fun AdaptiveLegendsPane(
         }
     }
 
-    // handle deeplink
-    LaunchedEffect(LegendId) {
-        if (LegendId != null) {
+    LaunchedEffect(Unit) {
+        if (legendId != null) {
             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
             viewModel.onLegendAction(
                 LegendAction.SelectLegend(
-                    LegendId
+                    legendId
                 )
             )
         }

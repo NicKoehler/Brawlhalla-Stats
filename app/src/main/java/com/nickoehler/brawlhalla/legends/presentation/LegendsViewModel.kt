@@ -34,7 +34,7 @@ class LegendsViewModel(
     val state = _state.onStart { if (allLegends.isEmpty()) loadLegends() }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
+            SharingStarted.WhileSubscribed(),
             LegendsListState()
         )
 
@@ -264,10 +264,22 @@ class LegendsViewModel(
 
     fun onLegendAction(action: LegendAction) {
         when (action) {
-            is LegendAction.SelectLegend -> selectLegend(action.legendId)
-            is LegendAction.ToggleFilters -> toggleFilters()
-            is LegendAction.SelectStat -> selectStat(action.stat, action.value)
-            is LegendAction.SelectFilter -> selectFilter(action.filter)
+            is LegendAction.SelectLegend -> {
+                selectLegend(action.legendId)
+            }
+
+            is LegendAction.ToggleFilters -> {
+                toggleFilters()
+            }
+
+            is LegendAction.SelectStat -> {
+                selectStat(action.stat, action.value)
+            }
+
+            is LegendAction.SelectFilter -> {
+                selectFilter(action.filter)
+            }
+
         }
     }
 

@@ -15,12 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
+import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ui.Route
@@ -33,11 +34,11 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         setContent {
-            val startRoute = Route.Legend()
+            val startRoute = Route.Favorites
             val navController = rememberNavController()
-
             val navBackStackEntry = navController.currentBackStackEntryAsState().value
             val currentDestination = navBackStackEntry?.destination
+
 
             BrawlhallaTheme {
                 NavigationSuiteScaffold(
@@ -50,15 +51,13 @@ class MainActivity : ComponentActivity() {
                             item(
                                 selected = isSelected,
                                 onClick = {
-                                    if (!isSelected)
-                                        navController.navigate(currentScreen.route) {
-                                            popUpTo(startRoute)
-                                            {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                    navController.navigate(currentScreen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
                                         }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 },
                                 icon = {
                                     Icon(
@@ -83,24 +82,21 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = startRoute,
                     ) {
-                        composable<Route.Ranking>(
-                            deepLinks = listOf(
-                                navDeepLink<Route.Legend>("https://bh.it/player")
-                            )
-                        ) {
+                        composable<Route.Ranking> {
+                            val ranking = it.toRoute<Route.Ranking>()
                             AdaptiveRankingPane(
-                                it.toRoute<Route.Ranking>().id,
+                                ranking.playerId,
+                                ranking.clanId
                             )
                         }
-                        composable<Route.Legend>(
-                            deepLinks = listOf(
-                                navDeepLink<Route.Legend>("https://bh.it/legend"),
-                            )
-
-                        ) {
+                        composable<Route.Legend> {
+                            val legend = it.toRoute<Route.Legend>()
                             AdaptiveLegendsPane(
-                                it.toRoute<Route.Legend>().id
+                                legend.id,
                             )
+                        }
+                        composable<Route.Favorites> {
+                            FavoritesScreen()
                         }
                     }
                 }
