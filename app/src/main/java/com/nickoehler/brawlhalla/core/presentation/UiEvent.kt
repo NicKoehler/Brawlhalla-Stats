@@ -7,4 +7,5 @@ sealed interface UiEvent {
     data object ScrollToTop : UiEvent
     data object NavigateToList : UiEvent
     data object NavigateToDetail : UiEvent
+    data object PopBackToList : UiEvent
 }

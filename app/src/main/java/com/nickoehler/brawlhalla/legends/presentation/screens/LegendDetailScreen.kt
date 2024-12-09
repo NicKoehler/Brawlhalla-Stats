@@ -4,26 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,26 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.components.CustomShare
-import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
-import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
-import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
-import com.nickoehler.brawlhalla.legends.presentation.components.LegendStatItem
-import com.nickoehler.brawlhalla.legends.presentation.models.getStat
+import com.nickoehler.brawlhalla.legends.presentation.components.LegendBioContent
+import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailContent
+import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailStats
+import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailToolBar
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
@@ -70,33 +50,22 @@ fun LegendDetailScreen(
             .fillMaxSize()
     ) {
 
+        val bottomSheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
         val legend = state.selectedLegendUi
+
+        LaunchedEffect(state.isDetailLoading) {
+            if (legend == null && !state.isDetailLoading) {
+                uiEvent(UiEvent.PopBackToList)
+            }
+        }
+
         if (showBottomSheet) {
             ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                }
+                sheetState = bottomSheetState,
+                onDismissRequest = { showBottomSheet = false }
             ) {
-                if (state.isDetailLoading) {
-                    repeat(20) {
-                        Box(
-                            Modifier
-                                .height(20.dp)
-                                .padding(20.dp, 5.dp)
-                                .clip(CircleShape)
-                                .fillMaxSize()
-                                .shimmerEffect()
-                        )
-                    }
-                } else if (legend != null) {
-                    Text(
-                        legend.bioText,
-                        modifier = Modifier
-                            .padding(20.dp, 0.dp)
-                            .verticalScroll(rememberScrollState())
-                    )
-                }
+                LegendBioContent(legend, state.isDetailLoading)
             }
         }
         Column(
@@ -106,96 +75,27 @@ fun LegendDetailScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier.size(0.dp))
-
-            when {
-                state.isDetailLoading -> {
-                    Box(
-                        Modifier
-                            .size(height = 50.dp, width = 120.dp)
-                            .clip(CircleShape)
-                            .shimmerEffect()
-                    )
-                    Box(
-                        Modifier
-                            .size(height = 20.dp, width = 300.dp)
-                            .clip(CircleShape)
-                            .fillMaxSize()
-                            .shimmerEffect()
-                    )
-                    Box(
-                        Modifier
-                            .height(250.dp)
-                            .clip(RoundedCornerShape(40.dp))
-                            .fillMaxSize()
-                            .shimmerEffect()
-                    )
-                }
-
-                legend != null -> {
-                    Text(
-                        legend.bioName,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 40.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        legend.bioAka,
-                        fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic,
-                        textAlign = TextAlign.Center
-                    )
-                    AsyncImage(
-                        legend.image,
-                        contentDescription = legend.bioName,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(250.dp)
-                    )
-                }
-
-                else -> {
-                    LaunchedEffect(true) {
-                        uiEvent(UiEvent.NavigateToList)
-                    }
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                if (state.isDetailLoading || legend != null) {
-
-                    IconButton(onClick = { showBottomSheet = true }) {
-                        Icon(Icons.Default.Info, "lore")
-                    }
-                    CustomShare(
-                        legend?.bioName,
-                        legend?.deepLink,
-                        context = LocalContext.current
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    WeaponButton(legend?.weaponOne, onWeaponAction)
-                    WeaponButton(legend?.weaponTwo, onWeaponAction)
-                }
-            }
-            if (state.isDetailLoading || legend != null) {
-                LegendStat.entries.forEachIndexed { index, stat ->
-                    LegendStatItem(
-                        stat,
-                        legend?.getStat(stat),
-                        onLegendAction,
-                        delayMillis = 100 * index
-                    )
-                }
-            }
+            Spacer(modifier)
+            LegendDetailContent(
+                state.isDetailLoading,
+                legend
+            )
+            LegendDetailToolBar(
+                state.isDetailLoading,
+                legend,
+                { showBottomSheet = true },
+                onWeaponAction
+            )
+            LegendDetailStats(
+                state.isDetailLoading,
+                legend,
+                onLegendAction
+            )
         }
-        Spacer(Modifier.size(0.dp))
+        Spacer(Modifier)
     }
 }
+
 
 @PreviewLightDark
 @Composable

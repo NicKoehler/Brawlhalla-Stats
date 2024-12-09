@@ -14,13 +14,13 @@ enum class Screens(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    LEGEND(
+    LEGENDS(
         title = "Legends",
         route = Route.Legend(),
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Outlined.People
     ),
-    SEARCH(
+    RANKINGS(
         title = "Rankings",
         route = Route.Ranking(),
         selectedIcon = Icons.Default.Leaderboard,

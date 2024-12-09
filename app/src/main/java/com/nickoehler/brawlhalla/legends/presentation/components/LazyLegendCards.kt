@@ -29,9 +29,9 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
-import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
