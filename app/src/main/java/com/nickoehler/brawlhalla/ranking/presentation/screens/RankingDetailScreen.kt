@@ -138,7 +138,7 @@ fun RankingDetailScreen(
                 CustomCard(
                     contentPadding = 10.dp,
                     onClick = {
-                        //TODO
+                        onRankingAction(RankingAction.SelectClan(playerStat.clan.clanId))
                     }
                 ) {
                     Text(playerStat.clan.clanName)

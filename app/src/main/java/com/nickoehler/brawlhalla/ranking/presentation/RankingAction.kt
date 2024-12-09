@@ -10,4 +10,5 @@ sealed interface RankingAction {
     data class SelectRegion(val region: Region) : RankingAction
     data class SelectBracket(val bracket: Bracket) : RankingAction
     data class SelectStatType(val stat: StatType) : RankingAction
+    data class SelectClan(val clanId: Int) : RankingAction
 }
