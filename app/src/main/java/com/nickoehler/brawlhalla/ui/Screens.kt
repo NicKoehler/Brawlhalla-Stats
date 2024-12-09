@@ -1,8 +1,10 @@
 package com.nickoehler.brawlhalla.ui
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,6 +22,12 @@ enum class Screens(
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Outlined.People
     ),
+    FAVORITES(
+        "Favorites",
+        route = Route.Favorites,
+        selectedIcon = Icons.Default.Home,
+        unselectedIcon = Icons.Outlined.Home
+    ),
     RANKINGS(
         title = "Rankings",
         route = Route.Ranking(),
@@ -32,7 +40,11 @@ enum class Screens(
 sealed interface Route {
 
     @Serializable
-    data class Ranking(val id: Int? = null) : Route
+    data class Ranking(val playerId: Int? = null, val clanId: Int? = null) : Route
+
+
+    @Serializable
+    data object Favorites : Route
 
 
     @Serializable

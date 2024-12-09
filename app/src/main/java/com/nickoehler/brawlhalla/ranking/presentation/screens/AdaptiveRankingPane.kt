@@ -23,6 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AdaptiveRankingPane(
     rankingId: Int? = null,
+    clanId: Int? = null,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -54,13 +55,23 @@ fun AdaptiveRankingPane(
         }
     }
 
-    // handle deeplink
     LaunchedEffect(rankingId) {
         if (rankingId != null) {
             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
             viewModel.onRankingAction(
                 RankingAction.SelectRanking(
                     rankingId
+                )
+            )
+        }
+    }
+
+    LaunchedEffect(clanId) {
+        if (clanId != null) {
+            navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
+            viewModel.onRankingAction(
+                RankingAction.SelectClan(
+                    clanId
                 )
             )
         }

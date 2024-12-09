@@ -27,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,7 +37,6 @@ import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.core.presentation.components.CustomShare
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
@@ -132,7 +130,6 @@ fun RankingDetailScreen(
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )
-                CustomShare(playerStat.name, playerStat.deepLink, LocalContext.current)
             }
             if (playerStat.clan != null) {
                 CustomCard(

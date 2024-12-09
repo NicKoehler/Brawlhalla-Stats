@@ -11,10 +11,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.components.CustomShare
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 
@@ -35,11 +33,6 @@ fun LegendDetailToolBar(
             IconButton(onClick = onShow) {
                 Icon(Icons.Default.Info, "lore")
             }
-            CustomShare(
-                legend?.bioName,
-                legend?.deepLink,
-                context = LocalContext.current
-            )
             Spacer(modifier = Modifier.weight(1f))
             WeaponButton(legend?.weaponOne, onWeaponAction)
             WeaponButton(legend?.weaponTwo, onWeaponAction)
