@@ -88,22 +88,29 @@ fun AdaptiveRankingPane(
             AnimatedPane {
                 RankingDetailScreen(
                     state,
-                    viewModel::onRankingAction,
+                    onRankingAction = { action ->
+                        viewModel.onRankingAction(action)
+                        if (action is RankingAction.SelectClan)
+                            navigator.navigateTo(
+                                ListDetailPaneScaffoldRole.Extra
+                            )
+                    },
                     viewModel::onRankingEvent
                 )
-//                        state,
-//                        onWeaponAction = { action ->
-//                            viewModel.onWeaponAction(action)
-//                            if (action is WeaponAction.Click)
-//                                navigator.navigateBack()
-//                        },
-//                        onLegendAction = { action ->
-//                            viewModel.onLegendAction(action)
-//                            if (action is LegendAction.SelectStat)
-//                                navigator.navigateBack()
-//                        }
+            }
+        },
+        extraPane = {
+            AnimatedPane {
+                ClanDetailScreen(
+                    state,
+                    onRankingAction = { action ->
+                        viewModel.onRankingAction(action)
+                        if (action is RankingAction.SelectRanking) {
+                            navigator.navigateBack()
+                        }
+                    }
+                )
             }
         }
-
     )
 }

@@ -15,4 +15,6 @@ interface RankingsDataSource {
 
     suspend fun getRanked(brawlhallaId: Int): Result<RankingDetail, NetworkError>
 
+    suspend fun getClan(clanId: Int): Result<ClanDetail, NetworkError>
+
 }

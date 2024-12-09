@@ -11,6 +11,7 @@ import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -153,6 +154,20 @@ class RankingViewModel(
         }
     }
 
+    private fun selectClan(clanId: Int) {
+        viewModelScope.launch {
+            rankingsDataSource.getClan(clanId).onSuccess {
+                _state.update { state ->
+                    state.copy(
+                        selectedClan = it.toClanDetailUi()
+                    )
+                }
+            }.onError { error ->
+                _uiEvents.send(UiEvent.Error(error))
+            }
+        }
+    }
+
     private fun selectRegion(region: Region) {
         if (region == _state.value.selectedRegion) {
             return
@@ -251,6 +266,7 @@ class RankingViewModel(
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.SelectRegion -> selectRegion(action.region)
             is RankingAction.SelectStatType -> selectStatType(action.stat)
+            is RankingAction.SelectClan -> selectClan(action.clanId)
         }
     }
 
