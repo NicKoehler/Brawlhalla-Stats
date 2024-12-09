@@ -66,6 +66,12 @@ fun RankingDetailScreen(
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
 
+    LaunchedEffect(state.isStatDetailLoading) {
+        if (playerStat == null && !state.isStatDetailLoading) {
+            uiEvent(UiEvent.PopBackToList)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -206,10 +212,6 @@ fun RankingDetailScreen(
                     Spacer(Modifier)
 
                 }
-            }
-        } else {
-            LaunchedEffect(true) {
-                uiEvent(UiEvent.NavigateToList)
             }
         }
         Spacer(Modifier)

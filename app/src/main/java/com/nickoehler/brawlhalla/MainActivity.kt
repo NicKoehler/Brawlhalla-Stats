@@ -89,16 +89,17 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             AdaptiveRankingPane(
-                                it.toRoute<Route.Ranking>(),
+                                it.toRoute<Route.Ranking>().id,
                             )
                         }
                         composable<Route.Legend>(
                             deepLinks = listOf(
                                 navDeepLink<Route.Legend>("https://bh.it/legend"),
                             )
+
                         ) {
                             AdaptiveLegendsPane(
-                                it.toRoute<Route.Legend>(),
+                                it.toRoute<Route.Legend>().id
                             )
                         }
                     }

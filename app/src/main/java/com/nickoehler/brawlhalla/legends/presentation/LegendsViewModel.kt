@@ -137,10 +137,10 @@ class LegendsViewModel(
     }
 
 
-    private fun onWeaponSelect(weapon: WeaponUi, checkWeaponsState: Boolean = true) {
+    private fun onWeaponSelect(weapon: WeaponUi, useWeaponsState: Boolean = true) {
         _state.update { state ->
             val updatedWeaponsState = updateWeaponsState(
-                if (checkWeaponsState) state.weapons else allWeapons,
+                if (useWeaponsState) state.weapons else allWeapons,
                 weapon
             )
             val selected = updatedWeaponsState.filter { it.selected }.map { it.name }
@@ -275,9 +275,7 @@ class LegendsViewModel(
         when (action) {
             is WeaponAction.Click -> {
                 onWeaponSelect(action.weapon, false)
-                viewModelScope.launch {
-                    _uiEvents.send(UiEvent.ScrollToTop)
-                }
+                onUiEvent(UiEvent.ScrollToTop)
             }
 
             is WeaponAction.Select -> onWeaponSelect(action.weapon)

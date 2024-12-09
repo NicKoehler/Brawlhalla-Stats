@@ -44,7 +44,6 @@ class RankingViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-
     private fun loadRankings(shouldResetPlayers: Boolean = false) {
         viewModelScope.launch {
             _state.update {

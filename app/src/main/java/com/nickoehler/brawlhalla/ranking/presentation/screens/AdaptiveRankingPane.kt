@@ -16,14 +16,13 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
-import com.nickoehler.brawlhalla.ui.Route
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveRankingPane(
-    ranking: Route.Ranking,
+    rankingId: Int? = null,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -49,17 +48,19 @@ fun AdaptiveRankingPane(
                 ListDetailPaneScaffoldRole.List
             )
 
+            is UiEvent.PopBackToList -> navigator.navigateBack()
+
             else -> {}
         }
     }
 
     // handle deeplink
-    LaunchedEffect(true) {
-        if (ranking.id != null) {
+    LaunchedEffect(rankingId) {
+        if (rankingId != null) {
             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
             viewModel.onRankingAction(
                 RankingAction.SelectRanking(
-                    ranking.id
+                    rankingId
                 )
             )
         }

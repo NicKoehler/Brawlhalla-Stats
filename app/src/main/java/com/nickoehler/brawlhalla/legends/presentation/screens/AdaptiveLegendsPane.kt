@@ -21,7 +21,6 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
-import com.nickoehler.brawlhalla.ui.Route
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,7 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveLegendsPane(
-    legend: Route.Legend,
+    LegendId: Int? = null,
     viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -60,19 +59,21 @@ fun AdaptiveLegendsPane(
                 navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
             }
 
-            is UiEvent.NavigateToList -> {
-                navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+            is UiEvent.PopBackToList -> {
+                navigator.navigateBack()
             }
+
+            else -> {}
         }
     }
 
     // handle deeplink
-    LaunchedEffect(true) {
-        if (legend.id != null) {
+    LaunchedEffect(LegendId) {
+        if (LegendId != null) {
             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
             viewModel.onLegendAction(
                 LegendAction.SelectLegend(
-                    legend.id
+                    LegendId
                 )
             )
         }
