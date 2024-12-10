@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -21,12 +22,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.nickoehler.brawlhalla.favorites.FavoriteAction
+import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +100,37 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable<Route.Favorites> {
-                            FavoritesScreen()
+                            val favoritesViewModel = koinViewModel<FavoritesViewModel>()
+
+                            FavoritesScreen(
+                                players = favoritesViewModel.getPlayerLiveData()
+                                    .observeAsState().value,
+                                clans = favoritesViewModel.getClanLiveData()
+                                    .observeAsState().value,
+                                onFavoriteAction = { action ->
+                                    when (action) {
+                                        is FavoriteAction.SelectClan -> navController.navigate(
+                                            Route.Ranking(clanId = action.clanId)
+                                        ) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                        }
+
+                                        is FavoriteAction.SelectPlayer -> navController.navigate(
+                                            Route.Ranking(playerId = action.brawlhallaId)
+                                        ) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                        }
+
+                                        else -> {}
+                                    }
+                                }
+                            )
                         }
                     }
                 }

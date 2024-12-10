@@ -2,12 +2,18 @@ package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,13 +51,28 @@ fun ClanDetailScreen(
         if (state.isStatDetailLoading) {
             CircularProgressIndicator()
         } else if (clan != null) {
-            Text(
-                clan.name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 40.sp,
-                lineHeight = 40.sp,
-                textAlign = TextAlign.Center
-            )
+            Row {
+                Text(
+                    clan.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 30.sp,
+                    lineHeight = 30.sp,
+                    textAlign = TextAlign.Center
+                )
+                IconButton(
+                    onClick = {
+                        onRankingAction(
+                            RankingAction.ToggleClanFavorites(clan.id, clan.name)
+                        )
+                    }
+                ) {
+                    Icon(
+                        Icons.Default.Star,
+                        null,
+                        tint = if (state.isClanDetailFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
 
             Text("XP ${clan.xp.formatted}")
             ZonedDateTimeDisplay(clan.createDate)
@@ -72,7 +93,7 @@ fun ClanDetailScreen(
                         ) {
                             Text(member.name, modifier = Modifier.weight(1f))
 
-                            Column (horizontalAlignment = Alignment.End) {
+                            Column(horizontalAlignment = Alignment.End) {
                                 Text(member.rank)
                                 ZonedDateTimeDisplay(member.joinDate)
                             }

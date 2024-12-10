@@ -11,5 +11,6 @@ sealed interface RankingAction {
     data class SelectBracket(val bracket: Bracket) : RankingAction
     data class SelectStatType(val stat: StatType) : RankingAction
     data class SelectClan(val clanId: Int) : RankingAction
-    data class ToggleFavorites(val brawlhallaId: Int, val name: String) : RankingAction
+    data class TogglePlayerFavorites(val brawlhallaId: Int, val name: String) : RankingAction
+    data class ToggleClanFavorites(val clanId: Int, val name: String) : RankingAction
 }
