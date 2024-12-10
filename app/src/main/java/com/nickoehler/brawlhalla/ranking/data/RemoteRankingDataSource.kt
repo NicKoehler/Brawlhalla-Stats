@@ -26,7 +26,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 class RemoteRankingDataSource(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) : RankingsDataSource {
     override suspend fun getRankings(
         bracket: Bracket,

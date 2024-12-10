@@ -2,12 +2,14 @@ package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
@@ -29,7 +31,8 @@ import kotlinx.coroutines.launch
 const val MAX_PAGE = 1_000
 
 class RankingViewModel(
-    private val rankingsDataSource: RankingsDataSource
+    private val rankingsDataSource: RankingsDataSource,
+    private val database: LocalDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(RankingState())
     private var currentPage = 1
@@ -105,9 +108,13 @@ class RankingViewModel(
         }
 
         viewModelScope.launch {
+
+            val isFavorite = database.getPlayer(brawlhallaId = id) != null
+
             rankingsDataSource.getStat(id).onSuccess { stat ->
                 _state.update { state ->
                     state.copy(
+                        isStatDetailFavorite = isFavorite,
                         isStatDetailLoading = false,
                         selectedStatDetail = stat.toStatDetailUi()
                     )
@@ -151,6 +158,8 @@ class RankingViewModel(
                 }
                 _uiEvents.send(UiEvent.Error(error))
             }
+
+
         }
     }
 
@@ -262,11 +271,32 @@ class RankingViewModel(
                 }
             }
 
-            is RankingAction.SelectRanking -> selectStatDetail(action.id)
+            is RankingAction.SelectRanking -> selectStatDetail(action.brawlhallaId)
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.SelectRegion -> selectRegion(action.region)
             is RankingAction.SelectStatType -> selectStatType(action.stat)
             is RankingAction.SelectClan -> selectClan(action.clanId)
+            is RankingAction.ToggleFavorites -> toggleFavorites(action.brawlhallaId, action.name)
+        }
+    }
+
+    private fun toggleFavorites(brawlhallaId: Int, name: String) {
+
+        viewModelScope.launch {
+
+            if (_state.value.isStatDetailFavorite) {
+                database.deletePlayer(brawlhallaId)
+                _state.update { state -> state.copy(isStatDetailFavorite = false) }
+                _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
+            } else {
+                database.savePlayer(
+                    brawlhallaId,
+                    name
+                )
+                _state.update { state -> state.copy(isStatDetailFavorite = true) }
+                _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))
+            }
+
         }
     }
 
