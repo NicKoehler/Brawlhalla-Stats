@@ -17,6 +17,7 @@ data class RankingState(
     val isStatDetailFavorite: Boolean = false,
     val isRankingDetailLoading: Boolean = false,
     val isClanDetailLoading: Boolean = false,
+    val isClanDetailFavorite: Boolean = false,
     val isLoadingMore: Boolean = false,
     val selectedStatDetail: StatDetailUi? = null,
     val selectedRankingDetail: RankingDetailUi? = null,

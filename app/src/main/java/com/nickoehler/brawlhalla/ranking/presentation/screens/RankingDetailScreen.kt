@@ -135,7 +135,7 @@ fun RankingDetailScreen(
                 IconButton(
                     {
                         onRankingAction(
-                            RankingAction.ToggleFavorites(
+                            RankingAction.TogglePlayerFavorites(
                                 playerStat.brawlhallaId,
                                 playerStat.name
                             )

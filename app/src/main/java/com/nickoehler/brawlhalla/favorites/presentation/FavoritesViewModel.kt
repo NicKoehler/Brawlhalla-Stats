@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.favorites.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
@@ -19,7 +20,6 @@ class FavoritesViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.onStart {
-
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
@@ -33,5 +33,8 @@ class FavoritesViewModel(
         return database.getAllPlayers()
     }
 
+    fun getClanLiveData(): LiveData<List<Clan>> {
+        return database.getAllClans()
+    }
 
 }

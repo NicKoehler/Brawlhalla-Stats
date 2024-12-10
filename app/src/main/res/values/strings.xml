@@ -49,4 +49,7 @@
     <string name="favorites">Favorites</string>
     <string name="prefRemovedFavorites">removed from favorites</string>
     <string name="prefAddedFavorites">added to favorites</string>
+    <string name="favoritePlayers">Favorites Players</string>
+    <string name="favoriteClans">Favorite Clans</string>
+    <string name="favoritesHint">You can add favorites players and clans in the ranking section</string>
 </resources>

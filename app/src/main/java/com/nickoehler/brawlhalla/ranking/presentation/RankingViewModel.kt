@@ -164,14 +164,27 @@ class RankingViewModel(
     }
 
     private fun selectClan(clanId: Int) {
+
+        _state.update { state -> state.copy(isClanDetailLoading = true) }
+
+
         viewModelScope.launch {
+            val isFavorite = database.getClan(clanId) != null
+
             rankingsDataSource.getClan(clanId).onSuccess {
                 _state.update { state ->
                     state.copy(
-                        selectedClan = it.toClanDetailUi()
+                        selectedClan = it.toClanDetailUi(),
+                        isClanDetailLoading = false,
+                        isClanDetailFavorite = isFavorite
                     )
                 }
             }.onError { error ->
+                _state.update { state ->
+                    state.copy(
+                        isClanDetailLoading = false
+                    )
+                }
                 _uiEvents.send(UiEvent.Error(error))
             }
         }
@@ -276,11 +289,19 @@ class RankingViewModel(
             is RankingAction.SelectRegion -> selectRegion(action.region)
             is RankingAction.SelectStatType -> selectStatType(action.stat)
             is RankingAction.SelectClan -> selectClan(action.clanId)
-            is RankingAction.ToggleFavorites -> toggleFavorites(action.brawlhallaId, action.name)
+            is RankingAction.TogglePlayerFavorites -> togglePlayerFavorites(
+                action.brawlhallaId,
+                action.name
+            )
+
+            is RankingAction.ToggleClanFavorites -> toggleClanFavorites(
+                action.clanId,
+                action.name
+            )
         }
     }
 
-    private fun toggleFavorites(brawlhallaId: Int, name: String) {
+    private fun togglePlayerFavorites(brawlhallaId: Int, name: String) {
 
         viewModelScope.launch {
 
@@ -294,6 +315,26 @@ class RankingViewModel(
                     name
                 )
                 _state.update { state -> state.copy(isStatDetailFavorite = true) }
+                _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))
+            }
+
+        }
+    }
+
+    private fun toggleClanFavorites(clanId: Int, name: String) {
+
+        viewModelScope.launch {
+
+            if (_state.value.isClanDetailFavorite) {
+                database.deleteClan(clanId)
+                _state.update { state -> state.copy(isClanDetailFavorite = false) }
+                _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
+            } else {
+                database.saveClan(
+                    clanId,
+                    name
+                )
+                _state.update { state -> state.copy(isClanDetailFavorite = true) }
                 _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))
             }
 
