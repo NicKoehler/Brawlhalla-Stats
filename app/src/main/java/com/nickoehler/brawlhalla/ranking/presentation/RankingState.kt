@@ -14,6 +14,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 data class RankingState(
     val isListLoading: Boolean = false,
     val isStatDetailLoading: Boolean = false,
+    val isStatDetailFavorite: Boolean = false,
     val isRankingDetailLoading: Boolean = false,
     val isClanDetailLoading: Boolean = false,
     val isLoadingMore: Boolean = false,

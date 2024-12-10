@@ -15,8 +15,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -130,6 +132,26 @@ fun RankingDetailScreen(
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )
+                IconButton(
+                    {
+                        onRankingAction(
+                            RankingAction.ToggleFavorites(
+                                playerStat.brawlhallaId,
+                                playerStat.name
+                            )
+                        )
+                    },
+                ) {
+                    Icon(
+                        Icons.Default.Star,
+                        null,
+                        tint = if (state.isStatDetailFavorite) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        }
+                    )
+                }
             }
             if (playerStat.clan != null) {
                 CustomCard(

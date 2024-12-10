@@ -16,6 +16,7 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
+import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,15 +42,29 @@ fun AdaptiveRankingPane(
                 ).show()
             }
 
-            is UiEvent.NavigateToDetail -> navigator.navigateTo(
-                ListDetailPaneScaffoldRole.Detail
-            )
+            is UiEvent.Message -> {
+                Toast.makeText(
+                    context,
+                    event.message.toString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
 
-            is UiEvent.NavigateToList -> navigator.navigateTo(
-                ListDetailPaneScaffoldRole.List
-            )
+            is UiEvent.NavigateToDetail -> {
+                navigator.navigateTo(
+                    ListDetailPaneScaffoldRole.Detail
+                )
+            }
 
-            is UiEvent.PopBackToList -> navigator.navigateBack()
+            is UiEvent.NavigateToList -> {
+                navigator.navigateTo(
+                    ListDetailPaneScaffoldRole.List
+                )
+            }
+
+            is UiEvent.PopBackToList -> {
+                navigator.navigateBack()
+            }
 
             else -> {}
         }

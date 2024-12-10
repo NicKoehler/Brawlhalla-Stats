@@ -47,4 +47,6 @@
     <string name="rating">Rating</string>
     <string name="peakRating">Peak Rating</string>
     <string name="favorites">Favorites</string>
+    <string name="prefRemovedFavorites">removed from favorites</string>
+    <string name="prefAddedFavorites">added to favorites</string>
 </resources>
