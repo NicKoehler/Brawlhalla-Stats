@@ -59,16 +59,16 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun RankingDetailScreen(
     state: RankingState,
+    modifier: Modifier = Modifier,
     onRankingAction: (RankingAction) -> Unit = {},
-    uiEvent: (UiEvent) -> Unit = {},
-    modifier: Modifier = Modifier
+    onUiEvent: (UiEvent) -> Unit = {}
 ) {
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
 
     LaunchedEffect(state.isStatDetailLoading) {
         if (playerStat == null && !state.isStatDetailLoading) {
-            uiEvent(UiEvent.PopBackToList)
+            onUiEvent(UiEvent.PopBack)
         }
     }
 
@@ -167,7 +167,7 @@ fun RankingDetailScreen(
                 AnimatedLinearProgressBar(
                     modifier = Modifier.height(30.dp),
                     indicatorProgress = playerStat.xpPercentage.value,
-                    label = "xd"
+                    label = playerStat.name
                 )
                 if (playerStat.nextLevel != null) {
                     Icon(Icons.Default.KeyboardDoubleArrowRight, null)

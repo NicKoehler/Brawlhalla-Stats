@@ -1,8 +1,8 @@
 package com.nickoehler.brawlhalla.core.domain
 
-import androidx.lifecycle.LiveData
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
+import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     suspend fun savePlayer(brawlhallaId: Int, name: String)
@@ -11,7 +11,7 @@ interface LocalDataSource {
 
     suspend fun getPlayer(brawlhallaId: Int): Player?
 
-    fun getAllPlayers(): LiveData<List<Player>>
+    fun getAllPlayers(): Flow<List<Player>>
 
     suspend fun saveClan(clanId: Int, name: String)
 
@@ -19,5 +19,5 @@ interface LocalDataSource {
 
     suspend fun getClan(clanId: Int): Clan?
 
-    fun getAllClans(): LiveData<List<Clan>>
+    fun getAllClans(): Flow<List<Clan>>
 }

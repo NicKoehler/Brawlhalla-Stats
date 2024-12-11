@@ -1,8 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
+import com.nickoehler.brawlhalla.clans.domain.ClanDetail
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
-import com.nickoehler.brawlhalla.ranking.domain.ClanDetail
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 import java.time.ZonedDateTime
 import java.util.TimeZone

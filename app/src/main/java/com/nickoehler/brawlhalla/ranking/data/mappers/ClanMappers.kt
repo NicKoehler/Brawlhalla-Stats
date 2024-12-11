@@ -1,9 +1,9 @@
 package com.nickoehler.brawlhalla.ranking.data.mappers
 
-import com.nickoehler.brawlhalla.ranking.data.dto.ClanDetailDto
-import com.nickoehler.brawlhalla.ranking.data.dto.ClanMemberDto
-import com.nickoehler.brawlhalla.ranking.domain.ClanDetail
-import com.nickoehler.brawlhalla.ranking.domain.ClanMember
+import com.nickoehler.brawlhalla.clans.data.dto.ClanDetailDto
+import com.nickoehler.brawlhalla.clans.data.dto.ClanMemberDto
+import com.nickoehler.brawlhalla.clans.domain.ClanDetail
+import com.nickoehler.brawlhalla.clans.domain.ClanMember
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

@@ -55,14 +55,6 @@ fun AdaptiveLegendsPane(
                 }
             }
 
-            is UiEvent.NavigateToDetail -> {
-                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-            }
-
-            is UiEvent.PopBackToList -> {
-                navigator.navigateBack()
-            }
-
             else -> {}
         }
     }

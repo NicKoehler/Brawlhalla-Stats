@@ -1,5 +1,8 @@
 package com.nickoehler.brawlhalla.di
 
+import com.nickoehler.brawlhalla.clans.data.RemoteClanDataSource
+import com.nickoehler.brawlhalla.clans.domain.ClanDataSource
+import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.core.data.DatabaseDataSource
 import com.nickoehler.brawlhalla.core.data.database.provideDataBase
 import com.nickoehler.brawlhalla.core.data.networking.HttpClientFactory
@@ -22,7 +25,9 @@ val appModule = module {
     single<LocalDataSource> { DatabaseDataSource(get()) }
     single<LegendsDataSource> { RemoteLegendsDataSource(get()) }
     single<RankingsDataSource> { RemoteRankingDataSource(get()) }
+    single<ClanDataSource> { RemoteClanDataSource(get()) }
     viewModel { LegendsViewModel(get()) }
     viewModel { RankingViewModel(get(), get()) }
+    viewModel { ClanViewModel(get(), get()) }
     viewModel { FavoritesViewModel(get()) }
 }
