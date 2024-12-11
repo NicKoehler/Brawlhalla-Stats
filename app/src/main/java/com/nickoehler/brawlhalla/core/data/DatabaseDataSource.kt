@@ -1,10 +1,10 @@
 package com.nickoehler.brawlhalla.core.data
 
-import androidx.lifecycle.LiveData
 import com.nickoehler.brawlhalla.core.data.database.AppDatabase
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
+import kotlinx.coroutines.flow.Flow
 
 class DatabaseDataSource(
     database: AppDatabase
@@ -25,7 +25,7 @@ class DatabaseDataSource(
         return playerDao.getPlayer(brawlhallaId)
     }
 
-    override fun getAllPlayers(): LiveData<List<Player>> {
+    override fun getAllPlayers(): Flow<List<Player>> {
         return playerDao.getAllPlayers()
     }
 
@@ -41,7 +41,7 @@ class DatabaseDataSource(
         return clanDao.getClan(clanId)
     }
 
-    override fun getAllClans(): LiveData<List<Clan>> {
+    override fun getAllClans(): Flow<List<Clan>> {
         return clanDao.getAllClans()
     }
 }

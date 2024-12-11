@@ -52,4 +52,6 @@
     <string name="favoritePlayers">Favorites Players</string>
     <string name="favoriteClans">Favorite Clans</string>
     <string name="favoritesHint">You can add favorites players and clans in the ranking section</string>
+    <string name="clans">Clans</string>
+    <string name="players">Players</string>
 </resources>

@@ -13,7 +13,6 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
-import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -158,35 +157,6 @@ class RankingViewModel(
                 }
                 _uiEvents.send(UiEvent.Error(error))
             }
-
-
-        }
-    }
-
-    private fun selectClan(clanId: Int) {
-
-        _state.update { state -> state.copy(isClanDetailLoading = true) }
-
-
-        viewModelScope.launch {
-            val isFavorite = database.getClan(clanId) != null
-
-            rankingsDataSource.getClan(clanId).onSuccess {
-                _state.update { state ->
-                    state.copy(
-                        selectedClan = it.toClanDetailUi(),
-                        isClanDetailLoading = false,
-                        isClanDetailFavorite = isFavorite
-                    )
-                }
-            }.onError { error ->
-                _state.update { state ->
-                    state.copy(
-                        isClanDetailLoading = false
-                    )
-                }
-                _uiEvents.send(UiEvent.Error(error))
-            }
         }
     }
 
@@ -242,10 +212,10 @@ class RankingViewModel(
         if (currentQuery.all { it.isDigit() }) {
             try {
                 val id = currentQuery.toInt()
-                selectStatDetail(id)
                 viewModelScope.launch {
-                    _uiEvents.send(UiEvent.NavigateToDetail)
+                    _uiEvents.send(UiEvent.GoToDetail)
                 }
+                selectStatDetail(id)
             } catch (e: NumberFormatException) {
                 loadRankings(true)
             }
@@ -288,23 +258,17 @@ class RankingViewModel(
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.SelectRegion -> selectRegion(action.region)
             is RankingAction.SelectStatType -> selectStatType(action.stat)
-            is RankingAction.SelectClan -> selectClan(action.clanId)
             is RankingAction.TogglePlayerFavorites -> togglePlayerFavorites(
                 action.brawlhallaId,
                 action.name
             )
 
-            is RankingAction.ToggleClanFavorites -> toggleClanFavorites(
-                action.clanId,
-                action.name
-            )
+            else -> {}
         }
     }
 
     private fun togglePlayerFavorites(brawlhallaId: Int, name: String) {
-
         viewModelScope.launch {
-
             if (_state.value.isStatDetailFavorite) {
                 database.deletePlayer(brawlhallaId)
                 _state.update { state -> state.copy(isStatDetailFavorite = false) }
@@ -321,25 +285,6 @@ class RankingViewModel(
         }
     }
 
-    private fun toggleClanFavorites(clanId: Int, name: String) {
-
-        viewModelScope.launch {
-
-            if (_state.value.isClanDetailFavorite) {
-                database.deleteClan(clanId)
-                _state.update { state -> state.copy(isClanDetailFavorite = false) }
-                _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
-            } else {
-                database.saveClan(
-                    clanId,
-                    name
-                )
-                _state.update { state -> state.copy(isClanDetailFavorite = true) }
-                _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))
-            }
-
-        }
-    }
 
     fun onAppBarAction(action: AppBarAction) {
         when (action) {
@@ -355,5 +300,4 @@ class RankingViewModel(
             _uiEvents.send(event)
         }
     }
-
 }

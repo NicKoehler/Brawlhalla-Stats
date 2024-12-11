@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.ranking.presentation.screens
+package com.nickoehler.brawlhalla.clans.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,11 +25,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nickoehler.brawlhalla.clans.domain.ClanDetail
+import com.nickoehler.brawlhalla.clans.domain.ClanMember
+import com.nickoehler.brawlhalla.clans.presentation.ClanAction
+import com.nickoehler.brawlhalla.clans.presentation.ClanState
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.ranking.domain.ClanDetail
-import com.nickoehler.brawlhalla.ranking.domain.ClanMember
-import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
-import com.nickoehler.brawlhalla.ranking.presentation.RankingState
 import com.nickoehler.brawlhalla.ranking.presentation.components.ZonedDateTimeDisplay
 import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -37,21 +38,30 @@ import java.time.ZoneOffset
 
 @Composable
 fun ClanDetailScreen(
-    state: RankingState,
-    onRankingAction: (RankingAction) -> Unit = {},
+    clanId: Int? = null,
+    state: ClanState,
+    onClanAction: (ClanAction) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+
     val clan = state.selectedClan
+
+    LaunchedEffect(Unit) {
+        if (clanId != null) {
+            onClanAction(ClanAction.SelectClan(clanId))
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Spacer(Modifier)
-        if (state.isStatDetailLoading) {
+        if (state.isClanDetailLoading) {
             CircularProgressIndicator()
         } else if (clan != null) {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     clan.name,
                     fontWeight = FontWeight.Bold,
@@ -61,8 +71,8 @@ fun ClanDetailScreen(
                 )
                 IconButton(
                     onClick = {
-                        onRankingAction(
-                            RankingAction.ToggleClanFavorites(clan.id, clan.name)
+                        onClanAction(
+                            ClanAction.ToggleClanFavorites(clan.id, clan.name)
                         )
                     }
                 ) {
@@ -77,30 +87,25 @@ fun ClanDetailScreen(
             Text("XP ${clan.xp.formatted}")
             ZonedDateTimeDisplay(clan.createDate)
 
-
-
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(clan.members) { member ->
-                    Column {
-                        CustomCard(
-                            modifier = Modifier.fillParentMaxWidth(),
-                            onClick = {
-                                onRankingAction(RankingAction.SelectRanking(member.brawlhallaId))
-                            }
-                        ) {
-                            Text(member.name, modifier = Modifier.weight(1f))
-
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(member.rank)
-                                ZonedDateTimeDisplay(member.joinDate)
-                            }
-
+                    CustomCard(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onClick = {
+                            onClanAction(ClanAction.SelectMember(member.brawlhallaId))
                         }
-                    }
+                    ) {
+                        Text(member.name, modifier = Modifier.weight(1f))
 
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(member.rank)
+                            ZonedDateTimeDisplay(member.joinDate)
+                        }
+
+                    }
                 }
             }
         }
@@ -113,7 +118,7 @@ private fun ClanDetailScreenPreview() {
     BrawlhallaTheme {
         Surface {
             ClanDetailScreen(
-                state = RankingState(
+                state = ClanState(
                     selectedClan = clanDetailSample.toClanDetailUi()
                 )
             )

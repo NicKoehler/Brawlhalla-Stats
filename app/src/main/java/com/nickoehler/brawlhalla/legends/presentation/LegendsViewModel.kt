@@ -44,7 +44,6 @@ class LegendsViewModel(
     private fun loadLegends() {
         viewModelScope.launch {
             _state.update { it.copy(isListLoading = true) }
-
             legendsDataSource.getLegends().onSuccess { legends ->
                 allLegends = legends.map { it.toLegendUi() }
                 allWeapons = getAllWeapons()
@@ -74,7 +73,6 @@ class LegendsViewModel(
                             selectedLegendUi = legend.toLegendDetailUi()
                         )
                     }
-                    _uiEvents.send(UiEvent.NavigateToDetail)
                 }.onError { error ->
                     _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
                     _uiEvents.send(UiEvent.Error(error))

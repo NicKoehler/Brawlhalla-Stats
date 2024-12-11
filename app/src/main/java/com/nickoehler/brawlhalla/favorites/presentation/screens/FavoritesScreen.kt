@@ -1,11 +1,15 @@
 package com.nickoehler.brawlhalla.favorites.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,21 +26,21 @@ import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
+import com.nickoehler.brawlhalla.favorites.presentation.FavoritesState
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-    players: List<Player>? = emptyList(),
-    clans: List<Clan>? = emptyList(),
+    state: FavoritesState = FavoritesState(),
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceEvenly,
-    ) {
-
-        if (players.isNullOrEmpty() && clans.isNullOrEmpty()) {
+    if (state.players.isEmpty() && state.clans.isEmpty()) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 stringResource(R.string.favoritesHint),
                 fontSize = 20.sp,
@@ -44,19 +48,40 @@ fun FavoritesScreen(
                 textAlign = TextAlign.Center
             )
         }
+    } else {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        if (!players.isNullOrEmpty()) {
-            Column(
-                modifier = modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(stringResource(R.string.favoritePlayers))
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+            val players = state.players
+            val clans = state.clans
+            SingleChoiceSegmentedButtonRow {
+                SegmentedButton(
+                    state.selectedFavoriteType == FavoriteType.PLAYERS,
+                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.PLAYERS)) },
+                    enabled = state.players.isNotEmpty(),
+                    shape = SegmentedButtonDefaults.itemShape(0, 2),
                 ) {
+                    Text(stringResource(R.string.players))
+                }
+
+                SegmentedButton(
+                    state.selectedFavoriteType == FavoriteType.CLANS,
+                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.CLANS)) },
+                    enabled = state.clans.isNotEmpty(),
+                    shape = SegmentedButtonDefaults.itemShape(1, 2)
+                ) {
+                    Text(stringResource(R.string.clans))
+                }
+            }
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (state.selectedFavoriteType == FavoriteType.PLAYERS) {
                     item { Spacer(Modifier) }
-                    items(players, {it.id}) { player ->
+                    items(players, { it.id }) { player ->
                         CustomCard(
                             onClick = {
                                 onFavoriteAction(
@@ -69,21 +94,10 @@ fun FavoritesScreen(
                     }
                     item { Spacer(Modifier) }
                 }
-            }
-        }
 
-        if (!clans.isNullOrEmpty()) {
-            Column(
-                modifier = modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(stringResource(R.string.favoriteClans))
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+                if (state.selectedFavoriteType == FavoriteType.CLANS) {
                     item { Spacer(Modifier) }
-                    items(clans,  {it.id}) { clan ->
+                    items(clans, { it.id }) { clan ->
                         CustomCard(
                             onClick = {
                                 onFavoriteAction(
@@ -98,7 +112,6 @@ fun FavoritesScreen(
                 }
             }
         }
-
     }
 }
 
@@ -108,10 +121,12 @@ private fun FavoritesScreenPreview() {
     BrawlhallaTheme {
         Surface {
             FavoritesScreen(
-                players = (1..100).map
-                { Player(it, name = "Nic") },
-                clans = (1..3).map
-                { Clan(it, name = "Nic") }
+                state = FavoritesState(
+                    players = (1..100).map
+                    { Player(it, name = "Nic") },
+                    clans = (1..3).map
+                    { Clan(it, name = "Nic") }
+                )
             )
         }
     }

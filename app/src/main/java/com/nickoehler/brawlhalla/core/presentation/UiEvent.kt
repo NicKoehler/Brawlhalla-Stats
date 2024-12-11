@@ -7,7 +7,6 @@ sealed interface UiEvent {
     data class Error(val error: NetworkError) : UiEvent
     data class Message(val message: RankingMessage) : UiEvent
     data object ScrollToTop : UiEvent
-    data object NavigateToList : UiEvent
-    data object NavigateToDetail : UiEvent
-    data object PopBackToList : UiEvent
+    data object GoToDetail : UiEvent
+    data object PopBack : UiEvent
 }

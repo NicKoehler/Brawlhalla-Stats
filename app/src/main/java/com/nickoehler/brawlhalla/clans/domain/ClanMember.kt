@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.ranking.domain
+package com.nickoehler.brawlhalla.clans.domain
 
 import java.time.LocalDateTime
 

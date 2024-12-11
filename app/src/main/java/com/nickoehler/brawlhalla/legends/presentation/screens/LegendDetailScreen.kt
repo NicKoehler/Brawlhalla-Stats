@@ -54,12 +54,6 @@ fun LegendDetailScreen(
         var showBottomSheet by remember { mutableStateOf(false) }
         val legend = state.selectedLegendUi
 
-        LaunchedEffect(state.isDetailLoading) {
-            if (legend == null && !state.isDetailLoading) {
-                uiEvent(UiEvent.PopBackToList)
-            }
-        }
-
         if (showBottomSheet) {
             ModalBottomSheet(
                 sheetState = bottomSheetState,

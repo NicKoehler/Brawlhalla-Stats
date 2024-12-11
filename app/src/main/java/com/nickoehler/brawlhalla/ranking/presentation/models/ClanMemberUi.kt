@@ -1,6 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
-import com.nickoehler.brawlhalla.ranking.domain.ClanMember
+import com.nickoehler.brawlhalla.clans.domain.ClanMember
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 import java.time.ZonedDateTime
 import java.util.TimeZone

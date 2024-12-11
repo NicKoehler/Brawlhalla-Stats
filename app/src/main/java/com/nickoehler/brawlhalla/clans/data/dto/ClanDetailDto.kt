@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.ranking.data.dto
+package com.nickoehler.brawlhalla.clans.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

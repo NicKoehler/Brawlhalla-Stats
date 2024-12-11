@@ -4,18 +4,15 @@ import com.nickoehler.brawlhalla.core.data.networking.safeCall
 import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.core.domain.util.Result
 import com.nickoehler.brawlhalla.core.domain.util.map
-import com.nickoehler.brawlhalla.ranking.data.dto.ClanDetailDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingDetailDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingSoloDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingTeamDto
 import com.nickoehler.brawlhalla.ranking.data.dto.StatDetailDto
-import com.nickoehler.brawlhalla.ranking.data.mappers.toClanDetail
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRanking
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRankingDetail
 import com.nickoehler.brawlhalla.ranking.data.mappers.toStatDetail
 import com.nickoehler.brawlhalla.ranking.data.util.constructRankingsUrl
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
-import com.nickoehler.brawlhalla.ranking.domain.ClanDetail
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
@@ -84,11 +81,5 @@ class RemoteRankingDataSource(
         }.map { response ->
             response.toRankingDetail()
         }
-    }
-
-    override suspend fun getClan(clanId: Int): Result<ClanDetail, NetworkError> {
-        return safeCall<ClanDetailDto> {
-            httpClient.get("/clan/$clanId")
-        }.map { it.toClanDetail() }
     }
 }
