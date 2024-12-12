@@ -129,8 +129,10 @@ fun RankingDetailScreen(
                 Spacer(Modifier.size(10.dp))
                 Text(
                     playerStat.name,
+                    modifier.weight(1f),
                     fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
+                    lineHeight = 30.sp,
+                    fontWeight = FontWeight.Bold,
                 )
                 IconButton(
                     {
@@ -141,7 +143,8 @@ fun RankingDetailScreen(
                             )
                         )
                     },
-                ) {
+
+                    ) {
                     Icon(
                         Icons.Default.Star,
                         null,
@@ -149,7 +152,7 @@ fun RankingDetailScreen(
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.onBackground
-                        }
+                        },
                     )
                 }
             }
@@ -298,7 +301,7 @@ private fun RankingDetailScreenRankingPreview() {
 
 internal val statDetailSample = StatDetail(
     brawlhallaId = 2316541,
-    name = "NicKoehler",
+    name = "NicKoehlerjijijijijijijijijijijiijijiijij",
     xp = 4261524,
     level = 100,
     xpPercentage = 0f,

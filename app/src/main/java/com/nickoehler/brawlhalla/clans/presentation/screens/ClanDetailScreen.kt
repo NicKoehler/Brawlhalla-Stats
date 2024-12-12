@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -62,11 +63,13 @@ fun ClanDetailScreen(
             CircularProgressIndicator()
         } else if (clan != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(Modifier.width(40.dp))
                 Text(
                     clan.name,
-                    fontWeight = FontWeight.Bold,
+                    modifier.weight(1f),
                     fontSize = 30.sp,
                     lineHeight = 30.sp,
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
                 IconButton(
