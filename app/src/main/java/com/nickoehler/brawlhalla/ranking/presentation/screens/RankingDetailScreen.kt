@@ -133,6 +133,7 @@ fun RankingDetailScreen(
                     fontSize = 30.sp,
                     lineHeight = 30.sp,
                     fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
                 IconButton(
                     {
@@ -301,7 +302,7 @@ private fun RankingDetailScreenRankingPreview() {
 
 internal val statDetailSample = StatDetail(
     brawlhallaId = 2316541,
-    name = "NicKoehlerjijijijijijijijijijijiijijiijij",
+    name = "NicKoehler",
     xp = 4261524,
     level = 100,
     xpPercentage = 0f,
