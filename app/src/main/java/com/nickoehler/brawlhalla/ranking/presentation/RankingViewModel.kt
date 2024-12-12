@@ -107,17 +107,17 @@ class RankingViewModel(
         }
 
         viewModelScope.launch {
-
-            val isFavorite = database.getPlayer(brawlhallaId = id) != null
-
             rankingsDataSource.getStat(id).onSuccess { stat ->
-                _state.update { state ->
-                    state.copy(
-                        isStatDetailFavorite = isFavorite,
-                        isStatDetailLoading = false,
-                        selectedStatDetail = stat.toStatDetailUi()
-                    )
-                }
+                database.getPlayer(brawlhallaId = id)
+                    .collect { player ->
+                        _state.update { state ->
+                            state.copy(
+                                isStatDetailFavorite = player != null,
+                                isStatDetailLoading = false,
+                                selectedStatDetail = stat.toStatDetailUi()
+                            )
+                        }
+                    }
             }.onError { error ->
                 _state.update { state ->
                     state.copy(

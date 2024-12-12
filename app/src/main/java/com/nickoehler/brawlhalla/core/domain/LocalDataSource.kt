@@ -9,7 +9,7 @@ interface LocalDataSource {
 
     suspend fun deletePlayer(brawlhallaId: Int)
 
-    suspend fun getPlayer(brawlhallaId: Int): Player?
+    fun getPlayer(brawlhallaId: Int): Flow<Player?>
 
     fun getAllPlayers(): Flow<List<Player>>
 
@@ -17,7 +17,7 @@ interface LocalDataSource {
 
     suspend fun deleteClan(clanId: Int)
 
-    suspend fun getClan(clanId: Int): Clan?
+    fun getClan(clanId: Int): Flow<Clan?>
 
     fun getAllClans(): Flow<List<Clan>>
 }

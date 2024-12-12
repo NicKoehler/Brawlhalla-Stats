@@ -54,4 +54,10 @@
     <string name="favoritesHint">You can add favorites players and clans in the ranking section</string>
     <string name="clans">Clans</string>
     <string name="players">Players</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="areYouSureDeletePlayerTitle">Are you sure want to delete this player?</string>
+    <string name="areYouSureDeletePlayerDesc">Confirm to delete this player</string>
+    <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
+    <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
 </resources>

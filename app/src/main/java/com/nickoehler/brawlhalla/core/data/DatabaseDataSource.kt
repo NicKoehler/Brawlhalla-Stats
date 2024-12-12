@@ -21,7 +21,7 @@ class DatabaseDataSource(
         playerDao.deletePlayer(brawlhallaId)
     }
 
-    override suspend fun getPlayer(brawlhallaId: Int): Player {
+    override fun getPlayer(brawlhallaId: Int): Flow<Player?> {
         return playerDao.getPlayer(brawlhallaId)
     }
 
@@ -37,7 +37,7 @@ class DatabaseDataSource(
         clanDao.deleteClan(clanId)
     }
 
-    override suspend fun getClan(clanId: Int): Clan {
+    override fun getClan(clanId: Int): Flow<Clan?> {
         return clanDao.getClan(clanId)
     }
 
