@@ -41,7 +41,7 @@ enum class Screens(
 sealed interface Route {
 
     @Serializable
-    data object Home : Route
+    data object Info : Route
 
     @Serializable
     data object Favorites : Route

@@ -292,6 +292,7 @@ class RankingViewModel(
             is AppBarAction.OpenSearch -> openSearch()
             is AppBarAction.QueryChange -> updateSearchQuery(action.query)
             is AppBarAction.Search -> search()
+            else -> {}
         }
     }
 

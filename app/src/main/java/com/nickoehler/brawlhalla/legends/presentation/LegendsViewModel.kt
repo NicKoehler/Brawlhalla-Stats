@@ -297,7 +297,7 @@ class LegendsViewModel(
             is AppBarAction.CloseSearch -> toggleSearch(false)
             is AppBarAction.OpenSearch -> toggleSearch(true)
             is AppBarAction.QueryChange -> searchQuery(action.query)
-            is AppBarAction.Search -> {}
+            else -> {}
         }
     }
 
