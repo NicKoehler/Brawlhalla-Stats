@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,6 +41,7 @@ fun CustomTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     showSearch: Boolean = true,
+    showInfo: Boolean = false,
     placeholder: String = stringResource(R.string.search),
     onAppBarAction: (AppBarAction) -> Unit = {},
     state: CustomAppBarState = CustomAppBarState(),
@@ -111,6 +113,20 @@ fun CustomTopAppBar(
                         ) {
                             Icon(
                                 Icons.Default.Search,
+                                null
+                            )
+                        }
+                    }
+                    if (showInfo) {
+                        IconButton(
+                            onClick = {
+                                onAppBarAction(
+                                    AppBarAction.OpenInfo
+                                )
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
                                 null
                             )
                         }

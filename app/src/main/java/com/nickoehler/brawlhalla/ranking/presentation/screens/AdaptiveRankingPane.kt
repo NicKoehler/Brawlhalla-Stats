@@ -26,7 +26,7 @@ fun AdaptiveRankingPane(
     rankingId: Int? = null,
     onClanSelection: (Int) -> Unit = {},
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -46,7 +46,7 @@ fun AdaptiveRankingPane(
                 Toast.makeText(
                     context,
                     event.message.toString(context),
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
                 ).show()
             }
 

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
+import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesState
@@ -44,6 +45,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
+    onInfoSelection: () -> Unit = {},
     state: FavoritesState = FavoritesState(),
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
@@ -53,6 +55,12 @@ fun FavoritesScreen(
             CustomTopAppBar(
                 stringResource(R.string.favorites),
                 showSearch = false,
+                showInfo = true,
+                onAppBarAction = { action ->
+                    if (action is AppBarAction.OpenInfo) {
+                        onInfoSelection()
+                    }
+                }
             )
         }
     ) {

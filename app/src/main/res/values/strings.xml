@@ -60,4 +60,5 @@
     <string name="areYouSureDeletePlayerDesc">Confirm to delete this player</string>
     <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
     <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
+    <string name="info">Info</string>
 </resources>

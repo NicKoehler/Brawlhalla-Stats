@@ -37,6 +37,9 @@ import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
+import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
+import com.nickoehler.brawlhalla.info.presentation.model.InfoAction
+import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
@@ -72,6 +75,7 @@ class MainActivity : ComponentActivity() {
                     layoutType = if (showBottomBar) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
                         currentWindowAdaptiveInfo()
                     ) else NavigationSuiteType.None,
+
                     navigationSuiteItems = {
                         Screens.entries.forEach { currentScreen ->
                             val isSelected = currentDestination?.hierarchy?.any {
@@ -161,6 +165,9 @@ class MainActivity : ComponentActivity() {
 
                                         else -> {}
                                     }
+                                },
+                                onInfoSelection = {
+                                    navController.navigate(Route.Info)
                                 }
                             )
                         }
@@ -182,7 +189,7 @@ class MainActivity : ComponentActivity() {
                                         Toast.makeText(
                                             context,
                                             event.message.toString(context),
-                                            Toast.LENGTH_LONG
+                                            Toast.LENGTH_SHORT
                                         ).show()
                                     }
 
@@ -202,6 +209,17 @@ class MainActivity : ComponentActivity() {
                                             }
                                             launchSingleTop = true
                                         }
+                                    }
+                                }
+                            )
+                        }
+                        composable<Route.Info> {
+                            val infoViewModel = InfoViewModel()
+                            InfoScreen(
+                                { action ->
+                                    infoViewModel.onInfoAction(action)
+                                    if (action is InfoAction.GoBack) {
+                                        navController.popBackStack()
                                     }
                                 }
                             )
