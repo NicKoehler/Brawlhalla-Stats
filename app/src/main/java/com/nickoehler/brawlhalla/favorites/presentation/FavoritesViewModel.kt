@@ -42,8 +42,8 @@ class FavoritesViewModel(
         combine(_players, _clans) { players, clans ->
             _state.update { state ->
                 state.copy(
-                    players = players,
-                    clans = clans,
+                    players = players.sortedBy { it.name.lowercase() },
+                    clans = clans.sortedBy { it.name },
                     selectedFavoriteType =
                     if (players.isNotEmpty()) {
                         FavoriteType.PLAYERS
@@ -84,9 +84,23 @@ class FavoritesViewModel(
         _state.value = _state.value.copy(selectedFavoriteType = fav)
     }
 
+    private fun deletePlayer(brawlhallaId: Int) {
+        viewModelScope.launch {
+            database.deletePlayer(brawlhallaId)
+        }
+    }
+
+    private fun deleteClan(clanId: Int) {
+        viewModelScope.launch {
+            database.deleteClan(clanId)
+        }
+    }
+
     fun onFavoriteAction(action: FavoriteAction) {
         when (action) {
             is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
+            is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
+            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
             else -> {}
         }
     }

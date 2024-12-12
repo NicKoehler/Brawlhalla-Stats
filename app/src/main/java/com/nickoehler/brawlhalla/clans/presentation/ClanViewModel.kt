@@ -37,15 +37,15 @@ class ClanViewModel(
         _state.update { state -> state.copy(isClanDetailLoading = true) }
 
         viewModelScope.launch {
-            val isFavorite = database.getClan(clanId) != null
-
             clanDataSource.getClan(clanId).onSuccess {
-                _state.update { state ->
-                    state.copy(
-                        selectedClan = it.toClanDetailUi(),
-                        isClanDetailLoading = false,
-                        isClanDetailFavorite = isFavorite
-                    )
+                database.getClan(clanId).collect { clan ->
+                    _state.update { state ->
+                        state.copy(
+                            selectedClan = it.toClanDetailUi(),
+                            isClanDetailLoading = false,
+                            isClanDetailFavorite = clan != null
+                        )
+                    }
                 }
             }.onError { error ->
                 _state.update { state ->

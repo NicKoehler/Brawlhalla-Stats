@@ -12,7 +12,7 @@ interface ClanDao {
     fun getAllClans(): Flow<List<Clan>>
 
     @Query("SELECT * FROM clans WHERE id=:id")
-    suspend fun getClan(id: Int): Clan
+    fun getClan(id: Int): Flow<Clan?>
 
     @Insert
     suspend fun insertClan(clan: Clan)

@@ -6,5 +6,6 @@ sealed interface FavoriteAction {
     data class SelectPlayer(val brawlhallaId: Int) : FavoriteAction
     data class SelectClan(val clanId: Int) : FavoriteAction
     data class SelectFavorite(val fav: FavoriteType) : FavoriteAction
-    data class ToggleFavorites(val brawlhallaId: Int, val name: String) : FavoriteAction
+    data class DeletePlayer(val brawlhallaId: Int) : FavoriteAction
+    data class DeleteClan(val clanId: Int) : FavoriteAction
 }
