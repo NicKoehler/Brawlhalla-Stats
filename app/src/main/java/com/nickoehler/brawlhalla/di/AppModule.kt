@@ -14,6 +14,7 @@ import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.ranking.data.RemoteRankingDataSource
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -27,7 +28,8 @@ val appModule = module {
     single<RankingsDataSource> { RemoteRankingDataSource(get()) }
     single<ClanDataSource> { RemoteClanDataSource(get()) }
     viewModel { LegendsViewModel(get()) }
-    viewModel { RankingViewModel(get(), get()) }
+    viewModel { StatDetailViewModel(get(), get()) }
+    viewModel { RankingViewModel(get()) }
     viewModel { ClanViewModel(get(), get()) }
     viewModel { FavoritesViewModel(get()) }
 }

@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +42,7 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
+import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
@@ -47,28 +50,61 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
 import com.nickoehler.brawlhalla.ranking.domain.StatClan
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
-import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
-import com.nickoehler.brawlhalla.ranking.presentation.RankingState
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailState
 import com.nickoehler.brawlhalla.ranking.presentation.components.CustomRankingField
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
+import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 
 @Composable
 fun RankingDetailScreen(
-    state: RankingState,
+    playerId: Int? = null,
+    state: StatDetailState,
     modifier: Modifier = Modifier,
-    onRankingAction: (RankingAction) -> Unit = {},
-    onUiEvent: (UiEvent) -> Unit = {}
+    events: Flow<UiEvent> = emptyFlow(),
+    onStatDetailAction: (StatDetailAction) -> Unit = {},
 ) {
+    val context = LocalContext.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
 
-    LaunchedEffect(state.isStatDetailLoading) {
-        if (playerStat == null && !state.isStatDetailLoading) {
-            onUiEvent(UiEvent.PopBack)
+
+    LaunchedEffect(playerId) {
+        if (playerId != null) {
+            onStatDetailAction(
+                StatDetailAction.SelectPlayer(
+                    playerId
+                )
+            )
+        }
+    }
+
+    ObserveAsEvents(events) { event ->
+        when (event) {
+            is UiEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.error.toString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            is UiEvent.Message -> {
+                Toast.makeText(
+                    context,
+                    event.message.toString(context),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {}
         }
     }
 
@@ -137,8 +173,8 @@ fun RankingDetailScreen(
                 )
                 IconButton(
                     {
-                        onRankingAction(
-                            RankingAction.TogglePlayerFavorites(
+                        onStatDetailAction(
+                            StatDetailAction.TogglePlayerFavorites(
                                 playerStat.brawlhallaId,
                                 playerStat.name
                             )
@@ -161,7 +197,7 @@ fun RankingDetailScreen(
                 CustomCard(
                     contentPadding = 10.dp,
                     onClick = {
-                        onRankingAction(RankingAction.SelectClan(playerStat.clan.clanId))
+                        onStatDetailAction(StatDetailAction.SelectClan(playerStat.clan.clanId))
                     }
                 ) {
                     Text(playerStat.clan.clanName)
@@ -184,7 +220,7 @@ fun RankingDetailScreen(
             SingleChoiceSegmentedButtonRow {
                 SegmentedButton(
                     state.selectedStatType == StatType.General,
-                    onClick = { onRankingAction(RankingAction.SelectStatType(StatType.General)) },
+                    onClick = { onStatDetailAction(StatDetailAction.SelectStatType(StatType.General)) },
                     shape = SegmentedButtonDefaults.itemShape(
                         0,
                         2
@@ -194,7 +230,7 @@ fun RankingDetailScreen(
                 }
                 SegmentedButton(
                     state.selectedStatType == StatType.Ranking,
-                    onClick = { onRankingAction(RankingAction.SelectStatType(StatType.Ranking)) },
+                    onClick = { onStatDetailAction(StatDetailAction.SelectStatType(StatType.Ranking)) },
                     shape = SegmentedButtonDefaults.itemShape(1, 2),
                     enabled = state.rankingEnabled
                 ) {
@@ -247,7 +283,7 @@ private fun RankingDetailScreenPreview() {
     BrawlhallaTheme {
         Surface {
             RankingDetailScreen(
-                state = RankingState(
+                state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                 ),
             )
@@ -261,7 +297,7 @@ private fun RankingDetailScreenLoadingPreview() {
     BrawlhallaTheme {
         Surface {
             RankingDetailScreen(
-                state = RankingState(isStatDetailLoading = true),
+                state = StatDetailState(isStatDetailLoading = true),
             )
         }
     }
@@ -274,7 +310,7 @@ private fun RankingDetailScreenRankingLoadingPreview() {
     BrawlhallaTheme {
         Surface {
             RankingDetailScreen(
-                state = RankingState(
+                state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                     selectedRankingDetail = rankingDetailSample.toRankingDetailUi(),
                     selectedStatType = StatType.Ranking
@@ -290,7 +326,7 @@ private fun RankingDetailScreenRankingPreview() {
     BrawlhallaTheme {
         Surface {
             RankingDetailScreen(
-                state = RankingState(
+                state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                     isRankingDetailLoading = true,
                     selectedStatType = StatType.Ranking
