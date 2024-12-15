@@ -34,6 +34,10 @@ class ClanViewModel(
 
     private fun selectClan(clanId: Int) {
 
+        if (_state.value.selectedClan?.id == clanId) {
+            return
+        }
+        
         _state.update { state -> state.copy(isClanDetailLoading = true) }
 
         viewModelScope.launch {

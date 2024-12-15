@@ -1,7 +1,6 @@
 package com.nickoehler.brawlhalla
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,7 +22,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,8 +30,6 @@ import androidx.navigation.toRoute
 import com.nickoehler.brawlhalla.clans.presentation.ClanAction
 import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
-import com.nickoehler.brawlhalla.core.presentation.UiEvent
-import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
@@ -41,12 +37,13 @@ import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
 import com.nickoehler.brawlhalla.info.presentation.model.InfoAction
 import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
-import com.nickoehler.brawlhalla.ranking.presentation.util.toString
+import com.nickoehler.brawlhalla.ranking.presentation.screens.RankingDetailScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -78,20 +75,18 @@ class MainActivity : ComponentActivity() {
 
                     navigationSuiteItems = {
                         Screens.entries.forEach { currentScreen ->
-                            val isSelected = currentDestination?.hierarchy?.any {
-                                it.hasRoute(route = currentScreen.route::class)
-                            } ?: false
+                            val isSelected =
+                                currentDestination?.hierarchy?.any { it.hasRoute(currentScreen.route::class) } == true
                             item(
                                 selected = isSelected,
                                 onClick = {
-                                    if (!isSelected)
-                                        navController.navigate(currentScreen.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                    navController.navigate(currentScreen.route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
                                         }
+                                        restoreState = true
+                                        launchSingleTop = true
+                                    }
                                 },
                                 icon = {
                                     Icon(
@@ -118,17 +113,32 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = Route.Favorites,
                     ) {
-                        composable<Route.Ranking> {
-                            val ranking = it.toRoute<Route.Ranking>()
-                            AdaptiveRankingPane(
-                                ranking.playerId,
-                                onClanSelection = { clanId ->
-                                    navController.navigate(Route.Clan(clanId)) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
+                        composable<Route.Stat> {
+
+                            val statDetailViewModel = koinViewModel<StatDetailViewModel>()
+
+                            val player = it.toRoute<Route.Stat>()
+
+                            RankingDetailScreen(
+                                player.playerId,
+                                statDetailViewModel.state.collectAsStateWithLifecycle().value,
+                                onStatDetailAction = { action ->
+                                    statDetailViewModel.onStatDetailAction(action)
+                                    if (action is StatDetailAction.SelectClan) {
+                                        navController.navigate(
+                                            Route.Clan(action.clanId)
+                                        )
                                     }
+                                },
+                                events = statDetailViewModel.uiEvents
+                            )
+                        }
+                        composable<Route.Rankings> {
+                            AdaptiveRankingPane(
+                                onClanSelection = { clanId ->
+                                    navController.navigate(
+                                        Route.Clan(clanId)
+                                    )
                                 },
                             )
                         }
@@ -147,21 +157,11 @@ class MainActivity : ComponentActivity() {
                                     when (action) {
                                         is FavoriteAction.SelectClan -> navController.navigate(
                                             Route.Clan(clanId = action.clanId)
-                                        ) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                        }
+                                        )
 
                                         is FavoriteAction.SelectPlayer -> navController.navigate(
-                                            Route.Ranking(playerId = action.brawlhallaId)
-                                        ) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                        }
+                                            Route.Stat(playerId = action.brawlhallaId)
+                                        )
 
                                         else -> {}
                                     }
@@ -175,44 +175,21 @@ class MainActivity : ComponentActivity() {
                             val clanViewModel = koinViewModel<ClanViewModel>()
                             val clan = it.toRoute<Route.Clan>()
 
-                            ObserveAsEvents(clanViewModel.uiEvents) { event ->
-                                when (event) {
-                                    is UiEvent.Error -> {
-                                        Toast.makeText(
-                                            context,
-                                            event.error.toString(context),
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-
-                                    is UiEvent.Message -> {
-                                        Toast.makeText(
-                                            context,
-                                            event.message.toString(context),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    else -> {}
-                                }
-                            }
-
                             ClanDetailScreen(
                                 clan.clanId,
                                 clanViewModel.state.collectAsStateWithLifecycle().value,
                                 onClanAction = { action ->
                                     clanViewModel.onClanAction(action)
                                     if (action is ClanAction.SelectMember) {
-                                        navController.navigate(Route.Ranking(action.memberId)) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                        }
+                                        navController.navigate(
+                                            Route.Stat(action.memberId)
+                                        )
                                     }
-                                }
+                                },
+                                events = clanViewModel.uiEvents
                             )
                         }
+
                         composable<Route.Info> {
                             val infoViewModel = InfoViewModel()
                             InfoScreen(

@@ -7,7 +7,6 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +15,8 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
+import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
@@ -23,14 +24,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveRankingPane(
-    rankingId: Int? = null,
     onClanSelection: (Int) -> Unit = {},
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val rankingState by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
+
+    val statDetailViewModel = koinViewModel<StatDetailViewModel>()
+    val statDetailState by statDetailViewModel.state.collectAsStateWithLifecycle()
+
 
     ObserveAsEvents(viewModel.uiEvents) { event ->
         when (event) {
@@ -64,24 +68,13 @@ fun AdaptiveRankingPane(
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (rankingId != null) {
-            navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-            viewModel.onRankingAction(
-                RankingAction.SelectRanking(
-                    rankingId
-                )
-            )
-        }
-    }
-
     NavigableListDetailPaneScaffold(
         modifier = modifier,
         navigator = navigator,
         listPane = {
             AnimatedPane {
                 RankingListScreen(
-                    state,
+                    rankingState,
                     onAppBarAction = viewModel::onAppBarAction,
                     onRankingAction = { action ->
                         viewModel.onRankingAction(action)
@@ -96,13 +89,14 @@ fun AdaptiveRankingPane(
         detailPane = {
             AnimatedPane {
                 RankingDetailScreen(
-                    state,
-                    onRankingAction = { action ->
-                        viewModel.onRankingAction(action)
-                        if (action is RankingAction.SelectClan)
+                    rankingState.selectedStatDetailId,
+                    statDetailState,
+                    onStatDetailAction = { action ->
+                        statDetailViewModel.onStatDetailAction(action)
+                        if (action is StatDetailAction.SelectClan)
                             onClanSelection(action.clanId)
                     },
-                    onUiEvent = viewModel::onRankingEvent
+                    events = statDetailViewModel.uiEvents
                 )
             }
         },

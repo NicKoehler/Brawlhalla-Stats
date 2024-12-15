@@ -2,20 +2,15 @@ package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.AppBarAction
 import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
-import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
-import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,7 +26,6 @@ const val MAX_PAGE = 1_000
 
 class RankingViewModel(
     private val rankingsDataSource: RankingsDataSource,
-    private val database: LocalDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(RankingState())
     private var currentPage = 1
@@ -92,71 +86,10 @@ class RankingViewModel(
 
 
     private fun selectStatDetail(id: Int) {
-
-        if (_state.value.selectedStatDetail?.brawlhallaId == id) {
-            return
-        }
-
         _state.update { state ->
             state.copy(
-                rankingEnabled = true,
-                selectedStatDetail = null,
-                isStatDetailLoading = true,
-                selectedStatType = StatType.General
+                selectedStatDetailId = id,
             )
-        }
-
-        viewModelScope.launch {
-            rankingsDataSource.getStat(id).onSuccess { stat ->
-                database.getPlayer(brawlhallaId = id)
-                    .collect { player ->
-                        _state.update { state ->
-                            state.copy(
-                                isStatDetailFavorite = player != null,
-                                isStatDetailLoading = false,
-                                selectedStatDetail = stat.toStatDetailUi()
-                            )
-                        }
-                    }
-            }.onError { error ->
-                _state.update { state ->
-                    state.copy(
-                        isStatDetailLoading = false,
-                    )
-                }
-                _uiEvents.send(UiEvent.Error(error))
-            }
-        }
-    }
-
-    private fun selectRankingDetail(id: Int) {
-
-        if (_state.value.selectedRankingDetail?.brawlhallaId == id) {
-            return
-        }
-
-        _state.update { state ->
-            state.copy(isRankingDetailLoading = true, selectedRankingDetail = null)
-        }
-
-        viewModelScope.launch {
-            rankingsDataSource.getRanked(id).onSuccess { stat ->
-                _state.update { state ->
-                    state.copy(
-                        isRankingDetailLoading = false,
-                        selectedRankingDetail = stat.toRankingDetailUi()
-                    )
-                }
-            }.onError { error ->
-                _state.update { state ->
-                    state.copy(
-                        isRankingDetailLoading = false,
-                        rankingEnabled = false,
-                        selectedStatType = StatType.General
-                    )
-                }
-                _uiEvents.send(UiEvent.Error(error))
-            }
         }
     }
 
@@ -179,17 +112,6 @@ class RankingViewModel(
         }
         resetSearch()
     }
-
-    private fun selectStatType(stat: StatType) {
-        if (stat == StatType.Ranking && _state.value.selectedStatDetail != null) {
-            selectRankingDetail(_state.value.selectedStatDetail!!.brawlhallaId)
-        }
-
-        _state.update { state ->
-            state.copy(selectedStatType = stat)
-        }
-    }
-
 
     private fun updateSearchQuery(query: String) {
         viewModelScope.launch {
@@ -257,31 +179,6 @@ class RankingViewModel(
             is RankingAction.SelectRanking -> selectStatDetail(action.brawlhallaId)
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.SelectRegion -> selectRegion(action.region)
-            is RankingAction.SelectStatType -> selectStatType(action.stat)
-            is RankingAction.TogglePlayerFavorites -> togglePlayerFavorites(
-                action.brawlhallaId,
-                action.name
-            )
-
-            else -> {}
-        }
-    }
-
-    private fun togglePlayerFavorites(brawlhallaId: Int, name: String) {
-        viewModelScope.launch {
-            if (_state.value.isStatDetailFavorite) {
-                database.deletePlayer(brawlhallaId)
-                _state.update { state -> state.copy(isStatDetailFavorite = false) }
-                _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
-            } else {
-                database.savePlayer(
-                    brawlhallaId,
-                    name
-                )
-                _state.update { state -> state.copy(isStatDetailFavorite = true) }
-                _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))
-            }
-
         }
     }
 
@@ -293,12 +190,6 @@ class RankingViewModel(
             is AppBarAction.QueryChange -> updateSearchQuery(action.query)
             is AppBarAction.Search -> search()
             else -> {}
-        }
-    }
-
-    fun onRankingEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvents.send(event)
         }
     }
 }

@@ -31,7 +31,7 @@ enum class Screens(
     ),
     RANKINGS(
         title = R.string.rankings,
-        route = Route.Ranking(),
+        route = Route.Rankings,
         selectedIcon = Icons.Default.Leaderboard,
         unselectedIcon = Icons.Outlined.Leaderboard
     );
@@ -53,7 +53,10 @@ sealed interface Route {
     data class Clan(val clanId: Int? = null) : Route
 
     @Serializable
-    data class Ranking(val playerId: Int? = null) : Route
+    data object Rankings : Route
+    
+    @Serializable
+    data class Stat(val playerId: Int) : Route
 }
 
 

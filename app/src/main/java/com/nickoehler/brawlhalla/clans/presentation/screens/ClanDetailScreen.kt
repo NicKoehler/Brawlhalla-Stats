@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.clans.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -30,10 +32,16 @@ import com.nickoehler.brawlhalla.clans.domain.ClanDetail
 import com.nickoehler.brawlhalla.clans.domain.ClanMember
 import com.nickoehler.brawlhalla.clans.presentation.ClanAction
 import com.nickoehler.brawlhalla.clans.presentation.ClanState
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.components.ZonedDateTimeDisplay
 import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
+import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -42,12 +50,36 @@ fun ClanDetailScreen(
     clanId: Int? = null,
     state: ClanState,
     onClanAction: (ClanAction) -> Unit = {},
+    events: Flow<UiEvent> = emptyFlow(),
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    ObserveAsEvents(events) { event ->
+        when (event) {
+            is UiEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.error.toString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            is UiEvent.Message -> {
+                Toast.makeText(
+                    context,
+                    event.message.toString(context),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {}
+        }
+    }
 
     val clan = state.selectedClan
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(clanId) {
         if (clanId != null) {
             onClanAction(ClanAction.SelectClan(clanId))
         }
