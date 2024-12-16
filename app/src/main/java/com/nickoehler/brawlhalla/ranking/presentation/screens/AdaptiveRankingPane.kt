@@ -96,6 +96,9 @@ fun AdaptiveRankingPane(
                         if (action is StatDetailAction.SelectClan)
                             onClanSelection(action.clanId)
                     },
+                    onError = {
+                        navigator.navigateBack()
+                    },
                     events = statDetailViewModel.uiEvents
                 )
             }
