@@ -70,6 +70,7 @@ fun RankingDetailScreen(
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
     onStatDetailAction: (StatDetailAction) -> Unit = {},
+    onError: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val playerStat = state.selectedStatDetail
@@ -94,6 +95,7 @@ fun RankingDetailScreen(
                     event.error.toString(context),
                     Toast.LENGTH_LONG
                 ).show()
+                onError()
             }
 
             is UiEvent.Message -> {

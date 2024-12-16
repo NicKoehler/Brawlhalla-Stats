@@ -128,6 +128,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 },
+                                onError = { navController.popBackStack() },
                                 events = statDetailViewModel.uiEvents
                             )
                         }
