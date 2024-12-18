@@ -61,4 +61,23 @@
     <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
     <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
     <string name="info">Info</string>
+    <string name="goToLegend">Go to legend</string>
+    <string name="damageDealt">Damage Dealt</string>
+    <string name="damageTaken">Damage Taken</string>
+    <string name="kos">Kos</string>
+    <string name="falls">Falls</string>
+    <string name="suicides">Suicides</string>
+    <string name="teamKos">Team Kos</string>
+    <string name="damageUnarmed">Damage Unarmed</string>
+    <string name="damageThrownItem">Damage Thrown Item</string>
+    <string name="damageWeaponOne">Damage Weapon One</string>
+    <string name="damageWeaponTwo">Damage Weapon Two</string>
+    <string name="damageGadgets">Damage Gadgets</string>
+    <string name="koUnarmed">Kos Unarmed</string>
+    <string name="koThrownItem">kos Thrown Item</string>
+    <string name="koWeaponOne">Kos Weapon One</string>
+    <string name="koWeaponTwo">Kos Weapon Two</string>
+    <string name="koGadgets">Kos Gadgets</string>
+    <string name="timeHeldWeaponOne">Time Held Weapon One</string>
+    <string name="timeHeldWeaponTwo">Time Held Weapon Two</string>
 </resources>

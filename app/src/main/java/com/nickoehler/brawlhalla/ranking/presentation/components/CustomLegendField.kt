@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.ranking.presentation.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -20,8 +21,8 @@ import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
-fun CustomRankingField(@StringRes key: Int, value: String?) {
-    CustomCard {
+fun CustomLegendField(@StringRes key: Int, value: String?) {
+    Row {
         Text(stringResource(key))
         Spacer(Modifier.weight(1f))
         if (value != null) {
@@ -44,8 +45,8 @@ private fun CustomRankingFieldPreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                CustomRankingField(R.string.games, 100.toString())
-                CustomRankingField(R.string.games, null)
+                CustomLegendField(R.string.games, 100.toString())
+                CustomLegendField(R.string.games, null)
             }
         }
     }

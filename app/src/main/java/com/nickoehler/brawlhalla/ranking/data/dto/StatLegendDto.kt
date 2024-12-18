@@ -57,5 +57,5 @@ data class StatLegendDto(
     @SerialName("level")
     val level: Int,
     @SerialName("xp_percentage")
-    val xpPercentage: Double,
+    val xpPercentage: Float,
 )

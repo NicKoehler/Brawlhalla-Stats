@@ -24,7 +24,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveRankingPane(
-    onClanSelection: (Int) -> Unit = {},
+    onClanSelection: (Int) -> Unit,
+    onLegendSelection: (Int) -> Unit,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier,
 ) {
@@ -88,13 +89,17 @@ fun AdaptiveRankingPane(
         },
         detailPane = {
             AnimatedPane {
-                RankingDetailScreen(
+                StatDetailScreen(
                     rankingState.selectedStatDetailId,
                     statDetailState,
                     onStatDetailAction = { action ->
                         statDetailViewModel.onStatDetailAction(action)
-                        if (action is StatDetailAction.SelectClan)
+                        if (action is StatDetailAction.SelectClan) {
                             onClanSelection(action.clanId)
+                        }
+                        if (action is StatDetailAction.SelectLegend) {
+                            onLegendSelection(action.legendId)
+                        }
                     },
                     onError = {
                         navigator.navigateBack()

@@ -39,7 +39,7 @@ import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPan
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
-import com.nickoehler.brawlhalla.ranking.presentation.screens.RankingDetailScreen
+import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
 
                             val player = it.toRoute<Route.Stat>()
 
-                            RankingDetailScreen(
+                            StatDetailScreen(
                                 player.playerId,
                                 statDetailViewModel.state.collectAsStateWithLifecycle().value,
                                 onStatDetailAction = { action ->
@@ -125,6 +125,11 @@ class MainActivity : ComponentActivity() {
                                     if (action is StatDetailAction.SelectClan) {
                                         navController.navigate(
                                             Route.Clan(action.clanId)
+                                        )
+                                    }
+                                    if (action is StatDetailAction.SelectLegend) {
+                                        navController.navigate(
+                                            Route.Legend(action.legendId)
                                         )
                                     }
                                 },
@@ -139,6 +144,9 @@ class MainActivity : ComponentActivity() {
                                         Route.Clan(clanId)
                                     )
                                 },
+                                onLegendSelection = { legendId ->
+                                    navController.navigate(Route.Legend(legendId))
+                                }
                             )
                         }
                         composable<Route.Legend> {
