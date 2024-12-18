@@ -1,6 +1,5 @@
 package com.nickoehler.brawlhalla.legends.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,22 +9,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.components.LegendImage
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.Legend
@@ -45,24 +42,7 @@ fun LegendCard(
         onClick = { if (legend != null) onLegendAction(LegendAction.SelectLegend(legend.legendId)) },
         modifier = modifier,
     ) {
-        if (legend != null) {
-            AsyncImage(
-                legend.image,
-                contentDescription = legend.bioName,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.surfaceBright),
-            )
-        } else {
-            Box(
-                Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(25.dp))
-                    .shimmerEffect()
-            )
-        }
+        LegendImage(legend?.bioName, legend?.image)
         Spacer(Modifier.size(20.dp))
         Column(
             Modifier.weight(1f),

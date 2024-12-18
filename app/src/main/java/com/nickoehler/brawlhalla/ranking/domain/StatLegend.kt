@@ -26,5 +26,5 @@ data class StatLegend(
     val timeHeldWeaponTwo: Int,
     val xp: Int,
     val level: Int,
-    val xpPercentage: Double,
+    val xpPercentage: Float,
 )
