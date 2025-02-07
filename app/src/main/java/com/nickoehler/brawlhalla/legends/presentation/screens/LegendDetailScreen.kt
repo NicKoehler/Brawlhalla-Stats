@@ -42,7 +42,6 @@ fun LegendDetailScreen(
     modifier: Modifier = Modifier,
     onWeaponAction: (WeaponAction) -> Unit = {},
     onLegendAction: (LegendAction) -> Unit = {},
-    uiEvent: (UiEvent) -> Unit = {},
 ) {
     Box(
         contentAlignment = Alignment.Center,

@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,10 +62,9 @@ fun AdaptiveLegendsPane(
     }
 
 
-    ListDetailPaneScaffold(
+    NavigableListDetailPaneScaffold(
         modifier = modifier,
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        navigator = navigator,
         listPane = {
             AnimatedPane {
                 LegendListScreen(
@@ -90,15 +89,16 @@ fun AdaptiveLegendsPane(
                         state,
                         onWeaponAction = { action ->
                             viewModel.onWeaponAction(action)
-                            if (action is WeaponAction.Click)
+                            if (action is WeaponAction.Click) {
                                 navigator.navigateBack()
+                            }
                         },
                         onLegendAction = { action ->
                             viewModel.onLegendAction(action)
-                            if (action is LegendAction.SelectStat)
+                            if (action is LegendAction.SelectStat) {
                                 navigator.navigateBack()
+                            }
                         },
-                        uiEvent = viewModel::onUiEvent
                     )
                 }
             }

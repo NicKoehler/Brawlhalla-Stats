@@ -61,7 +61,7 @@ fun LegendStatItem(
         )
         if (statValue != null) {
             AnimatedLinearProgressBar(
-                statValue.toFloat() / 10f,
+                statValue.toDouble() / 10,
                 stat.toString(),
                 height = height,
                 delayMillis = delayMillis,

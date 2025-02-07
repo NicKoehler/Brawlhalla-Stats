@@ -35,7 +35,6 @@ import com.nickoehler.brawlhalla.clans.presentation.ClanState
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.util.toString
-import com.nickoehler.brawlhalla.ranking.presentation.components.ZonedDateTimeDisplay
 import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -120,7 +119,7 @@ fun ClanDetailScreen(
             }
 
             Text("XP ${clan.xp.formatted}")
-            ZonedDateTimeDisplay(clan.createDate)
+            Text(clan.createDate.formatted)
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -137,9 +136,8 @@ fun ClanDetailScreen(
 
                         Column(horizontalAlignment = Alignment.End) {
                             Text(member.rank)
-                            ZonedDateTimeDisplay(member.joinDate)
+                            Text(member.joinDate.formatted)
                         }
-
                     }
                 }
             }
