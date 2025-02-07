@@ -20,6 +20,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -32,9 +33,6 @@ fun AdaptiveRankingPane(
     val context = LocalContext.current
     val rankingState by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
-
-    val statDetailViewModel = koinViewModel<StatDetailViewModel>()
-    val statDetailState by statDetailViewModel.state.collectAsStateWithLifecycle()
 
 
     ObserveAsEvents(viewModel.uiEvents) { event ->
@@ -88,24 +86,32 @@ fun AdaptiveRankingPane(
             }
         },
         detailPane = {
-            AnimatedPane {
-                StatDetailScreen(
-                    rankingState.selectedStatDetailId,
-                    statDetailState,
-                    onStatDetailAction = { action ->
-                        statDetailViewModel.onStatDetailAction(action)
-                        if (action is StatDetailAction.SelectClan) {
-                            onClanSelection(action.clanId)
-                        }
-                        if (action is StatDetailAction.SelectLegend) {
-                            onLegendSelection(action.legendId)
-                        }
-                    },
-                    onError = {
-                        navigator.navigateBack()
-                    },
-                    events = statDetailViewModel.uiEvents
+            if (rankingState.selectedStatDetailId != null) {
+
+                val statDetailViewModel = koinViewModel<StatDetailViewModel>(
+                    key = rankingState.selectedStatDetailId.toString(),
+                    parameters = { parametersOf(rankingState.selectedStatDetailId) }
                 )
+                val statDetailState by statDetailViewModel.state.collectAsStateWithLifecycle()
+
+                AnimatedPane {
+                    StatDetailScreen(
+                        statDetailState,
+                        onStatDetailAction = { action ->
+                            statDetailViewModel.onStatDetailAction(action)
+                            if (action is StatDetailAction.SelectClan) {
+                                onClanSelection(action.clanId)
+                            }
+                            if (action is StatDetailAction.SelectLegend) {
+                                onLegendSelection(action.legendId)
+                            }
+                        },
+                        onError = {
+                            navigator.navigateBack()
+                        },
+                        events = statDetailViewModel.uiEvents
+                    )
+                }
             }
         },
     )

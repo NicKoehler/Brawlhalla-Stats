@@ -35,7 +35,7 @@ class LegendsViewModel(
     val state = _state.onStart { if (allLegends.isEmpty()) loadLegends() }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(),
+            SharingStarted.WhileSubscribed(5_000L),
             LegendsListState()
         )
 
