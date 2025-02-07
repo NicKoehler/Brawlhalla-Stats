@@ -44,9 +44,9 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    state: FavoritesState,
     modifier: Modifier = Modifier,
     onInfoSelection: () -> Unit = {},
-    state: FavoritesState = FavoritesState(),
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
     Scaffold(
@@ -91,8 +91,8 @@ fun FavoritesScreen(
                 val clans = state.clans
                 SingleChoiceSegmentedButtonRow {
                     SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.PLAYERS,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.PLAYERS)) },
+                        state.selectedFavoriteType == FavoriteType.Players,
+                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
                         icon = {
                             SegmentedButtonDefaults.Icon(
                                 activeContent = {
@@ -101,7 +101,7 @@ fun FavoritesScreen(
                                         null
                                     )
                                 },
-                                active = state.selectedFavoriteType == FavoriteType.PLAYERS
+                                active = state.selectedFavoriteType == FavoriteType.Players
                             )
                         },
                         enabled = state.players.isNotEmpty(),
@@ -111,8 +111,8 @@ fun FavoritesScreen(
                     }
 
                     SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.CLANS,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.CLANS)) },
+                        state.selectedFavoriteType == FavoriteType.Clans,
+                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
                         icon = {
                             SegmentedButtonDefaults.Icon(
                                 activeContent = {
@@ -121,7 +121,7 @@ fun FavoritesScreen(
                                         null
                                     )
                                 },
-                                active = state.selectedFavoriteType == FavoriteType.CLANS
+                                active = state.selectedFavoriteType == FavoriteType.Clans
                             )
                         },
                         enabled = state.clans.isNotEmpty(),
@@ -140,7 +140,7 @@ fun FavoritesScreen(
                     ) {
                         item { Spacer(Modifier) }
                         when (type) {
-                            FavoriteType.PLAYERS ->
+                            FavoriteType.Players ->
                                 items(players, { player -> player.id }) { player ->
                                     FavoritesItem(
                                         coroutineScope,
@@ -164,7 +164,7 @@ fun FavoritesScreen(
                                     )
                                 }
 
-                            FavoriteType.CLANS ->
+                            FavoriteType.Clans ->
                                 items(clans, { clan -> clan.id }) { clan ->
                                     FavoritesItem(
                                         coroutineScope,
