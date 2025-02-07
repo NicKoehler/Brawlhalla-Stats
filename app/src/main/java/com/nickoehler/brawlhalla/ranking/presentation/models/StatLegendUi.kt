@@ -1,8 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableFloat
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
-import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableFloat
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
@@ -35,7 +35,7 @@ data class StatLegendUi(
     val xp: DisplayableNumber,
     val level: Int,
     val nextLevel: Int?,
-    val xpPercentage: DisplayableFloat,
+    val xpPercentage: DisplayableDouble,
     val image: String
 )
 
@@ -72,7 +72,7 @@ fun StatLegend.toStatLegendUi(): StatLegendUi {
         xp.toDisplayableNumber(),
         level,
         nextLevel = if (level < 100) level + 1 else null,
-        xpPercentage.toDisplayableFloat(),
+        xpPercentage.toDisplayableDouble(),
         getMiniImageUrlFromLegendNameKey(legendNameKey)
     )
 }

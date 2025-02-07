@@ -80,4 +80,9 @@
     <string name="koGadgets">Kos Gadgets</string>
     <string name="timeHeldWeaponOne">Time Held Weapon One</string>
     <string name="timeHeldWeaponTwo">Time Held Weapon Two</string>
+    <string name="teams">Teams</string>
+    <string name="tier">Tier</string>
+    <string name="winRate">Win Rate</string>
+    <string name="losses">Losses</string>
+    <string name="goToTeamMate">Go to Team Mate</string>
 </resources>

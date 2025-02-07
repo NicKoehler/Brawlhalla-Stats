@@ -1,8 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableFloat
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
-import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableFloat
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
@@ -19,7 +19,7 @@ sealed interface RankingUi {
         val tier: TierUi,
         val games: DisplayableNumber,
         val wins: DisplayableNumber,
-        val winRate: DisplayableFloat,
+        val winRate: DisplayableDouble,
         val losses: DisplayableNumber,
         val region: RegionUi,
         val peakRating: DisplayableNumber,
@@ -34,7 +34,7 @@ sealed interface RankingUi {
         val tier: TierUi,
         val games: DisplayableNumber,
         val wins: DisplayableNumber,
-        val winRate: DisplayableFloat,
+        val winRate: DisplayableDouble,
         val losses: DisplayableNumber,
         val region: RegionUi,
         val peakRating: DisplayableNumber,
@@ -60,7 +60,7 @@ fun Ranking.RankingSolo.toRankingSoloUi(): RankingUi.RankingSoloUi {
         tier.toTierUi(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
-        (wins.toFloat() / games * 100).toDisplayableFloat(),
+        (wins.toDouble() / games * 100).toDisplayableDouble(),
         (games - wins).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
@@ -77,7 +77,7 @@ fun Ranking.RankingTeam.toRankingTeamUi(): RankingUi.RankingTeamUi {
         tier.toTierUi(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
-        (wins.toFloat() / games * 100).toDisplayableFloat(),
+        (wins.toDouble() / games * 100).toDisplayableDouble(),
         (games - wins).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()

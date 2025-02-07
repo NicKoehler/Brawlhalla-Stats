@@ -27,7 +27,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun AnimatedLinearProgressBar(
-    indicatorProgress: Float,
+    indicatorProgress: Double,
     label: String,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     progressAnimDuration: Int = 1_500,
@@ -61,7 +61,7 @@ fun AnimatedLinearProgressBar(
             .clip(CircleShape),
     )
     LaunchedEffect(lifecycleOwner) {
-        progress = indicatorProgress
+        progress = indicatorProgress.toFloat()
     }
 }
 
@@ -71,7 +71,7 @@ private fun AnimatedLinearProgressBarPreview() {
     BrawlhallaTheme {
         Surface {
             AnimatedLinearProgressBar(
-                0.5f,
+                0.5,
                 "test"
             )
         }

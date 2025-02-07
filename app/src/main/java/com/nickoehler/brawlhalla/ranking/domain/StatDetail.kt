@@ -6,7 +6,7 @@ data class StatDetail(
     val name: String,
     val xp: Int,
     val level: Int,
-    val xpPercentage: Float,
+    val xpPercentage: Double,
     val games: Int,
     val wins: Int,
     val damageBomb: Int,

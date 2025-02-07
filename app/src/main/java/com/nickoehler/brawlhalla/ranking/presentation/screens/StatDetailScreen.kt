@@ -53,6 +53,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailState
 import com.nickoehler.brawlhalla.ranking.presentation.components.CustomRankingField
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
+import com.nickoehler.brawlhalla.ranking.presentation.components.TeamStatItem
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -272,95 +273,120 @@ fun StatDetailScreen(
             }
         }
         when (state.selectedStatType) {
-            StatType.General -> {
-                item {
-                    CustomRankingField(R.string.games, playerStat?.games?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.wins, playerStat?.wins?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koBomb, playerStat?.koBomb?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.damageBomb, playerStat?.damageBomb?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koMine, playerStat?.koMine?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.damageMine, playerStat?.damageMine?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koSidekick, playerStat?.koSidekick?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.damageSidekick,
-                        playerStat?.damageSidekick?.formatted
-                    )
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koSpikeball, playerStat?.koSpikeball?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.damageSpikeball,
-                        playerStat?.damageSpikeball?.formatted
-                    )
-                }
 
+            StatType.General -> {
                 if (playerStat != null) {
                     item {
-                        Text(stringResource(R.string.legends))
+                        CustomRankingField(R.string.games, playerStat.games.formatted)
                     }
-                    items(
-                        playerStat.legends, { it.legendId },
-                    ) { legend ->
-                        LegendStatItem(legend, onStatDetailAction = {
-                            onStatDetailAction(StatDetailAction.SelectLegend(legend.legendId))
-                        })
+                    item {
+                        CustomRankingField(R.string.wins, playerStat.wins.formatted)
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
+                    item {
+                        CustomRankingField(R.string.koBomb, playerStat.koBomb.formatted)
+                    }
+                    item {
+                        CustomRankingField(R.string.damageBomb, playerStat.damageBomb.formatted)
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
+                    item {
+                        CustomRankingField(R.string.koMine, playerStat.koMine.formatted)
+                    }
+                    item {
+                        CustomRankingField(R.string.damageMine, playerStat.damageMine.formatted)
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
+                    item {
+                        CustomRankingField(R.string.koSidekick, playerStat.koSidekick.formatted)
+                    }
+                    item {
+                        CustomRankingField(
+                            R.string.damageSidekick,
+                            playerStat.damageSidekick.formatted
+                        )
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
+                    item {
+                        CustomRankingField(R.string.koSpikeball, playerStat.koSpikeball.formatted)
+                    }
+                    item {
+                        CustomRankingField(
+                            R.string.damageSpikeball,
+                            playerStat.damageSpikeball.formatted
+                        )
+                    }
+
+                    if (playerStat.legends.isNotEmpty()) {
+                        item {
+                            Text(stringResource(R.string.legends))
+                        }
+                        items(
+                            playerStat.legends, { it.legendId },
+                        ) { legend ->
+                            LegendStatItem(
+                                legend,
+                                onStatDetailAction = {
+                                    onStatDetailAction(
+                                        StatDetailAction.SelectLegend(legend.legendId)
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
-
             }
 
             StatType.Ranking -> {
-                item {
-                    CustomRankingField(R.string.rating, playerRanking?.rating?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.peakRating,
-                        playerRanking?.peakRating?.formatted
-                    )
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.games, playerRanking?.games?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.wins, playerRanking?.wins?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
+                if (playerRanking != null) {
+                    item {
+                        CustomRankingField(R.string.rating, playerRanking.rating.formatted)
+                    }
+                    item {
+                        CustomRankingField(
+                            R.string.peakRating,
+                            playerRanking.peakRating.formatted
+                        )
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
+                    item {
+                        CustomRankingField(R.string.games, playerRanking.games.formatted)
+                    }
+                    item {
+                        CustomRankingField(R.string.wins, playerRanking.wins.formatted)
+                    }
+                    item {
+                        Spacer(Modifier)
+                    }
 
-
+                    if (playerRanking.teams.isNotEmpty()) {
+                        item {
+                            Text(stringResource(R.string.teams))
+                        }
+                        items(playerRanking.teams) { team ->
+                            TeamStatItem(
+                                team,
+                                onStatDetailAction = {
+                                    onStatDetailAction(
+                                        StatDetailAction.SelectPlayer(
+                                            if (playerRanking.brawlhallaId == team.brawlhallaIdOne) team.brawlhallaIdTwo else team.brawlhallaIdOne,
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
         item {
@@ -433,7 +459,7 @@ internal val statDetailSample = StatDetail(
     name = "NicKoehler",
     xp = 4261524,
     level = 100,
-    xpPercentage = 0f,
+    xpPercentage = 0.0,
     games = 36261,
     wins = 23924,
     damageBomb = 208300,
@@ -473,7 +499,7 @@ internal val statDetailSample = StatDetail(
             200239,
             325098,
             59,
-            0.6792734706714892f
+            0.6792734714892
         ),
         StatLegend(
             29,
@@ -501,7 +527,7 @@ internal val statDetailSample = StatDetail(
             32826,
             82934,
             33,
-            0.23316239316239315f
+            0.23316239316239315
         ),
         StatLegend(
             7,
@@ -529,7 +555,7 @@ internal val statDetailSample = StatDetail(
             24283,
             61487,
             29,
-            0.1941846278975193f
+            0.1941846278975193
         ),
         // Add the rest of the StatLegend objects here...
         StatLegend(
@@ -558,7 +584,7 @@ internal val statDetailSample = StatDetail(
             34174,
             65048,
             29,
-            0.9182594550630337f
+            0.9182594550630337
         ),
     ),
     clan = StatClan(
