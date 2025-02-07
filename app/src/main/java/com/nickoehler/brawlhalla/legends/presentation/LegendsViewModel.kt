@@ -26,7 +26,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LegendsViewModel(
-    private val legendsDataSource: LegendsDataSource,
+    private val legendId: Int? = null,
+    private val legendsDataSource: LegendsDataSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(LegendsListState())
     private var allLegends: List<LegendUi> = emptyList()
@@ -55,6 +56,11 @@ class LegendsViewModel(
                         weapons = allWeapons
                     )
                 }
+
+                if (legendId != null) {
+                    selectLegend(legendId)
+                }
+
             }.onError { error ->
                 _state.update { it.copy(isListLoading = false) }
                 _uiEvents.send(UiEvent.Error(error))
@@ -73,6 +79,7 @@ class LegendsViewModel(
                             selectedLegendUi = legend.toLegendDetailUi()
                         )
                     }
+                    _uiEvents.send(UiEvent.GoToDetail)
                 }.onError { error ->
                     _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
                     _uiEvents.send(UiEvent.Error(error))

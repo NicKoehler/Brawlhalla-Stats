@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -28,7 +27,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveLegendsPane(
-    legendId: Int? = null,
     viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>(),
     modifier: Modifier = Modifier
 ) {
@@ -55,24 +53,19 @@ fun AdaptiveLegendsPane(
                 }
             }
 
+            is UiEvent.GoToDetail -> {
+                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+            }
+
             else -> {}
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (legendId != null) {
-            navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-            viewModel.onLegendAction(
-                LegendAction.SelectLegend(
-                    legendId
-                )
-            )
-        }
-    }
 
-    NavigableListDetailPaneScaffold(
+    ListDetailPaneScaffold(
         modifier = modifier,
-        navigator = navigator,
+        directive = navigator.scaffoldDirective,
+        value = navigator.scaffoldValue,
         listPane = {
             AnimatedPane {
                 LegendListScreen(

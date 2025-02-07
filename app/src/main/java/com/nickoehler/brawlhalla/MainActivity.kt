@@ -14,6 +14,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
 import com.nickoehler.brawlhalla.info.presentation.model.InfoAction
 import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
+import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
@@ -44,6 +46,7 @@ import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +55,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val navBackStackEntry = navController.currentBackStackEntryAsState().value
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
             val showBottomBar = Screens
@@ -61,6 +64,7 @@ class MainActivity : ComponentActivity() {
                         it.hasRoute(route = screen.route::class)
                     } ?: false
                 }
+
 
             BrawlhallaTheme {
                 NavigationSuiteScaffold(
@@ -100,7 +104,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                     }
                 ) {
                     NavHost(
@@ -114,12 +117,12 @@ class MainActivity : ComponentActivity() {
                         composable<Route.Stat> {
 
                             val statDetailViewModel = koinViewModel<StatDetailViewModel>()
-
+                            val state by statDetailViewModel.state.collectAsStateWithLifecycle()
                             val player = it.toRoute<Route.Stat>()
 
                             StatDetailScreen(
                                 player.playerId,
-                                statDetailViewModel.state.collectAsStateWithLifecycle().value,
+                                state,
                                 onStatDetailAction = { action ->
                                     statDetailViewModel.onStatDetailAction(action)
                                     if (action is StatDetailAction.SelectClan) {
@@ -131,6 +134,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(
                                             Route.Legend(action.legendId)
                                         )
+
                                     }
                                 },
                                 onError = { navController.popBackStack() },
@@ -145,16 +149,33 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 onLegendSelection = { legendId ->
-                                    navController.navigate(Route.Legend(legendId))
+
+                                    navController.navigate(
+                                        Route.Legend(legendId)
+                                    )
                                 }
                             )
                         }
-                        composable<Route.Legend> {
-                            val legend = it.toRoute<Route.Legend>()
+                        composable<Route.Legends> {
+                            val legendsViewmodel =
+                                koinViewModel<LegendsViewModel>(parameters = { parametersOf(null) })
+
                             AdaptiveLegendsPane(
-                                legend.id,
+                                viewModel = legendsViewmodel,
                             )
                         }
+
+                        composable<Route.Legend> {
+                            val legend = it.toRoute<Route.Legend>()
+                            val legendsViewmodel =
+                                koinViewModel<LegendsViewModel>(parameters = { parametersOf(legend.id) })
+
+                            AdaptiveLegendsPane(
+                                viewModel = legendsViewmodel,
+                            )
+                        }
+
+
                         composable<Route.Favorites> {
                             val favoritesViewModel = koinViewModel<FavoritesViewModel>()
                             FavoritesScreen(
