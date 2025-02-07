@@ -14,6 +14,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -178,8 +179,10 @@ class MainActivity : ComponentActivity() {
 
                         composable<Route.Favorites> {
                             val favoritesViewModel = koinViewModel<FavoritesViewModel>()
+                            val favoritesState by favoritesViewModel.state.collectAsStateWithLifecycle()
+                            
                             FavoritesScreen(
-                                state = favoritesViewModel.state.collectAsStateWithLifecycle().value,
+                                state = favoritesState,
                                 onFavoriteAction = { action ->
                                     favoritesViewModel.onFavoriteAction(action)
                                     when (action) {
