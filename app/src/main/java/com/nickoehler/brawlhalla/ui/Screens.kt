@@ -19,7 +19,7 @@ enum class Screens(
 ) {
     LEGENDS(
         title = R.string.legends,
-        route = Route.Legend(),
+        route = Route.Legends,
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Outlined.People
     ),
@@ -47,14 +47,17 @@ sealed interface Route {
     data object Favorites : Route
 
     @Serializable
-    data class Legend(val id: Int? = null) : Route
+    data object Legends : Route
 
     @Serializable
-    data class Clan(val clanId: Int? = null) : Route
+    data class Legend(val id: Int) : Route
+
+    @Serializable
+    data class Clan(val clanId: Int) : Route
 
     @Serializable
     data object Rankings : Route
-    
+
     @Serializable
     data class Stat(val playerId: Int) : Route
 }

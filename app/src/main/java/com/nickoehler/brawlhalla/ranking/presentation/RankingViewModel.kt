@@ -169,16 +169,17 @@ class RankingViewModel(
 
     fun onRankingAction(action: RankingAction) {
         when (action) {
-            is RankingAction.LoadMore -> {
-                if (currentPage <= MAX_PAGE) {
-                    currentPage++
-                    loadRankings()
-                }
-            }
-
-            is RankingAction.SelectRanking -> selectStatDetail(action.brawlhallaId)
-            is RankingAction.SelectBracket -> selectBracket(action.bracket)
+            is RankingAction.LoadMore -> loadMore()
             is RankingAction.SelectRegion -> selectRegion(action.region)
+            is RankingAction.SelectBracket -> selectBracket(action.bracket)
+            is RankingAction.SelectRanking -> selectStatDetail(action.brawlhallaId)
+        }
+    }
+
+    private fun loadMore() {
+        if (currentPage <= MAX_PAGE) {
+            currentPage++
+            loadRankings()
         }
     }
 

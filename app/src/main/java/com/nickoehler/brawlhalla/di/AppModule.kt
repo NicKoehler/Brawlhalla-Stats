@@ -27,7 +27,7 @@ val appModule = module {
     single<LegendsDataSource> { RemoteLegendsDataSource(get()) }
     single<RankingsDataSource> { RemoteRankingDataSource(get()) }
     single<ClanDataSource> { RemoteClanDataSource(get()) }
-    viewModel { LegendsViewModel(get()) }
+    viewModel { (legendId: Int?) -> LegendsViewModel(legendId, get()) }
     viewModel { StatDetailViewModel(get(), get()) }
     viewModel { RankingViewModel(get()) }
     viewModel { ClanViewModel(get(), get()) }
