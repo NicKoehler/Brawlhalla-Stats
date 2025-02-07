@@ -14,7 +14,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -117,12 +116,13 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<Route.Stat> {
 
-                            val statDetailViewModel = koinViewModel<StatDetailViewModel>()
-                            val state by statDetailViewModel.state.collectAsStateWithLifecycle()
                             val player = it.toRoute<Route.Stat>()
+                            val statDetailViewModel = koinViewModel<StatDetailViewModel>(
+                                parameters = { parametersOf(player.playerId) }
+                            )
+                            val state by statDetailViewModel.state.collectAsStateWithLifecycle()
 
                             StatDetailScreen(
-                                player.playerId,
                                 state,
                                 onStatDetailAction = { action ->
                                     statDetailViewModel.onStatDetailAction(action)
@@ -180,7 +180,7 @@ class MainActivity : ComponentActivity() {
                         composable<Route.Favorites> {
                             val favoritesViewModel = koinViewModel<FavoritesViewModel>()
                             val favoritesState by favoritesViewModel.state.collectAsStateWithLifecycle()
-                            
+
                             FavoritesScreen(
                                 state = favoritesState,
                                 onFavoriteAction = { action ->

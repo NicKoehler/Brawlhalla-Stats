@@ -25,7 +25,6 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,7 +65,6 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun StatDetailScreen(
-    playerId: Int? = null,
     state: StatDetailState,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
@@ -76,17 +74,6 @@ fun StatDetailScreen(
     val context = LocalContext.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
-
-
-    LaunchedEffect(playerId) {
-        if (playerId != null) {
-            onStatDetailAction(
-                StatDetailAction.SelectPlayer(
-                    playerId
-                )
-            )
-        }
-    }
 
     ObserveAsEvents(events) { event ->
         when (event) {

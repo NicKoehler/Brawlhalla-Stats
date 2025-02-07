@@ -34,7 +34,7 @@ class RankingViewModel(
         if (_state.value.players.isEmpty()) loadRankings()
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
+        SharingStarted.WhileSubscribed(5_000L),
         RankingState()
     )
 

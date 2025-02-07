@@ -11,34 +11,37 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
 class StatDetailViewModel(
+    private val brawlhallaId: Int,
     private val rankingsDataSource: RankingsDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(StatDetailState())
-    val state = _state.asStateFlow()
+    val state = _state.onStart {
+        selectStatDetail(brawlhallaId)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000L),
+        StatDetailState()
+    )
 
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
-
-    private var playerFlowJob: Job? = null
 
     private fun selectStatDetail(id: Int) {
         if (_state.value.selectedStatDetail?.brawlhallaId == id) {
             return
         }
-
         _state.update { state ->
             state.copy(
                 rankingEnabled = true,
@@ -48,12 +51,9 @@ class StatDetailViewModel(
                 selectedStatType = StatType.General
             )
         }
-
         viewModelScope.launch {
-            playerFlowJob?.cancel()
-
             rankingsDataSource.getStat(id).onSuccess { stat ->
-                playerFlowJob = database.getPlayer(brawlhallaId = id).onEach { player ->
+                database.getPlayer(brawlhallaId = id).collect { player ->
                     _state.update { state ->
                         state.copy(
                             isStatDetailFavorite = player != null,
@@ -61,7 +61,7 @@ class StatDetailViewModel(
                             selectedStatDetail = stat.toStatDetailUi()
                         )
                     }
-                }.launchIn(this)
+                }
             }.onError { error ->
                 _state.update { state ->
                     state.copy(
@@ -74,7 +74,6 @@ class StatDetailViewModel(
     }
 
     private fun selectRankingDetail(id: Int) {
-
         if (_state.value.selectedRankingDetail?.brawlhallaId == id) {
             return
         }
