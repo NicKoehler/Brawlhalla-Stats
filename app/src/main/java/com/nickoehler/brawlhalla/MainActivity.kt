@@ -139,7 +139,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 onError = { navController.popBackStack() },
-                                events = statDetailViewModel.uiEvents
+                                events = statDetailViewModel.uiEvents,
+                                onPlayerSelection = { brawlhallaId ->
+                                    navController.navigate(Route.Stat(brawlhallaId))
+                                },
                             )
                         }
                         composable<Route.Rankings> {
@@ -154,12 +157,18 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(
                                         Route.Legend(legendId)
                                     )
+                                },
+                                onPlayerSelection = { brawlhallaId ->
+                                    navController.navigate(
+                                        Route.Stat(brawlhallaId)
+                                    )
                                 }
                             )
                         }
                         composable<Route.Legends> {
-                            val legendsViewmodel =
-                                koinViewModel<LegendsViewModel>(parameters = { parametersOf(null) })
+                            val legendsViewmodel = koinViewModel<LegendsViewModel>(
+                                parameters = { parametersOf(0) }
+                            )
 
                             AdaptiveLegendsPane(
                                 viewModel = legendsViewmodel,
@@ -168,14 +177,14 @@ class MainActivity : ComponentActivity() {
 
                         composable<Route.Legend> {
                             val legend = it.toRoute<Route.Legend>()
-                            val legendsViewmodel =
-                                koinViewModel<LegendsViewModel>(parameters = { parametersOf(legend.id) })
+                            val legendsViewmodel = koinViewModel<LegendsViewModel>(
+                                parameters = { parametersOf(legend.id) }
+                            )
 
                             AdaptiveLegendsPane(
                                 viewModel = legendsViewmodel,
                             )
                         }
-
 
                         composable<Route.Favorites> {
                             val favoritesViewModel = koinViewModel<FavoritesViewModel>()

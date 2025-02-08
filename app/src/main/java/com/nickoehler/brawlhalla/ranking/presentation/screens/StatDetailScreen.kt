@@ -66,10 +66,11 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun StatDetailScreen(
     state: StatDetailState,
+    onError: () -> Unit,
+    onPlayerSelection: (Int) -> Unit,
+    onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
-    onStatDetailAction: (StatDetailAction) -> Unit = {},
-    onError: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val playerStat = state.selectedStatDetail
@@ -262,117 +263,114 @@ fun StatDetailScreen(
         when (state.selectedStatType) {
 
             StatType.General -> {
-                if (playerStat != null) {
-                    item {
-                        CustomRankingField(R.string.games, playerStat.games.formatted)
-                    }
-                    item {
-                        CustomRankingField(R.string.wins, playerStat.wins.formatted)
-                    }
-                    item {
-                        Spacer(Modifier)
-                    }
-                    item {
-                        CustomRankingField(R.string.koBomb, playerStat.koBomb.formatted)
-                    }
-                    item {
-                        CustomRankingField(R.string.damageBomb, playerStat.damageBomb.formatted)
-                    }
-                    item {
-                        Spacer(Modifier)
-                    }
-                    item {
-                        CustomRankingField(R.string.koMine, playerStat.koMine.formatted)
-                    }
-                    item {
-                        CustomRankingField(R.string.damageMine, playerStat.damageMine.formatted)
-                    }
-                    item {
-                        Spacer(Modifier)
-                    }
-                    item {
-                        CustomRankingField(R.string.koSidekick, playerStat.koSidekick.formatted)
-                    }
-                    item {
-                        CustomRankingField(
-                            R.string.damageSidekick,
-                            playerStat.damageSidekick.formatted
-                        )
-                    }
-                    item {
-                        Spacer(Modifier)
-                    }
-                    item {
-                        CustomRankingField(R.string.koSpikeball, playerStat.koSpikeball.formatted)
-                    }
-                    item {
-                        CustomRankingField(
-                            R.string.damageSpikeball,
-                            playerStat.damageSpikeball.formatted
-                        )
-                    }
 
-                    if (playerStat.legends.isNotEmpty()) {
-                        item {
-                            Text(stringResource(R.string.legends))
-                        }
-                        items(
-                            playerStat.legends, { it.legendId },
-                        ) { legend ->
-                            LegendStatItem(
-                                legend,
-                                onStatDetailAction = {
-                                    onStatDetailAction(
-                                        StatDetailAction.SelectLegend(legend.legendId)
-                                    )
-                                }
-                            )
-                        }
+                item {
+                    CustomRankingField(R.string.games, playerStat?.games?.formatted)
+                }
+                item {
+                    CustomRankingField(R.string.wins, playerStat?.wins?.formatted)
+                }
+                item {
+                    Spacer(Modifier)
+                }
+                item {
+                    CustomRankingField(R.string.koBomb, playerStat?.koBomb?.formatted)
+                }
+                item {
+                    CustomRankingField(R.string.damageBomb, playerStat?.damageBomb?.formatted)
+                }
+                item {
+                    Spacer(Modifier)
+                }
+                item {
+                    CustomRankingField(R.string.koMine, playerStat?.koMine?.formatted)
+                }
+                item {
+                    CustomRankingField(R.string.damageMine, playerStat?.damageMine?.formatted)
+                }
+                item {
+                    Spacer(Modifier)
+                }
+                item {
+                    CustomRankingField(R.string.koSidekick, playerStat?.koSidekick?.formatted)
+                }
+                item {
+                    CustomRankingField(
+                        R.string.damageSidekick,
+                        playerStat?.damageSidekick?.formatted
+                    )
+                }
+                item {
+                    Spacer(Modifier)
+                }
+                item {
+                    CustomRankingField(R.string.koSpikeball, playerStat?.koSpikeball?.formatted)
+                }
+                item {
+                    CustomRankingField(
+                        R.string.damageSpikeball,
+                        playerStat?.damageSpikeball?.formatted
+                    )
+                }
+
+                if (playerStat?.legends?.isNotEmpty() == true) {
+                    item {
+                        Text(stringResource(R.string.legends))
+                    }
+                    items(
+                        playerStat.legends, { it.legendId },
+                    ) { legend ->
+                        LegendStatItem(
+                            legend,
+                            onStatDetailAction = {
+                                onStatDetailAction(
+                                    StatDetailAction.SelectLegend(legend.legendId)
+                                )
+                            }
+                        )
                     }
                 }
             }
 
             StatType.Ranking -> {
-                if (playerRanking != null) {
+                item {
+                    CustomRankingField(R.string.rating, playerRanking?.rating?.formatted)
+                }
+                item {
+                    CustomRankingField(
+                        R.string.peakRating,
+                        playerRanking?.peakRating?.formatted
+                    )
+                }
+                item {
+                    Spacer(Modifier)
+                }
+                item {
+                    CustomRankingField(R.string.games, playerRanking?.games?.formatted)
+                }
+                item {
+                    CustomRankingField(R.string.wins, playerRanking?.wins?.formatted)
+                }
+                item {
+                    Spacer(Modifier)
+                }
+
+                if (playerRanking?.teams?.isNotEmpty() == true) {
                     item {
-                        CustomRankingField(R.string.rating, playerRanking.rating.formatted)
+                        Text(stringResource(R.string.teams))
                     }
-                    item {
-                        CustomRankingField(
-                            R.string.peakRating,
-                            playerRanking.peakRating.formatted
+                    items(playerRanking.teams) { team ->
+                        TeamStatItem(
+                            team,
+                            onStatDetailAction = {
+                                onPlayerSelection(
+                                    if (playerRanking.brawlhallaId == team.brawlhallaIdOne)
+                                        team.brawlhallaIdTwo else team.brawlhallaIdOne,
+                                )
+                            }
                         )
                     }
-                    item {
-                        Spacer(Modifier)
-                    }
-                    item {
-                        CustomRankingField(R.string.games, playerRanking.games.formatted)
-                    }
-                    item {
-                        CustomRankingField(R.string.wins, playerRanking.wins.formatted)
-                    }
-                    item {
-                        Spacer(Modifier)
-                    }
 
-                    if (playerRanking.teams.isNotEmpty()) {
-                        item {
-                            Text(stringResource(R.string.teams))
-                        }
-                        items(playerRanking.teams) { team ->
-                            TeamStatItem(
-                                team,
-                                onStatDetailAction = {
-                                    onStatDetailAction(
-                                        StatDetailAction.SelectPlayer(
-                                            if (playerRanking.brawlhallaId == team.brawlhallaIdOne) team.brawlhallaIdTwo else team.brawlhallaIdOne,
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -391,6 +389,9 @@ private fun RankingDetailScreenPreview() {
                 state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                 ),
+                {},
+                {},
+                {}
             )
         }
     }
@@ -403,6 +404,9 @@ private fun RankingDetailScreenLoadingPreview() {
         Surface {
             StatDetailScreen(
                 state = StatDetailState(isStatDetailLoading = true),
+                {},
+                {},
+                {}
             )
         }
     }
@@ -420,6 +424,9 @@ private fun RankingDetailScreenRankingLoadingPreview() {
                     selectedRankingDetail = rankingDetailSample.toRankingDetailUi(),
                     selectedStatType = StatType.Ranking
                 ),
+                {},
+                {},
+                {}
             )
         }
     }
@@ -436,6 +443,9 @@ private fun RankingDetailScreenRankingPreview() {
                     isRankingDetailLoading = true,
                     selectedStatType = StatType.Ranking
                 ),
+                {},
+                {},
+                {}
             )
         }
     }
