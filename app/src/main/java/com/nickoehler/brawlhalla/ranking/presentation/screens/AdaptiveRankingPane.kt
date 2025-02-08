@@ -27,6 +27,7 @@ import org.koin.core.parameter.parametersOf
 fun AdaptiveRankingPane(
     onClanSelection: (Int) -> Unit,
     onLegendSelection: (Int) -> Unit,
+    onPlayerSelection: (Int) -> Unit,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
     modifier: Modifier = Modifier,
 ) {
@@ -97,6 +98,7 @@ fun AdaptiveRankingPane(
                 AnimatedPane {
                     StatDetailScreen(
                         statDetailState,
+                        onPlayerSelection = onPlayerSelection,
                         onStatDetailAction = { action ->
                             statDetailViewModel.onStatDetailAction(action)
                             if (action is StatDetailAction.SelectClan) {

@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LegendsViewModel(
-    private val legendId: Int? = null,
+    private val legendId: Int = 0,
     private val legendsDataSource: LegendsDataSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(LegendsListState())
@@ -57,7 +57,7 @@ class LegendsViewModel(
                     )
                 }
 
-                if (legendId != null) {
+                if (legendId != 0) {
                     selectLegend(legendId)
                 }
 
