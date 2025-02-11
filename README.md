@@ -1,6 +1,8 @@
 # Brawlhalla Stats
 
-<img alt="logo" align="center" width="512" src="./logo.png"/>
+<div align="center">
+   <img alt="logo"  width="512" src="./logo.png"/>
+</div>
 
 **Brawlhalla Stats** is an experimental, open-source rewrite of Brawl Tool. This application is
 being developed in my free time, and due to my limited computer science knowledge, bugs are to be
