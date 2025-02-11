@@ -85,4 +85,12 @@
     <string name="winRate">Win Rate</string>
     <string name="losses">Losses</string>
     <string name="goToTeamMate">Go to Team Mate</string>
+    <string name="globalRank">Global Rank</string>
+    <string name="regionRank">Region Rank</string>
+    <string name="expand">Expand</string>
+    <string name="back">Back</string>
+    <string name="matchTime">Match Time</string>
+    <string name="hitSnowball">Hit Snowball</string>
+    <string name="koSnowball">Ko Snowball</string>
+    <string name="rank">Rank</string>
 </resources>

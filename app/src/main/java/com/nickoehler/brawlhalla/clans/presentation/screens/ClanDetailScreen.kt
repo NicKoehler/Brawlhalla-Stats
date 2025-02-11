@@ -34,6 +34,7 @@ import com.nickoehler.brawlhalla.clans.presentation.ClanAction
 import com.nickoehler.brawlhalla.clans.presentation.ClanState
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
@@ -163,22 +164,21 @@ internal val clanDetailSample =
     ClanDetail(
         1,
         "Blue Mammoth Games",
-        LocalDateTime.ofEpochSecond(1464206400, 0, ZoneOffset.UTC),
+        1464206400L.toLocalDateTime(),
         86962,
         listOf(
             ClanMember(
                 3,
                 "[BMG] Chill Penguin X",
                 "Leader",
-                LocalDateTime.ofEpochSecond(1464206400, 0, ZoneOffset.UTC),
+                1464206400L.toLocalDateTime(),
                 6664
             ),
             ClanMember(
                 2,
                 "bmg | dan",
                 "Officer",
-                LocalDateTime.ofEpochSecond(1464221047, 0, ZoneOffset.UTC),
-
+                1464221047L.toLocalDateTime(),
                 4492
             )
         )

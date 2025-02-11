@@ -23,7 +23,7 @@ data class StatLegendDto(
     @SerialName("teamkos")
     val teamKos: Int,
     @SerialName("matchtime")
-    val matchTime: Int,
+    val matchTime: Long,
     @SerialName("games")
     val games: Int,
     @SerialName("wins")
@@ -49,9 +49,9 @@ data class StatLegendDto(
     @SerialName("kogadgets")
     val koGadgets: Int,
     @SerialName("timeheldweaponone")
-    val timeHeldWeaponOne: Int,
+    val timeHeldWeaponOne: Long,
     @SerialName("timeheldweapontwo")
-    val timeHeldWeaponTwo: Int,
+    val timeHeldWeaponTwo: Long,
     @SerialName("xp")
     val xp: Int,
     @SerialName("level")

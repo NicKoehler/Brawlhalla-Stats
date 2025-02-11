@@ -19,33 +19,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.LoseColor
 import com.nickoehler.brawlhalla.ui.theme.WinColor
 
 @Composable
-fun RankWinRateRow(ranking: RankingUi? = null) {
+fun RankWinRateRow(winRate: DisplayableDouble? = null) {
     Row(
         modifier = Modifier.padding(end = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (ranking != null) {
+        if (winRate != null) {
             Text(
-                when (ranking) {
-                    is RankingUi.RankingSoloUi -> "${ranking.winRate.formatted}%"
-                    is RankingUi.RankingTeamUi -> "${ranking.winRate.formatted}%"
-                },
+                "${winRate.formatted}%",
                 fontSize = 10.sp,
                 lineHeight = 1.sp
             )
             AnimatedLinearProgressBar(
-                when (ranking) {
-                    is RankingUi.RankingSoloUi -> ranking.winRate.value / 100
-                    is RankingUi.RankingTeamUi -> ranking.winRate.value / 100
-                },
+                winRate.value / 100,
                 "ratio",
                 backgroundColor = LoseColor,
                 foregroundColor = WinColor,
@@ -76,8 +70,7 @@ private fun RankWinRateRowPreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                RankWinRateRow(rankingSoloSample.toRankingSoloUi())
-
+                RankWinRateRow(rankingSoloSample.toRankingSoloUi().winRate)
                 RankWinRateRow()
             }
         }

@@ -9,7 +9,6 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import org.koin.compose.KoinContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -38,11 +37,9 @@ fun BrawlhallaTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    KoinContext {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography,
-            content = content
-        )
-    }
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
 }

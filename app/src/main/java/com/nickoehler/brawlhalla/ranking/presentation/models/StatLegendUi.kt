@@ -2,8 +2,10 @@ package com.nickoehler.brawlhalla.ranking.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableTime
 import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
 import java.util.Locale
@@ -17,7 +19,7 @@ data class StatLegendUi(
     val falls: DisplayableNumber,
     val suicides: DisplayableNumber,
     val teamKos: DisplayableNumber,
-    val matchTime: Int,
+    val matchTime: DisplayableTime,
     val games: DisplayableNumber,
     val wins: DisplayableNumber,
     val damageUnarmed: DisplayableNumber,
@@ -30,13 +32,13 @@ data class StatLegendUi(
     val koWeaponOne: DisplayableNumber,
     val koWeaponTwo: DisplayableNumber,
     val koGadgets: DisplayableNumber,
-    val timeHeldWeaponOne: DisplayableNumber,
-    val timeHeldWeaponTwo: DisplayableNumber,
+    val timeHeldWeaponOne: DisplayableTime,
+    val timeHeldWeaponTwo: DisplayableTime,
     val xp: DisplayableNumber,
-    val level: Int,
-    val nextLevel: Int?,
+    val level: DisplayableNumber,
+    val nextLevel: DisplayableNumber?,
     val xpPercentage: DisplayableDouble,
-    val image: String
+    val image: String,
 )
 
 
@@ -54,7 +56,7 @@ fun StatLegend.toStatLegendUi(): StatLegendUi {
         falls.toDisplayableNumber(),
         suicides.toDisplayableNumber(),
         teamKos.toDisplayableNumber(),
-        matchTime,
+        matchTime.toDisplayableTime(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
         damageUnarmed.toDisplayableNumber(),
@@ -67,12 +69,12 @@ fun StatLegend.toStatLegendUi(): StatLegendUi {
         koWeaponOne.toDisplayableNumber(),
         koWeaponTwo.toDisplayableNumber(),
         koGadgets.toDisplayableNumber(),
-        timeHeldWeaponOne.toDisplayableNumber(),
-        timeHeldWeaponTwo.toDisplayableNumber(),
+        timeHeldWeaponOne.toDisplayableTime(),
+        timeHeldWeaponTwo.toDisplayableTime(),
         xp.toDisplayableNumber(),
-        level,
-        nextLevel = if (level < 100) level + 1 else null,
-        xpPercentage.toDisplayableDouble(),
+        level.toDisplayableNumber(),
+        nextLevel = if (level == 100) null else (level + 1).toDisplayableNumber(),
+        if (level == 100) 1.0.toDisplayableDouble() else xpPercentage.toDisplayableDouble(),
         getMiniImageUrlFromLegendNameKey(legendNameKey)
     )
 }

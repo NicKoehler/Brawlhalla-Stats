@@ -2,8 +2,10 @@ package com.nickoehler.brawlhalla.ranking.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableTime
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
@@ -29,6 +31,7 @@ data class StatDetailUi(
     val koSnowball: DisplayableNumber,
     val legends: List<StatLegendUi>,
     val clan: StatClanUi?,
+    val matchTime: DisplayableTime
 )
 
 
@@ -56,5 +59,6 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
         clan = if (this.clan != null) {
             clan.toStatClanUi()
         } else null,
+        legends.sumOf { it.matchTime }.toDisplayableTime()
     )
 }

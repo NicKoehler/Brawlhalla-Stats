@@ -56,7 +56,7 @@ fun RankingTeamCard(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     RankNameRatingRow(ranking)
-                    RankWinRateRow(ranking)
+                    RankWinRateRow(ranking?.winRate)
                 }
                 RankCircle(ranking)
             }
