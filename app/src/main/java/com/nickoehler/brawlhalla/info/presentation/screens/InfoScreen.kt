@@ -53,7 +53,7 @@ fun InfoScreen(
                         IconButton(onClick = {
                             onInfoAction(InfoAction.GoBack)
                         }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
                         }
                         Text(stringResource(R.string.info), fontWeight = FontWeight.Bold)
                     }

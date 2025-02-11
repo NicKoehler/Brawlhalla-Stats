@@ -6,8 +6,14 @@ import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
+import com.nickoehler.brawlhalla.legends.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -118,12 +124,58 @@ class StatDetailViewModel(
 
             is StatDetailAction.SelectPlayer -> selectStatDetail(action.brawlhallaId)
             is StatDetailAction.SelectStatType -> selectStatType(action.stat)
+            is StatDetailAction.SelectRankingModalType -> selectRankingModalType(action.modalType)
+            is StatDetailAction.SelectRankingFilterType -> selectRankingFilterType(action.type)
+            is StatDetailAction.SelectStatFilterType -> selectStatFilterType(action.type)
+            is StatDetailAction.SelectRankingLegendUi -> selectRankingLegendUi(action.rankingLegend)
+            is StatDetailAction.SelectTeamUi -> selectTeamUi(action.rankingTeam)
             is StatDetailAction.TogglePlayerFavorites -> togglePlayerFavorites(
                 action.brawlhallaId,
                 action.name
             )
 
-            else -> {}
+            is StatDetailAction.SelectClan -> {}
+            is StatDetailAction.SelectStatLegend -> selectStatLegend(action.statLegend)
+        }
+    }
+
+    private fun selectStatFilterType(type: StatFilterType) {
+        _state.update { state ->
+            state.copy(
+                selectedStatFilterType = type
+            )
+        }
+    }
+
+    private fun selectRankingFilterType(type: RankingFilterType) {
+        _state.update { state ->
+            state.copy(
+                selectedRankingFilterType = type
+            )
+        }
+    }
+
+    private fun selectStatLegend(statLegend: StatLegendUi?) {
+        _state.update { state ->
+            state.copy(selectedStatLegend = statLegend)
+        }
+    }
+
+    private fun selectTeamUi(rankingTeam: RankingUi.RankingTeamUi?) {
+        _state.update { state ->
+            state.copy(selectedRankingTeam = rankingTeam)
+        }
+    }
+
+    private fun selectRankingLegendUi(rankingLegend: RankingLegendUi?) {
+        _state.update { state ->
+            state.copy(selectedRankingLegend = rankingLegend)
+        }
+    }
+
+    private fun selectRankingModalType(modalType: RankingModalType?) {
+        _state.update { state ->
+            state.copy(modalType = modalType)
         }
     }
 

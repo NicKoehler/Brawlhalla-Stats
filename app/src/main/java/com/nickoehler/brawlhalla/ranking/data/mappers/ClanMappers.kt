@@ -4,14 +4,13 @@ import com.nickoehler.brawlhalla.clans.data.dto.ClanDetailDto
 import com.nickoehler.brawlhalla.clans.data.dto.ClanMemberDto
 import com.nickoehler.brawlhalla.clans.domain.ClanDetail
 import com.nickoehler.brawlhalla.clans.domain.ClanMember
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 
 fun ClanDetailDto.toClanDetail(): ClanDetail {
     return ClanDetail(
         id,
         name,
-        LocalDateTime.ofEpochSecond(createDate, 0, ZoneOffset.UTC),
+        createDate.toLocalDateTime(),
         xp,
         members.map { it.toClanMember() }
     )
@@ -22,7 +21,7 @@ fun ClanMemberDto.toClanMember(): ClanMember {
         brawlhallaId,
         name,
         rank,
-        LocalDateTime.ofEpochSecond(joinDate, 0, ZoneOffset.UTC),
+        joinDate.toLocalDateTime(),
         xp
     )
 }

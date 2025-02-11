@@ -13,8 +13,8 @@ data class RankingDetailUi(
     val wins: DisplayableNumber,
     val games: DisplayableNumber,
     val region: RegionUi,
-    val globalRank: Int,
-    val regionRank: Int,
+    val globalRank: String,
+    val regionRank: String,
     val legends: List<RankingLegendUi>,
     val teams: List<RankingUi.RankingTeamUi>
 )
@@ -29,8 +29,8 @@ fun RankingDetail.toRankingDetailUi(): RankingDetailUi {
         wins.toDisplayableNumber(),
         games.toDisplayableNumber(),
         region.toRegionUi(),
-        globalRank,
-        regionRank,
+        globalRank.toString(),
+        regionRank.toString(),
         legends.map { it.toRankingLegendUi() },
         teams.map { it.toRankingTeamUi() }
     )

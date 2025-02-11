@@ -13,13 +13,17 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 
 @Composable
-fun LegendImage(legendName: String?, legendImage: String?) {
+fun LegendImage(
+    legendName: String?,
+    legendImage: String?,
+    modifier: Modifier = Modifier
+) {
     if (legendName != null && legendImage != null) {
         AsyncImage(
             legendImage,
             contentDescription = legendName,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
+            modifier = modifier
                 .size(80.dp)
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colorScheme.surfaceBright),

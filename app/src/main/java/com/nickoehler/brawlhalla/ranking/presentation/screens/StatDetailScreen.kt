@@ -1,33 +1,46 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Poll
+import androidx.compose.material.icons.filled.QueryStats
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,23 +50,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
-import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.util.toString
+import com.nickoehler.brawlhalla.legends.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
+import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
+import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.domain.StatClan
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
+import com.nickoehler.brawlhalla.ranking.domain.Tier
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailState
+import com.nickoehler.brawlhalla.ranking.presentation.components.CustomLevelProgressBar
 import com.nickoehler.brawlhalla.ranking.presentation.components.CustomRankingField
+import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingItem
+import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
-import com.nickoehler.brawlhalla.ranking.presentation.components.TeamStatItem
+import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItemDetail
+import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItem
+import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
@@ -63,10 +87,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatDetailScreen(
     state: StatDetailState,
-    onError: () -> Unit,
+    onBack: () -> Unit,
     onPlayerSelection: (Int) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -75,6 +100,13 @@ fun StatDetailScreen(
     val context = LocalContext.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val itemSize = 200.dp
+    val columns by remember {
+        derivedStateOf {
+            (screenWidth / itemSize).toInt()
+        }
+    }
 
     ObserveAsEvents(events) { event ->
         when (event) {
@@ -84,7 +116,7 @@ fun StatDetailScreen(
                     event.error.toString(context),
                     Toast.LENGTH_LONG
                 ).show()
-                onError()
+                onBack()
             }
 
             is UiEvent.Message -> {
@@ -99,103 +131,68 @@ fun StatDetailScreen(
         }
     }
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        item {
-            Spacer(Modifier.size(20.dp))
-        }
-        if (state.isStatDetailLoading) {
-            item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    Box(
-                        modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                            .shimmerEffect()
-                    )
-
-                    Box(
-                        modifier
-                            .weight(1f)
-                            .height(40.dp)
-                            .padding(horizontal = 30.dp, vertical = 2.dp)
-                            .clip(CircleShape)
-                            .shimmerEffect()
-                    )
-                    IconButton(
-                        {}
-                    ) {
-                        Icon(
-                            Icons.Default.Star,
-                            null,
-                        )
-                    }
-                }
-            }
-            item {
-                Box(
-                    Modifier
-                        .size(height = 170.dp, width = 250.dp)
-                        .clip(CircleShape)
-                        .shimmerEffect()
+    if (state.modalType != null) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onStatDetailAction(
+                    StatDetailAction.SelectRankingModalType(null)
                 )
             }
-        } else if (playerStat != null) {
-            item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CustomCard(
-                        modifier = Modifier
-                            .size(50.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        contentPadding = 0.dp
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                "LV",
-                                fontSize = 10.sp,
-                                textAlign = TextAlign.Center,
-                                lineHeight = 12.sp,
-                            )
-                            Text(
-                                playerStat.level.toString(),
-                                fontSize = 15.sp,
-                                lineHeight = 20.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
+        ) {
+            when (state.modalType) {
+
+                is RankingModalType.StatLegend -> {
+                    LegendStatItemDetail(
+                        state.modalType.statLegend,
+                    )
+                }
+
+                is RankingModalType.Team -> {
+                    TeamItemDetail(
+                        state.modalType.team,
+                        {
+                            onPlayerSelection(
+                                if (state.selectedStatDetail?.brawlhallaId == state.modalType.team.brawlhallaIdOne) {
+                                    state.modalType.team.brawlhallaIdTwo
+                                } else {
+                                    state.modalType.team.brawlhallaIdOne
+                                }
                             )
                         }
-                    }
-                    Spacer(Modifier.size(10.dp))
-                    Text(
-                        playerStat.name,
-                        modifier.weight(1f),
-                        fontSize = 30.sp,
-                        lineHeight = 30.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
                     )
-                    IconButton(
-                        {
+
+                }
+
+                is RankingModalType.RankingLegend -> {
+                    LegendRankingItemDetail(state.modalType.legend)
+                }
+            }
+        }
+    }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            stringResource(R.string.back),
+                        )
+                    }
+                },
+                actions = {
+                    IconButton({
+                        if (playerStat != null) {
                             onStatDetailAction(
                                 StatDetailAction.TogglePlayerFavorites(
                                     playerStat.brawlhallaId,
                                     playerStat.name
                                 )
                             )
-                        },
-
-                        ) {
+                        }
+                    }) {
                         Icon(
-                            Icons.Default.Star,
+                            Icons.Default.Favorite,
                             null,
                             tint = if (state.isStatDetailFavorite) {
                                 MaterialTheme.colorScheme.primary
@@ -204,181 +201,443 @@ fun StatDetailScreen(
                             },
                         )
                     }
-                }
-            }
-            if (playerStat.clan != null) {
-                item {
-                    CustomCard(
-                        contentPadding = 10.dp,
-                        onClick = {
-                            onStatDetailAction(StatDetailAction.SelectClan(playerStat.clan.clanId))
+
+                },
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        if (state.isStatDetailLoading) {
+                            Box(
+                                modifier
+                                    .weight(1f)
+                                    .height(40.dp)
+                                    .padding(horizontal = 30.dp, vertical = 2.dp)
+                                    .clip(CircleShape)
+                                    .shimmerEffect()
+                            )
+                        } else if (playerStat != null) {
+                            Text(
+                                playerStat.name,
+                                fontSize = 30.sp,
+                                lineHeight = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
                         }
-                    ) {
-                        Text(playerStat.clan.clanName)
                     }
-                }
-            }
-            item {
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    AnimatedLinearProgressBar(
-                        modifier = Modifier.height(30.dp),
-                        indicatorProgress = playerStat.xpPercentage.value,
-                        label = playerStat.name
-                    )
-                    if (playerStat.nextLevel != null) {
-                        Icon(Icons.Default.KeyboardDoubleArrowRight, null)
-                        Text(playerStat.nextLevel.toString())
-                    }
-                }
-            }
 
-            item {
-                Text("XP ${playerStat.xp.formatted}")
-            }
-
-            item {
-                SingleChoiceSegmentedButtonRow {
-                    SegmentedButton(
-                        state.selectedStatType == StatType.General,
-                        onClick = { onStatDetailAction(StatDetailAction.SelectStatType(StatType.General)) },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            0,
-                            2
-                        )
-                    ) {
-                        Text(stringResource(R.string.stats))
-                    }
-                    SegmentedButton(
-                        state.selectedStatType == StatType.Ranking,
-                        onClick = { onStatDetailAction(StatDetailAction.SelectStatType(StatType.Ranking)) },
-                        shape = SegmentedButtonDefaults.itemShape(1, 2),
-                        enabled = state.rankingEnabled
-                    ) {
-                        Text(stringResource(R.string.rankings))
-                    }
                 }
-            }
+            )
         }
-        when (state.selectedStatType) {
+    ) {
+        LazyVerticalGrid(
+            modifier = modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(8.dp),
+            columns = GridCells.Fixed(columns),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
 
-            StatType.General -> {
+            item(span = { GridItemSpan(columns) }) {
+                Column(
+                    modifier = Modifier.padding(it),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (state.isStatDetailLoading) {
+                        Box(
+                            Modifier
+                                .size(height = 48.dp, width = 150.dp)
+                                .clip(CircleShape)
+                                .shimmerEffect()
+                        )
+                        Box(
+                            Modifier
+                                .size(height = 16.dp, width = 300.dp)
+                                .clip(CircleShape)
+                                .shimmerEffect()
+                        )
+                        Box(
+                            Modifier
+                                .size(height = 26.dp, width = 150.dp)
+                                .clip(CircleShape)
+                                .shimmerEffect()
+                        )
+                    } else if (playerStat != null) {
+                        if (playerStat.clan != null) {
+                            CustomCard(
+                                contentPadding = 10.dp,
+                                onClick = {
+                                    onStatDetailAction(StatDetailAction.SelectClan(playerStat.clan.clanId))
+                                }
+                            ) {
+                                Text(playerStat.clan.clanName)
+                            }
+                        }
 
-                item {
-                    CustomRankingField(R.string.games, playerStat?.games?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.wins, playerStat?.wins?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koBomb, playerStat?.koBomb?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.damageBomb, playerStat?.damageBomb?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koMine, playerStat?.koMine?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.damageMine, playerStat?.damageMine?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koSidekick, playerStat?.koSidekick?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.damageSidekick,
-                        playerStat?.damageSidekick?.formatted
-                    )
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.koSpikeball, playerStat?.koSpikeball?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.damageSpikeball,
-                        playerStat?.damageSpikeball?.formatted
-                    )
-                }
+                        CustomLevelProgressBar(
+                            playerStat.xpPercentage.value,
+                            playerStat.name,
+                            playerStat.level,
+                            playerStat.nextLevel,
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        )
 
-                if (playerStat?.legends?.isNotEmpty() == true) {
-                    item {
-                        Text(stringResource(R.string.legends))
+                        Text("XP ${playerStat.xp.formatted}")
                     }
-                    items(
-                        playerStat.legends, { it.legendId },
-                    ) { legend ->
-                        LegendStatItem(
-                            legend,
-                            onStatDetailAction = {
-                                onStatDetailAction(
-                                    StatDetailAction.SelectLegend(legend.legendId)
+
+                    SingleChoiceSegmentedButtonRow {
+                        StatType.entries.forEachIndexed { index, statType ->
+                            SegmentedButton(
+                                state.selectedStatType == statType,
+                                onClick = {
+                                    onStatDetailAction(
+                                        StatDetailAction.SelectStatType(
+                                            statType
+                                        )
+                                    )
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(
+                                    index,
+                                    StatType.entries.size
+                                ),
+                                icon = {
+                                    Icon(
+                                        when (statType) {
+                                            StatType.General -> Icons.Default.QueryStats
+                                            StatType.Ranking -> Icons.Default.Poll
+                                        },
+                                        null
+                                    )
+                                }
+                            ) {
+                                Text(
+                                    stringResource(
+                                        when (statType) {
+                                            StatType.General -> R.string.stats
+                                            StatType.Ranking -> R.string.rankings
+                                        }
+                                    )
                                 )
                             }
-                        )
+                        }
+                    }
+
+                    AnimatedContent(
+                        state.selectedStatType,
+                    ) { stateType ->
+                        SingleChoiceSegmentedButtonRow {
+                            when (stateType) {
+                                StatType.General -> {
+                                    StatFilterType.entries.forEachIndexed { index, statType ->
+                                        SegmentedButton(
+                                            selected = state.selectedStatFilterType == statType,
+                                            shape = SegmentedButtonDefaults.itemShape(
+                                                index,
+                                                StatFilterType.entries.size
+                                            ),
+                                            onClick = {
+                                                onStatDetailAction(
+                                                    StatDetailAction.SelectStatFilterType(
+                                                        statType
+                                                    )
+                                                )
+                                            },
+                                            label = {
+                                                Text(
+                                                    stringResource(
+                                                        when (statType) {
+                                                            StatFilterType.Stat -> R.string.stats
+                                                            StatFilterType.Legends -> R.string.legends
+                                                        }
+                                                    )
+                                                )
+                                            },
+                                        )
+                                    }
+                                }
+
+                                StatType.Ranking -> {
+                                    RankingFilterType.entries.forEachIndexed { index, statType ->
+                                        SegmentedButton(
+                                            selected = state.selectedRankingFilterType == statType,
+                                            shape = SegmentedButtonDefaults.itemShape(
+                                                index,
+                                                RankingFilterType.entries.size
+                                            ),
+                                            onClick = {
+                                                onStatDetailAction(
+                                                    StatDetailAction.SelectRankingFilterType(
+                                                        statType
+                                                    )
+                                                )
+                                            },
+                                            label = {
+                                                Text(
+                                                    stringResource(
+                                                        when (statType) {
+                                                            RankingFilterType.Legends -> R.string.legends
+                                                            RankingFilterType.Teams -> R.string.teams
+                                                            RankingFilterType.Stat -> R.string.stats
+                                                        }
+                                                    )
+                                                )
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            StatType.Ranking -> {
-                item {
-                    CustomRankingField(R.string.rating, playerRanking?.rating?.formatted)
-                }
-                item {
-                    CustomRankingField(
-                        R.string.peakRating,
-                        playerRanking?.peakRating?.formatted
-                    )
-                }
-                item {
-                    Spacer(Modifier)
-                }
-                item {
-                    CustomRankingField(R.string.games, playerRanking?.games?.formatted)
-                }
-                item {
-                    CustomRankingField(R.string.wins, playerRanking?.wins?.formatted)
-                }
-                item {
-                    Spacer(Modifier)
-                }
+            when (state.selectedStatType) {
 
-                if (playerRanking?.teams?.isNotEmpty() == true) {
-                    item {
-                        Text(stringResource(R.string.teams))
-                    }
-                    items(playerRanking.teams) { team ->
-                        TeamStatItem(
-                            team,
-                            onStatDetailAction = {
-                                onPlayerSelection(
-                                    if (playerRanking.brawlhallaId == team.brawlhallaIdOne)
-                                        team.brawlhallaIdTwo else team.brawlhallaIdOne,
+                StatType.General -> {
+
+                    when (state.selectedStatFilterType) {
+                        StatFilterType.Stat -> {
+                            item {
+                                CustomRankingField(
+                                    R.string.games,
+                                    playerStat?.games?.formatted,
+                                    modifier = Modifier.animateItem()
+
                                 )
                             }
-                        )
-                    }
+                            item {
+                                CustomRankingField(
+                                    R.string.wins,
+                                    playerStat?.wins?.formatted,
+                                    modifier = Modifier.animateItem()
+                                )
+                            }
 
+                            item {
+                                CustomRankingField(
+                                    R.string.koBomb,
+                                    playerStat?.koBomb?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.damageBomb,
+                                    playerStat?.damageBomb?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+
+                            item {
+                                CustomRankingField(
+                                    R.string.koMine,
+                                    playerStat?.koMine?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.damageMine,
+                                    playerStat?.damageMine?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+
+                            item {
+                                CustomRankingField(
+                                    R.string.koSpikeball,
+                                    playerStat?.koSpikeball?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.damageSpikeball,
+                                    playerStat?.damageSpikeball?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+
+                            item {
+                                CustomRankingField(
+                                    R.string.koSidekick,
+                                    playerStat?.koSidekick?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.damageSidekick,
+                                    playerStat?.damageSidekick?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+
+                            item {
+                                CustomRankingField(
+                                    R.string.koSnowball,
+                                    playerStat?.koSnowball?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.hitSnowball,
+                                    playerStat?.hitSnowball?.formatted,
+                                    modifier = Modifier.animateItem()
+                                )
+                            }
+                        }
+
+                        StatFilterType.Legends -> {
+                            if (playerStat?.legends?.isNotEmpty() == true) {
+                                items(
+                                    playerStat.legends, { it.legendId },
+                                ) { legend ->
+                                    LegendStatItem(
+                                        legend,
+                                        onStatDetailAction = {
+                                            onStatDetailAction(
+                                                StatDetailAction.SelectRankingModalType(
+                                                    RankingModalType.StatLegend(legend)
+                                                )
+                                            )
+                                        },
+                                        modifier = Modifier.animateItem()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                StatType.Ranking -> {
+                    when (state.selectedRankingFilterType) {
+                        RankingFilterType.Stat -> {
+                            item {
+                                CustomRankingField(
+                                    R.string.rating,
+                                    playerRanking?.rating?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.peakRating,
+                                    playerRanking?.peakRating?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.games,
+                                    playerRanking?.games?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.wins,
+                                    playerRanking?.wins?.formatted,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+
+                            item {
+                                CustomRankingField(
+                                    R.string.tier,
+                                    playerRanking?.tier?.toLocalizedString(context),
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.region,
+                                    playerRanking?.region?.flag,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.regionRank,
+                                    playerRanking?.regionRank,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                            item {
+                                CustomRankingField(
+                                    R.string.globalRank,
+                                    playerRanking?.globalRank,
+                                    modifier = Modifier.animateItem()
+
+                                )
+                            }
+                        }
+
+                        RankingFilterType.Legends -> if (playerRanking != null) {
+                            items(
+                                playerRanking.legends, { it.legendId },
+                            ) { legend ->
+                                LegendRankingItem(
+                                    legend,
+                                    onClick = {
+                                        onStatDetailAction(
+                                            StatDetailAction.SelectRankingModalType(
+                                                RankingModalType.RankingLegend(legend)
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier.animateItem()
+                                )
+                            }
+                        }
+
+                        RankingFilterType.Teams ->
+                            if (playerRanking != null) {
+                                items(
+                                    playerRanking.teams,
+                                    { "${it.brawlhallaIdOne}${it.brawlhallaIdTwo}" },
+                                ) { team ->
+                                    TeamItem(
+                                        team,
+                                        modifier = Modifier.animateItem()
+                                    ) {
+                                        onStatDetailAction(
+                                            StatDetailAction.SelectRankingModalType(
+                                                RankingModalType.Team(team)
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                    }
                 }
             }
-        }
-        item {
-            Spacer(Modifier)
         }
     }
 }
+
 
 @Preview
 @Composable
@@ -479,7 +738,7 @@ internal val statDetailSample = StatDetail(
             6054,
             348,
             183,
-            540349,
+            540349L,
             3089,
             1873,
             147318,
@@ -507,7 +766,7 @@ internal val statDetailSample = StatDetail(
             1606,
             124,
             24,
-            135574,
+            135574L,
             1134,
             753,
             71665,
@@ -535,7 +794,7 @@ internal val statDetailSample = StatDetail(
             1019,
             73,
             3,
-            92623,
+            92623L,
             815,
             564,
             55168,
@@ -564,7 +823,7 @@ internal val statDetailSample = StatDetail(
             1169,
             90,
             5,
-            99789,
+            99789L,
             856,
             570,
             42983,
@@ -763,5 +1022,15 @@ internal val rankingDetailSample =
             )
         ),
 
-        teams = emptyList()
+        teams = listOf(
+            Ranking.RankingTeam(
+                1, "Gesu+Maria", 1, 2,
+                rating = 2000,
+                tier = Tier.DIAMOND,
+                games = 234,
+                wins = 234,
+                region = Region.EU,
+                peakRating = 2000,
+            )
+        )
     )

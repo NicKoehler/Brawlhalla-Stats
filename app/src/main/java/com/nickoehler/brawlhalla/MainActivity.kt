@@ -45,6 +45,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -65,181 +66,176 @@ class MainActivity : ComponentActivity() {
                     } ?: false
                 }
 
-
-            BrawlhallaTheme {
-                NavigationSuiteScaffold(
-                    modifier = Modifier
-                        .imePadding()
-                        .animateContentSize(),
-                    layoutType = if (showBottomBar) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-                        currentWindowAdaptiveInfo()
-                    ) else NavigationSuiteType.None,
-
-                    navigationSuiteItems = {
-                        Screens.entries.forEach { currentScreen ->
-                            val isSelected =
-                                currentDestination?.hierarchy?.any { it.hasRoute(currentScreen.route::class) } == true
-                            item(
-                                selected = isSelected,
-                                onClick = {
-                                    navController.navigate(currentScreen.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
-                                        restoreState = true
-                                        launchSingleTop = true
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        if (isSelected) currentScreen.selectedIcon
-                                        else currentScreen.unselectedIcon,
-                                        stringResource(currentScreen.title),
-                                    )
-                                },
-                                label = {
-                                    if (isSelected) {
-                                        Text(stringResource(currentScreen.title))
-                                    }
-                                }
-                            )
-                        }
-                    }
-                ) {
-                    NavHost(
+            KoinContext {
+                BrawlhallaTheme {
+                    NavigationSuiteScaffold(
                         modifier = Modifier
-                            .safeDrawingPadding()
-                            .animateContentSize()
-                            .padding(horizontal = 8.dp),
-                        navController = navController,
-                        startDestination = Route.Favorites,
+                            .imePadding()
+                            .animateContentSize(),
+                        layoutType = if (showBottomBar) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                            currentWindowAdaptiveInfo()
+                        ) else NavigationSuiteType.None,
+
+                        navigationSuiteItems = {
+                            Screens.entries.forEach { currentScreen ->
+                                val isSelected =
+                                    currentDestination?.hierarchy?.any { it.hasRoute(currentScreen.route::class) } == true
+                                item(
+                                    selected = isSelected,
+                                    onClick = {
+                                        navController.navigate(currentScreen.route) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            restoreState = true
+                                            launchSingleTop = true
+                                        }
+                                    },
+                                    icon = {
+                                        Icon(
+                                            if (isSelected) currentScreen.selectedIcon
+                                            else currentScreen.unselectedIcon,
+                                            stringResource(currentScreen.title),
+                                        )
+                                    },
+                                    label = {
+                                        if (isSelected) {
+                                            Text(stringResource(currentScreen.title))
+                                        }
+                                    }
+                                )
+                            }
+                        }
                     ) {
-                        composable<Route.Stat> {
+                        NavHost(
+                            modifier = Modifier
+                                .safeDrawingPadding()
+                                .animateContentSize()
+                                .padding(horizontal = 8.dp),
+                            navController = navController,
+                            startDestination = Route.Favorites,
+                        ) {
+                            composable<Route.Stat> {
 
-                            val player = it.toRoute<Route.Stat>()
-                            val statDetailViewModel = koinViewModel<StatDetailViewModel>(
-                                parameters = { parametersOf(player.playerId) }
-                            )
-                            val state by statDetailViewModel.state.collectAsStateWithLifecycle()
+                                val player = it.toRoute<Route.Stat>()
+                                val statDetailViewModel = koinViewModel<StatDetailViewModel>(
+                                    parameters = { parametersOf(player.playerId) }
+                                )
+                                val state by statDetailViewModel.state.collectAsStateWithLifecycle()
 
-                            StatDetailScreen(
-                                state,
-                                onStatDetailAction = { action ->
-                                    statDetailViewModel.onStatDetailAction(action)
-                                    if (action is StatDetailAction.SelectClan) {
+                                StatDetailScreen(
+                                    state,
+                                    onStatDetailAction = { action ->
+                                        statDetailViewModel.onStatDetailAction(action)
+                                        if (action is StatDetailAction.SelectClan) {
+                                            navController.navigate(
+                                                Route.Clan(action.clanId)
+                                            )
+                                        }
+                                    },
+                                    onBack = { navController.popBackStack() },
+                                    events = statDetailViewModel.uiEvents,
+                                    onPlayerSelection = { brawlhallaId ->
+                                        navController.navigate(Route.Stat(brawlhallaId))
+                                    },
+                                )
+                            }
+                            composable<Route.Rankings> {
+                                AdaptiveRankingPane(
+                                    onClanSelection = { clanId ->
                                         navController.navigate(
-                                            Route.Clan(action.clanId)
+                                            Route.Clan(clanId)
                                         )
-                                    }
-                                    if (action is StatDetailAction.SelectLegend) {
+                                    },
+                                    onLegendSelection = { legendId ->
+
                                         navController.navigate(
-                                            Route.Legend(action.legendId)
+                                            Route.Legend(legendId)
                                         )
-
-                                    }
-                                },
-                                onError = { navController.popBackStack() },
-                                events = statDetailViewModel.uiEvents,
-                                onPlayerSelection = { brawlhallaId ->
-                                    navController.navigate(Route.Stat(brawlhallaId))
-                                },
-                            )
-                        }
-                        composable<Route.Rankings> {
-                            AdaptiveRankingPane(
-                                onClanSelection = { clanId ->
-                                    navController.navigate(
-                                        Route.Clan(clanId)
-                                    )
-                                },
-                                onLegendSelection = { legendId ->
-
-                                    navController.navigate(
-                                        Route.Legend(legendId)
-                                    )
-                                },
-                                onPlayerSelection = { brawlhallaId ->
-                                    navController.navigate(
-                                        Route.Stat(brawlhallaId)
-                                    )
-                                }
-                            )
-                        }
-                        composable<Route.Legends> {
-                            val legendsViewmodel = koinViewModel<LegendsViewModel>(
-                                parameters = { parametersOf(0) }
-                            )
-
-                            AdaptiveLegendsPane(
-                                viewModel = legendsViewmodel,
-                            )
-                        }
-
-                        composable<Route.Legend> {
-                            val legend = it.toRoute<Route.Legend>()
-                            val legendsViewmodel = koinViewModel<LegendsViewModel>(
-                                parameters = { parametersOf(legend.id) }
-                            )
-
-                            AdaptiveLegendsPane(
-                                viewModel = legendsViewmodel,
-                            )
-                        }
-
-                        composable<Route.Favorites> {
-                            val favoritesViewModel = koinViewModel<FavoritesViewModel>()
-                            val favoritesState by favoritesViewModel.state.collectAsStateWithLifecycle()
-
-                            FavoritesScreen(
-                                state = favoritesState,
-                                onFavoriteAction = { action ->
-                                    favoritesViewModel.onFavoriteAction(action)
-                                    when (action) {
-                                        is FavoriteAction.SelectClan -> navController.navigate(
-                                            Route.Clan(clanId = action.clanId)
-                                        )
-
-                                        is FavoriteAction.SelectPlayer -> navController.navigate(
-                                            Route.Stat(playerId = action.brawlhallaId)
-                                        )
-
-                                        else -> {}
-                                    }
-                                },
-                                onInfoSelection = {
-                                    navController.navigate(Route.Info)
-                                }
-                            )
-                        }
-                        composable<Route.Clan> {
-                            val clanViewModel = koinViewModel<ClanViewModel>()
-                            val clan = it.toRoute<Route.Clan>()
-
-                            ClanDetailScreen(
-                                clan.clanId,
-                                clanViewModel.state.collectAsStateWithLifecycle().value,
-                                onClanAction = { action ->
-                                    clanViewModel.onClanAction(action)
-                                    if (action is ClanAction.SelectMember) {
+                                    },
+                                    onPlayerSelection = { brawlhallaId ->
                                         navController.navigate(
-                                            Route.Stat(action.memberId)
+                                            Route.Stat(brawlhallaId)
                                         )
                                     }
-                                },
-                                events = clanViewModel.uiEvents
-                            )
-                        }
+                                )
+                            }
+                            composable<Route.Legends> {
+                                val legendsViewmodel = koinViewModel<LegendsViewModel>(
+                                    parameters = { parametersOf(0) }
+                                )
 
-                        composable<Route.Info> {
-                            val infoViewModel = InfoViewModel()
-                            InfoScreen(
-                                { action ->
-                                    infoViewModel.onInfoAction(action)
-                                    if (action is InfoAction.GoBack) {
-                                        navController.popBackStack()
+                                AdaptiveLegendsPane(
+                                    viewModel = legendsViewmodel,
+                                )
+                            }
+
+                            composable<Route.Legend> {
+                                val legend = it.toRoute<Route.Legend>()
+                                val legendsViewmodel = koinViewModel<LegendsViewModel>(
+                                    parameters = { parametersOf(legend.id) }
+                                )
+
+                                AdaptiveLegendsPane(
+                                    viewModel = legendsViewmodel,
+                                )
+                            }
+
+                            composable<Route.Favorites> {
+                                val favoritesViewModel = koinViewModel<FavoritesViewModel>()
+                                val favoritesState by favoritesViewModel.state.collectAsStateWithLifecycle()
+
+                                FavoritesScreen(
+                                    state = favoritesState,
+                                    onFavoriteAction = { action ->
+                                        favoritesViewModel.onFavoriteAction(action)
+                                        when (action) {
+                                            is FavoriteAction.SelectClan -> navController.navigate(
+                                                Route.Clan(clanId = action.clanId)
+                                            )
+
+                                            is FavoriteAction.SelectPlayer -> navController.navigate(
+                                                Route.Stat(playerId = action.brawlhallaId)
+                                            )
+
+                                            else -> {}
+                                        }
+                                    },
+                                    onInfoSelection = {
+                                        navController.navigate(Route.Info)
                                     }
-                                }
-                            )
+                                )
+                            }
+                            composable<Route.Clan> {
+                                val clanViewModel = koinViewModel<ClanViewModel>()
+                                val clan = it.toRoute<Route.Clan>()
+
+                                ClanDetailScreen(
+                                    clan.clanId,
+                                    clanViewModel.state.collectAsStateWithLifecycle().value,
+                                    onClanAction = { action ->
+                                        clanViewModel.onClanAction(action)
+                                        if (action is ClanAction.SelectMember) {
+                                            navController.navigate(
+                                                Route.Stat(action.memberId)
+                                            )
+                                        }
+                                    },
+                                    events = clanViewModel.uiEvents
+                                )
+                            }
+
+                            composable<Route.Info> {
+                                val infoViewModel = InfoViewModel()
+                                InfoScreen(
+                                    { action ->
+                                        infoViewModel.onInfoAction(action)
+                                        if (action is InfoAction.GoBack) {
+                                            navController.popBackStack()
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }

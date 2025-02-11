@@ -47,7 +47,9 @@ fun RankingSoloCard(
 
         ) {
             RankNameRatingRow(ranking)
-            RankWinRateRow(ranking)
+            RankWinRateRow(
+                ranking?.winRate
+            )
         }
     }
 }
