@@ -67,7 +67,7 @@ fun RankingListScreen(
         topBar = {
             CustomTopAppBar(
                 stringResource(R.string.rankings),
-                placeholder = stringResource(R.string.search_name_brawlhalla_id),
+                placeholder = stringResource(R.string.search_name_or_id),
                 state = state.appBarState,
                 scrollBehavior = scrollBehavior,
                 onAppBarAction = onAppBarAction,
