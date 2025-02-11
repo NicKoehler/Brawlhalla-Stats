@@ -41,7 +41,7 @@ fun LegendStatItem(
     modifier: Modifier = Modifier
 ) {
     CustomCard(
-        modifier = modifier.aspectRatio(1f),
+        modifier = modifier,
         onClick = onStatDetailAction
     ) {
         Column(
@@ -54,7 +54,7 @@ fun LegendStatItem(
                     legend.legendNameKey,
                     legend.image,
                     modifier = Modifier
-                        .size(150.dp)
+                        .aspectRatio(1f)
                         .padding(8.dp),
                 )
                 Box(
@@ -92,6 +92,7 @@ fun LegendStatItem(
 @Composable
 fun LegendStatItemDetail(
     legend: StatLegendUi,
+    columns: Int,
     modifier: Modifier = Modifier,
 ) {
     val background = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -119,7 +120,7 @@ fun LegendStatItemDetail(
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
-            columns = GridCells.Adaptive(150.dp),
+            columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -280,6 +281,7 @@ private fun LegendStatItemDetailPreview() {
         Surface {
             LegendStatItemDetail(
                 statDetailSample.legends[0].toStatLegendUi(),
+                2
             )
         }
     }

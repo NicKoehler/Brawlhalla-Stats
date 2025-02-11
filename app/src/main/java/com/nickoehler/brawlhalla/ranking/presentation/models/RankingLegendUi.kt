@@ -1,6 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
@@ -14,6 +16,7 @@ data class RankingLegendUi(
     val tier: TierUi,
     val wins: DisplayableNumber,
     val games: DisplayableNumber,
+    val winRate: DisplayableDouble?,
     val image: String,
 )
 
@@ -31,6 +34,7 @@ fun RankingLegend.toRankingLegendUi(): RankingLegendUi {
         tier.toTierUi(),
         wins.toDisplayableNumber(),
         games.toDisplayableNumber(),
+        if (games > 0) (wins.toDouble() / games * 100).toDisplayableDouble() else null,
         getMiniImageUrlFromLegendNameKey(legendNameKey)
     )
 }

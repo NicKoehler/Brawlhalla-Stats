@@ -4,9 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -42,14 +39,12 @@ fun TeamItem(
 ) {
     CustomCard(
         onClick = onClick,
-        modifier = modifier.aspectRatio(1f),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxSize()
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -72,6 +67,7 @@ fun TeamItem(
 @Composable
 fun TeamItemDetail(
     team: RankingUi.RankingTeamUi,
+    columns: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,7 +98,7 @@ fun TeamItemDetail(
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
-            columns = GridCells.Adaptive(150.dp),
+            columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -146,6 +142,7 @@ private fun TeamItemDetailPreview() {
         Surface {
             TeamItemDetail(
                 rankingDetailSample.teams[0].toRankingTeamUi(),
+                2,
                 onClick = {},
             )
         }

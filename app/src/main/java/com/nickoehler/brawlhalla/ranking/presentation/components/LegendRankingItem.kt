@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.LegendImage
+import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankWinRateRow
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.TierBox
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingLegendUi
@@ -38,29 +40,41 @@ fun LegendRankingItem(
 ) {
     CustomCard(
         onClick = onClick,
-        modifier = modifier.aspectRatio(1f)
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
     ) {
         Column(
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
+                modifier = Modifier
+                    .aspectRatio(1f),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 LegendImage(
                     legend.legendNameKey,
                     legend.image,
                     modifier = Modifier
-                        .size(150.dp)
+                        .fillMaxSize()
                         .padding(8.dp),
                 )
                 TierBox(legend.rating, legend.tier)
             }
-
-            Text(
-                legend.legendNameKey,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-            )
+            Column(
+                modifier = Modifier.height(40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    legend.legendNameKey,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                )
+                if (legend.winRate != null) {
+                    RankWinRateRow(legend.winRate)
+                }
+            }
         }
     }
 }
@@ -69,6 +83,7 @@ fun LegendRankingItem(
 @Composable
 fun LegendRankingItemDetail(
     legend: RankingLegendUi,
+    columns: Int,
     modifier: Modifier = Modifier,
 ) {
     val background = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -85,18 +100,13 @@ fun LegendRankingItemDetail(
             textAlign = TextAlign.Center
         )
 
-        // TODO
-//        CustomLevelProgressBar(
-//            percentage = legend.xpPercentage.value,
-//            key = legend.legendNameKey,
-//            currentLevel = legend.level.value,
-//            nextLevel = legend.nextLevel?.value
-//        )
-
+        if (legend.winRate != null) {
+            RankWinRateRow(legend.winRate)
+        }
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
-            columns = GridCells.Adaptive(150.dp),
+            columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -114,10 +124,7 @@ fun LegendRankingItemDetail(
                     background
                 )
             }
-
-
         }
-
     }
 }
 
@@ -128,6 +135,7 @@ private fun LegendRankingItemDetailPreview() {
         Surface {
             LegendRankingItemDetail(
                 rankingDetailSample.legends[0].toRankingLegendUi(),
+                2
             )
         }
     }
