@@ -36,12 +36,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -97,14 +100,15 @@ fun StatDetailScreen(
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
 ) {
+    val density = LocalDensity.current
     val context = LocalContext.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    var screenWidth by remember { mutableStateOf(0.dp) }
     val itemSize = 200.dp
     val columns by remember {
         derivedStateOf {
-            (screenWidth / itemSize).toInt()
+            screenWidth.div(itemSize).toInt().coerceAtLeast(2)
         }
     }
 
@@ -144,12 +148,14 @@ fun StatDetailScreen(
                 is RankingModalType.StatLegend -> {
                     LegendStatItemDetail(
                         state.modalType.statLegend,
+                        columns = columns,
                     )
                 }
 
                 is RankingModalType.Team -> {
                     TeamItemDetail(
                         state.modalType.team,
+                        columns = columns,
                         {
                             onPlayerSelection(
                                 if (state.selectedStatDetail?.brawlhallaId == state.modalType.team.brawlhallaIdOne) {
@@ -164,12 +170,19 @@ fun StatDetailScreen(
                 }
 
                 is RankingModalType.RankingLegend -> {
-                    LegendRankingItemDetail(state.modalType.legend)
+                    LegendRankingItemDetail(
+                        state.modalType.legend,
+                        columns = columns,
+                    )
                 }
             }
         }
     }
     Scaffold(
+        modifier = modifier.onGloballyPositioned { layoutCoordinates ->
+            val widthInPx = layoutCoordinates.size.width
+            screenWidth = with(density) { widthInPx.toDp() }
+        },
         topBar = {
             TopAppBar(
                 navigationIcon = {
