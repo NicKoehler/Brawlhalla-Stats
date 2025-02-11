@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Brawlhalla</string>
+    <string name="app_name">Brawlhalla Stats</string>
     <string name="error_request_timeout">Request timed out</string>
     <string name="error_too_many_requests">Too many requests</string>
     <string name="error_no_internet">No internet connection</string>
@@ -32,7 +32,7 @@
     <string name="seasonal">Seasonal</string>
     <string name="region_all">All</string>
     <string name="region_unknown">Unknown</string>
-    <string name="search_name_brawlhalla_id">Search a name or Brawlhalla ID</string>
+    <string name="search_name_or_id">Search a name or ID</string>
     <string name="level">Level</string>
     <string name="wins">Wins</string>
     <string name="games">Games</string>
