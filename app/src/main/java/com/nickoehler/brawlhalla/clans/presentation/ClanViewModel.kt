@@ -12,6 +12,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.toClanDetailUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -19,11 +20,12 @@ import kotlinx.coroutines.launch
 
 
 class ClanViewModel(
+    private val clanId: Int,
     private val clanDataSource: ClanDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ClanState())
-    val state = _state.stateIn(
+    val state = _state.onStart { selectClan(clanId) }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
         ClanState()
@@ -37,7 +39,7 @@ class ClanViewModel(
         if (_state.value.selectedClan?.id == clanId) {
             return
         }
-        
+
         _state.update { state -> state.copy(isClanDetailLoading = true) }
 
         viewModelScope.launch {

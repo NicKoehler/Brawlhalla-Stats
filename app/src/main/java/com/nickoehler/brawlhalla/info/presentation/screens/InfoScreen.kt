@@ -39,26 +39,21 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun InfoScreen(
     onInfoAction: (InfoAction) -> Unit = {},
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
-                {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(onClick = {
-                            onInfoAction(InfoAction.GoBack)
-                        }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
-                        }
-                        Text(stringResource(R.string.info), fontWeight = FontWeight.Bold)
-                    }
+                title = {
+                    Text(stringResource(R.string.info), fontWeight = FontWeight.Bold)
                 },
-                expandedHeight = 80.dp,
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
+                    }
+                }
             )
         },
 
@@ -100,7 +95,7 @@ fun InfoScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(Icons.Default.Code, null)
-                Text("Github")
+                Text("NicKoehler")
             }
         }
     }
@@ -113,6 +108,8 @@ private fun InfoScreenPreview() {
     BrawlhallaTheme {
         Surface {
             InfoScreen(
+                {},
+                {},
                 modifier = Modifier.fillMaxSize()
             )
         }

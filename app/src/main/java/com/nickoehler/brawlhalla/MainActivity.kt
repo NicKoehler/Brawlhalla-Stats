@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,12 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -34,7 +34,6 @@ import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
-import com.nickoehler.brawlhalla.info.presentation.model.InfoAction
 import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
@@ -58,13 +57,19 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
-
+            val configuration = LocalConfiguration.current
+            val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
             val showBottomBar = Screens
                 .entries.any { screen ->
                     currentDestination?.hierarchy?.any {
                         it.hasRoute(route = screen.route::class)
                     } ?: false
                 }
+            
+            val layoutType = when (showBottomBar) {
+                true -> if (isPortrait) NavigationSuiteType.NavigationBar else NavigationSuiteType.NavigationRail
+                false -> NavigationSuiteType.None
+            }
 
             KoinContext {
                 BrawlhallaTheme {
@@ -72,10 +77,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .imePadding()
                             .animateContentSize(),
-                        layoutType = if (showBottomBar) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-                            currentWindowAdaptiveInfo()
-                        ) else NavigationSuiteType.None,
-
+                        layoutType = layoutType,
                         navigationSuiteItems = {
                             Screens.entries.forEach { currentScreen ->
                                 val isSelected =
@@ -207,11 +209,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<Route.Clan> {
-                                val clanViewModel = koinViewModel<ClanViewModel>()
                                 val clan = it.toRoute<Route.Clan>()
-
+                                val clanViewModel =
+                                    koinViewModel<ClanViewModel>(parameters = { parametersOf(clan.clanId) })
                                 ClanDetailScreen(
-                                    clan.clanId,
                                     clanViewModel.state.collectAsStateWithLifecycle().value,
                                     onClanAction = { action ->
                                         clanViewModel.onClanAction(action)
@@ -221,18 +222,19 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     },
-                                    events = clanViewModel.uiEvents
+                                    events = clanViewModel.uiEvents,
+                                    onBack = {
+                                        navController.popBackStack()
+                                    }
                                 )
                             }
 
                             composable<Route.Info> {
                                 val infoViewModel = InfoViewModel()
                                 InfoScreen(
-                                    { action ->
-                                        infoViewModel.onInfoAction(action)
-                                        if (action is InfoAction.GoBack) {
-                                            navController.popBackStack()
-                                        }
+                                    infoViewModel::onInfoAction,
+                                    onBack = {
+                                        navController.popBackStack()
                                     }
                                 )
                             }
