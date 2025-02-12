@@ -19,7 +19,11 @@ Please note that I will not be updating the older versions available in the Play
 
 ## Download
 
-The link to the Play Store will be provided here once the app is available for download.
+<div align="center">
+  <div style="display: flex; flex-flow: row wrap; justify-content: center; align-items: center;">
+    <a href="https://github.com/ImranR98/Obtainium/releases"><img alt="Get it on Obtainium" width="200" height="80" src="https://github.com/user-attachments/assets/377575fe-a651-4420-afad-8dee21618c44" /></a>
+  </div>
+</div>
 
 ## Features
 
