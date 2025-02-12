@@ -8,6 +8,9 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
+
 android {
     namespace = "com.nickoehler.brawlhalla"
     compileSdk = 35
@@ -17,13 +20,20 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = File(projectDir, "keystore.jks")
+            storePassword = properties.getProperty("KEYSTORE_PASSWORD")
+            keyAlias = properties.getProperty("KEYSTORE_ALIAS")
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
 
         debug {
             buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
@@ -34,6 +44,8 @@ android {
             buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
             buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
 
+            signingConfig = signingConfigs.getByName("release")
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -41,7 +53,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
