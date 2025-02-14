@@ -25,6 +25,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     signingConfigs {
         create("release") {
             storeFile = File(projectDir, "keystore.jks")
@@ -78,7 +83,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.transport.runtime)
     implementation(libs.androidx.adaptive.layout.android)
     implementation(libs.androidx.adaptive.navigation.android)
     implementation(libs.androidx.navigation.compose)
