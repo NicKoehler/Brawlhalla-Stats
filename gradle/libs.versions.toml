@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.0"
+agp = "8.8.1"
 coreSplashscreen = "1.0.1"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
@@ -10,14 +10,14 @@ kotlinxCoroutinesAndroid = "1.9.0"
 kotlinxSerializationJsonVersion = "1.7.3"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
-composeBom = "2025.01.01"
+composeBom = "2025.02.00"
 room = "2.6.1"
-runtimeLivedata = "1.7.7"
 transportRuntime = "4.0.0"
 adaptiveLayoutAndroid = "1.0.0"
 adaptiveNavigationAndroid = "1.0.0"
-navigationCompose = "2.8.6"
+navigationCompose = "2.8.7"
 ksp = "2.1.0-1.0.29"
+aboutlibraries = "11.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,7 +26,6 @@ androidx-material3-adaptive-navigation-suite = { module = "androidx.compose.mate
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version = "3.0.4" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version = "3.0.4" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version = "3.0.4" }
@@ -58,6 +57,7 @@ androidx-adaptive-layout-android = { group = "androidx.compose.material3.adaptiv
 androidx-adaptive-navigation-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation-android", version.ref = "adaptiveNavigationAndroid" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+aboutlibraries-compose-m3 = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -66,3 +66,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

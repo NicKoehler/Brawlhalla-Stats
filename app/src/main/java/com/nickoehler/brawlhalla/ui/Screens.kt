@@ -44,6 +44,9 @@ sealed interface Route {
     data object Info : Route
 
     @Serializable
+    data object Licenses : Route
+
+    @Serializable
     data object Favorites : Route
 
     @Serializable

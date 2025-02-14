@@ -8,6 +8,7 @@ import com.nickoehler.brawlhalla.core.data.database.provideDataBase
 import com.nickoehler.brawlhalla.core.data.networking.HttpClientFactory
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
+import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
 import com.nickoehler.brawlhalla.legends.data.RemoteLegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
@@ -32,4 +33,5 @@ val appModule = module {
     viewModelOf(::RankingViewModel)
     viewModelOf(::ClanViewModel)
     viewModelOf(::FavoritesViewModel)
+    viewModelOf(::InfoViewModel)
 }

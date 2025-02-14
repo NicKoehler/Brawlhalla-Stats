@@ -35,6 +35,7 @@ import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
 import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
+import com.nickoehler.brawlhalla.info.presentation.screens.LicensesScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         it.hasRoute(route = screen.route::class)
                     } ?: false
                 }
-            
+
             val layoutType = when (showBottomBar) {
                 true -> if (isPortrait) NavigationSuiteType.NavigationBar else NavigationSuiteType.NavigationRail
                 false -> NavigationSuiteType.None
@@ -230,12 +231,24 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable<Route.Info> {
-                                val infoViewModel = InfoViewModel()
+                                val infoViewModel = koinViewModel<InfoViewModel>()
                                 InfoScreen(
-                                    infoViewModel::onInfoAction,
+                                    onInfoAction = infoViewModel::onInfoAction,
                                     onBack = {
                                         navController.popBackStack()
-                                    }
+                                    },
+                                    onLicensesPressed = {
+                                        navController.navigate(Route.Licenses)
+                                    },
+                                    events = infoViewModel.events
+                                )
+                            }
+
+                            composable<Route.Licenses> {
+                                LicensesScreen(
+                                    onBack = {
+                                        navController.popBackStack()
+                                    },
                                 )
                             }
                         }
