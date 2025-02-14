@@ -45,8 +45,8 @@ import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
-import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {

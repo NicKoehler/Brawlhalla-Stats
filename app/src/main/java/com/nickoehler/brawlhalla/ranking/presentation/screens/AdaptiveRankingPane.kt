@@ -19,7 +19,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)

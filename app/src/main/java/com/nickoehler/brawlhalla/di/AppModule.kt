@@ -17,6 +17,8 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import io.ktor.client.engine.cio.CIO
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -24,10 +26,10 @@ import org.koin.dsl.module
 val appModule = module {
     single { HttpClientFactory.create(CIO.create()) }
     single { provideDataBase(get()) }
-    single<LocalDataSource> { DatabaseDataSource(get()) }
-    single<LegendsDataSource> { RemoteLegendsDataSource(get()) }
-    single<RankingsDataSource> { RemoteRankingDataSource(get()) }
-    single<ClanDataSource> { RemoteClanDataSource(get()) }
+    singleOf(::DatabaseDataSource) { bind<LocalDataSource>() }
+    singleOf(::RemoteLegendsDataSource) { bind<LegendsDataSource>() }
+    singleOf(::RemoteRankingDataSource) { bind<RankingsDataSource>() }
+    singleOf(::RemoteClanDataSource) { bind<ClanDataSource>() }
     viewModelOf(::LegendsViewModel)
     viewModelOf(::StatDetailViewModel)
     viewModelOf(::RankingViewModel)
