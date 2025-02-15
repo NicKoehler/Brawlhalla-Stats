@@ -83,3 +83,9 @@ fun Ranking.RankingTeam.toRankingTeamUi(): RankingUi.RankingTeamUi {
         peakRating.toDisplayableNumber()
     )
 }
+
+fun RankingUi.RankingTeamUi.getTeamMateId(mainId: Int): Int {
+    return if (mainId == brawlhallaIdOne)
+        brawlhallaIdTwo else
+        brawlhallaIdOne
+}

@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +27,6 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankWinRateRow
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.TierBox
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingTeamUi
 import com.nickoehler.brawlhalla.ranking.presentation.screens.rankingDetailSample
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme

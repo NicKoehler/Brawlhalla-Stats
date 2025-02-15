@@ -10,10 +10,7 @@ import com.nickoehler.brawlhalla.legends.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
-import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -127,15 +124,12 @@ class StatDetailViewModel(
             is StatDetailAction.SelectRankingModalType -> selectRankingModalType(action.modalType)
             is StatDetailAction.SelectRankingFilterType -> selectRankingFilterType(action.type)
             is StatDetailAction.SelectStatFilterType -> selectStatFilterType(action.type)
-            is StatDetailAction.SelectRankingLegendUi -> selectRankingLegendUi(action.rankingLegend)
-            is StatDetailAction.SelectTeamUi -> selectTeamUi(action.rankingTeam)
             is StatDetailAction.TogglePlayerFavorites -> togglePlayerFavorites(
                 action.brawlhallaId,
                 action.name
             )
 
             is StatDetailAction.SelectClan -> {}
-            is StatDetailAction.SelectStatLegend -> selectStatLegend(action.statLegend)
         }
     }
 
@@ -152,24 +146,6 @@ class StatDetailViewModel(
             state.copy(
                 selectedRankingFilterType = type
             )
-        }
-    }
-
-    private fun selectStatLegend(statLegend: StatLegendUi?) {
-        _state.update { state ->
-            state.copy(selectedStatLegend = statLegend)
-        }
-    }
-
-    private fun selectTeamUi(rankingTeam: RankingUi.RankingTeamUi?) {
-        _state.update { state ->
-            state.copy(selectedRankingTeam = rankingTeam)
-        }
-    }
-
-    private fun selectRankingLegendUi(rankingLegend: RankingLegendUi?) {
-        _state.update { state ->
-            state.copy(selectedRankingLegend = rankingLegend)
         }
     }
 

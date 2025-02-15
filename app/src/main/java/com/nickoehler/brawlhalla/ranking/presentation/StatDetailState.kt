@@ -4,11 +4,8 @@ import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.legends.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
-import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 
 @Immutable
@@ -25,7 +22,4 @@ data class StatDetailState(
     val selectedRankingFilterType: RankingFilterType = RankingFilterType.Stat,
     val rankingEnabled: Boolean = true,
     val modalType: RankingModalType? = null,
-    val selectedStatLegend: StatLegendUi? = null,
-    val selectedRankingLegend: RankingLegendUi? = null,
-    val selectedRankingTeam: RankingUi.RankingTeamUi? = null
 )

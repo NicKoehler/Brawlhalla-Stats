@@ -80,6 +80,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.getTeamMateId
 import com.nickoehler.brawlhalla.ranking.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -157,16 +158,13 @@ fun StatDetailScreen(
                         state.modalType.team,
                         columns = columns,
                         {
-                            onPlayerSelection(
-                                if (state.selectedStatDetail?.brawlhallaId == state.modalType.team.brawlhallaIdOne) {
-                                    state.modalType.team.brawlhallaIdTwo
-                                } else {
-                                    state.modalType.team.brawlhallaIdOne
-                                }
-                            )
+                            if (state.selectedStatDetail != null) {
+                                onPlayerSelection(
+                                    state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
+                                )
+                            }
                         }
                     )
-
                 }
 
                 is RankingModalType.RankingLegend -> {
