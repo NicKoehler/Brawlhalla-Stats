@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -77,11 +78,12 @@ import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.getTeamMateId
-import com.nickoehler.brawlhalla.ranking.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
@@ -243,9 +245,10 @@ fun StatDetailScreen(
                 }
             )
         }
-    ) {
+    ) { paddingValues ->
         LazyVerticalGrid(
             modifier = modifier
+                .padding(paddingValues)
                 .fillMaxWidth(),
             contentPadding = PaddingValues(8.dp),
             columns = GridCells.Fixed(columns),
@@ -254,394 +257,400 @@ fun StatDetailScreen(
         ) {
 
             item(span = { GridItemSpan(columns) }) {
-                Column(
-                    modifier = Modifier.padding(it),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    if (state.isStatDetailLoading) {
-                        Box(
-                            Modifier
-                                .size(height = 48.dp, width = 150.dp)
-                                .clip(CircleShape)
-                                .shimmerEffect()
-                        )
-                        Box(
-                            Modifier
-                                .size(height = 16.dp, width = 300.dp)
-                                .clip(CircleShape)
-                                .shimmerEffect()
-                        )
-                        Box(
-                            Modifier
-                                .size(height = 26.dp, width = 150.dp)
-                                .clip(CircleShape)
-                                .shimmerEffect()
-                        )
-                    } else if (playerStat != null) {
-                        if (playerStat.clan != null) {
-                            CustomCard(
-                                contentPadding = 10.dp,
-                                onClick = {
-                                    onStatDetailAction(StatDetailAction.SelectClan(playerStat.clan.clanId))
-                                }
-                            ) {
-                                Text(playerStat.clan.clanName)
-                            }
-                        }
+                StatDetailHeader(state, onStatDetailAction)
+            }
+            stats(state, playerStat, onStatDetailAction, playerRanking)
+        }
+    }
+}
 
-                        CustomLevelProgressBar(
-                            playerStat.xpPercentage.value,
-                            playerStat.name,
-                            playerStat.level,
-                            playerStat.nextLevel,
-                            modifier = Modifier.fillMaxWidth(0.8f)
-                        )
+private fun LazyGridScope.stats(
+    state: StatDetailState,
+    playerStat: StatDetailUi?,
+    onStatDetailAction: (StatDetailAction) -> Unit,
+    playerRanking: RankingDetailUi?,
+) {
+    when (state.selectedStatType) {
+        StatType.General -> {
+            when (state.selectedStatFilterType) {
+                StatFilterType.Stat -> generalStat(playerStat)
+                StatFilterType.Legends -> generalLegendStat(playerStat, onStatDetailAction)
+            }
+        }
 
-                        Text("XP ${playerStat.xp.formatted}")
+        StatType.Ranking -> {
+            when (state.selectedRankingFilterType) {
+                RankingFilterType.Stat -> rankingStat(playerRanking)
+                RankingFilterType.Legends -> rankingLegends(playerRanking, onStatDetailAction)
+                RankingFilterType.Teams -> rankingTeams(playerRanking, onStatDetailAction)
+            }
+        }
+    }
+}
+
+private fun LazyGridScope.rankingTeams(
+    playerRanking: RankingDetailUi?,
+    onStatDetailAction: (StatDetailAction) -> Unit
+) {
+    if (playerRanking != null) {
+        items(
+            playerRanking.teams,
+            { "${it.brawlhallaIdOne}${it.brawlhallaIdTwo}" },
+        ) { team ->
+            TeamItem(
+                team,
+                modifier = Modifier.animateItem()
+            ) {
+                onStatDetailAction(
+                    StatDetailAction.SelectRankingModalType(
+                        RankingModalType.Team(team)
+                    )
+                )
+            }
+        }
+    }
+}
+
+private fun LazyGridScope.rankingLegends(
+    playerRanking: RankingDetailUi?,
+    onStatDetailAction: (StatDetailAction) -> Unit
+) {
+    if (playerRanking != null) {
+        items(
+            playerRanking.legends, { it.legendId },
+        ) { legend ->
+            LegendRankingItem(
+                legend,
+                onClick = {
+                    onStatDetailAction(
+                        StatDetailAction.SelectRankingModalType(
+                            RankingModalType.RankingLegend(legend)
+                        )
+                    )
+                },
+                modifier = Modifier.animateItem()
+            )
+        }
+    }
+}
+
+private fun LazyGridScope.rankingStat(
+    playerRanking: RankingDetailUi?,
+) {
+    item {
+        CustomRankingField(
+            R.string.rating,
+            playerRanking?.rating?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.peakRating,
+            playerRanking?.peakRating?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.games,
+            playerRanking?.games?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.wins,
+            playerRanking?.wins?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+}
+
+private fun LazyGridScope.generalLegendStat(
+    playerStat: StatDetailUi?,
+    onStatDetailAction: (StatDetailAction) -> Unit
+) {
+    if (playerStat?.legends?.isNotEmpty() == true) {
+        items(
+            playerStat.legends, { it.legendId },
+        ) { legend ->
+            LegendStatItem(
+                legend,
+                onStatDetailAction = {
+                    onStatDetailAction(
+                        StatDetailAction.SelectRankingModalType(
+                            RankingModalType.StatLegend(legend)
+                        )
+                    )
+                },
+                modifier = Modifier.animateItem()
+            )
+        }
+    }
+}
+
+private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
+    item {
+        CustomRankingField(
+            R.string.games,
+            playerStat?.games?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.wins,
+            playerStat?.wins?.formatted,
+            modifier = Modifier.animateItem()
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.koBomb,
+            playerStat?.koBomb?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.damageBomb,
+            playerStat?.damageBomb?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.koMine,
+            playerStat?.koMine?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.damageMine,
+            playerStat?.damageMine?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.koSpikeball,
+            playerStat?.koSpikeball?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.damageSpikeball,
+            playerStat?.damageSpikeball?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.koSidekick,
+            playerStat?.koSidekick?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+    item {
+        CustomRankingField(
+            R.string.damageSidekick,
+            playerStat?.damageSidekick?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.koSnowball,
+            playerStat?.koSnowball?.formatted,
+            modifier = Modifier.animateItem()
+
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.hitSnowball,
+            playerStat?.hitSnowball?.formatted,
+            modifier = Modifier.animateItem()
+        )
+    }
+}
+
+@Composable
+private fun StatDetailHeader(
+    state: StatDetailState,
+    onStatDetailAction: (StatDetailAction) -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (state.isStatDetailLoading) {
+            Box(
+                Modifier
+                    .size(height = 48.dp, width = 150.dp)
+                    .clip(CircleShape)
+                    .shimmerEffect()
+            )
+            Box(
+                Modifier
+                    .size(height = 16.dp, width = 300.dp)
+                    .clip(CircleShape)
+                    .shimmerEffect()
+            )
+            Box(
+                Modifier
+                    .size(height = 26.dp, width = 150.dp)
+                    .clip(CircleShape)
+                    .shimmerEffect()
+            )
+        } else if (state.selectedStatDetail != null) {
+            if (state.selectedStatDetail.clan != null) {
+                CustomCard(
+                    contentPadding = 10.dp,
+                    onClick = {
+                        onStatDetailAction(
+                            StatDetailAction.SelectClan(
+                                state.selectedStatDetail.clan.clanId
+                            )
+                        )
                     }
+                ) {
+                    Text(state.selectedStatDetail.clan.clanName)
+                }
+            }
 
-                    SingleChoiceSegmentedButtonRow {
-                        StatType.entries.forEachIndexed { index, statType ->
+            CustomLevelProgressBar(
+                state.selectedStatDetail.xpPercentage.value,
+                state.selectedStatDetail.name,
+                state.selectedStatDetail.level,
+                state.selectedStatDetail.nextLevel,
+                modifier = Modifier.fillMaxWidth(0.8f)
+            )
+
+            Text("XP ${state.selectedStatDetail.xp.formatted}")
+        }
+
+        SingleChoiceSegmentedButtonRow {
+            StatType.entries.forEachIndexed { index, statType ->
+                SegmentedButton(
+                    state.selectedStatType == statType,
+                    onClick = {
+                        onStatDetailAction(
+                            StatDetailAction.SelectStatType(
+                                statType
+                            )
+                        )
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index,
+                        StatType.entries.size
+                    ),
+                    icon = {
+                        Icon(
+                            when (statType) {
+                                StatType.General -> Icons.Default.QueryStats
+                                StatType.Ranking -> Icons.Default.Poll
+                            },
+                            null
+                        )
+                    }
+                ) {
+                    Text(
+                        stringResource(
+                            when (statType) {
+                                StatType.General -> R.string.stats
+                                StatType.Ranking -> R.string.rankings
+                            }
+                        )
+                    )
+                }
+            }
+        }
+
+        AnimatedContent(
+            state.selectedStatType,
+        ) { stateType ->
+            SingleChoiceSegmentedButtonRow {
+                when (stateType) {
+                    StatType.General -> {
+                        StatFilterType.entries.forEachIndexed { index, statType ->
                             SegmentedButton(
-                                state.selectedStatType == statType,
+                                selected = state.selectedStatFilterType == statType,
+                                shape = SegmentedButtonDefaults.itemShape(
+                                    index,
+                                    StatFilterType.entries.size
+                                ),
                                 onClick = {
                                     onStatDetailAction(
-                                        StatDetailAction.SelectStatType(
+                                        StatDetailAction.SelectStatFilterType(
                                             statType
                                         )
                                     )
                                 },
+                                label = {
+                                    Text(
+                                        stringResource(
+                                            when (statType) {
+                                                StatFilterType.Stat -> R.string.stats
+                                                StatFilterType.Legends -> R.string.legends
+                                            }
+                                        )
+                                    )
+                                },
+                            )
+                        }
+                    }
+
+                    StatType.Ranking -> {
+                        RankingFilterType.entries.forEachIndexed { index, statType ->
+                            SegmentedButton(
+                                selected = state.selectedRankingFilterType == statType,
                                 shape = SegmentedButtonDefaults.itemShape(
                                     index,
-                                    StatType.entries.size
+                                    RankingFilterType.entries.size
                                 ),
-                                icon = {
-                                    Icon(
-                                        when (statType) {
-                                            StatType.General -> Icons.Default.QueryStats
-                                            StatType.Ranking -> Icons.Default.Poll
-                                        },
-                                        null
+                                onClick = {
+                                    onStatDetailAction(
+                                        StatDetailAction.SelectRankingFilterType(
+                                            statType
+                                        )
                                     )
-                                }
-                            ) {
-                                Text(
-                                    stringResource(
-                                        when (statType) {
-                                            StatType.General -> R.string.stats
-                                            StatType.Ranking -> R.string.rankings
-                                        }
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(
+                                            when (statType) {
+                                                RankingFilterType.Legends -> R.string.legends
+                                                RankingFilterType.Teams -> R.string.teams
+                                                RankingFilterType.Stat -> R.string.stats
+                                            }
+                                        )
                                     )
-                                )
-                            }
+                                },
+                            )
                         }
-                    }
-
-                    AnimatedContent(
-                        state.selectedStatType,
-                    ) { stateType ->
-                        SingleChoiceSegmentedButtonRow {
-                            when (stateType) {
-                                StatType.General -> {
-                                    StatFilterType.entries.forEachIndexed { index, statType ->
-                                        SegmentedButton(
-                                            selected = state.selectedStatFilterType == statType,
-                                            shape = SegmentedButtonDefaults.itemShape(
-                                                index,
-                                                StatFilterType.entries.size
-                                            ),
-                                            onClick = {
-                                                onStatDetailAction(
-                                                    StatDetailAction.SelectStatFilterType(
-                                                        statType
-                                                    )
-                                                )
-                                            },
-                                            label = {
-                                                Text(
-                                                    stringResource(
-                                                        when (statType) {
-                                                            StatFilterType.Stat -> R.string.stats
-                                                            StatFilterType.Legends -> R.string.legends
-                                                        }
-                                                    )
-                                                )
-                                            },
-                                        )
-                                    }
-                                }
-
-                                StatType.Ranking -> {
-                                    RankingFilterType.entries.forEachIndexed { index, statType ->
-                                        SegmentedButton(
-                                            selected = state.selectedRankingFilterType == statType,
-                                            shape = SegmentedButtonDefaults.itemShape(
-                                                index,
-                                                RankingFilterType.entries.size
-                                            ),
-                                            onClick = {
-                                                onStatDetailAction(
-                                                    StatDetailAction.SelectRankingFilterType(
-                                                        statType
-                                                    )
-                                                )
-                                            },
-                                            label = {
-                                                Text(
-                                                    stringResource(
-                                                        when (statType) {
-                                                            RankingFilterType.Legends -> R.string.legends
-                                                            RankingFilterType.Teams -> R.string.teams
-                                                            RankingFilterType.Stat -> R.string.stats
-                                                        }
-                                                    )
-                                                )
-                                            },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            when (state.selectedStatType) {
-
-                StatType.General -> {
-
-                    when (state.selectedStatFilterType) {
-                        StatFilterType.Stat -> {
-                            item {
-                                CustomRankingField(
-                                    R.string.games,
-                                    playerStat?.games?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.wins,
-                                    playerStat?.wins?.formatted,
-                                    modifier = Modifier.animateItem()
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.koBomb,
-                                    playerStat?.koBomb?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.damageBomb,
-                                    playerStat?.damageBomb?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.koMine,
-                                    playerStat?.koMine?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.damageMine,
-                                    playerStat?.damageMine?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.koSpikeball,
-                                    playerStat?.koSpikeball?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.damageSpikeball,
-                                    playerStat?.damageSpikeball?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.koSidekick,
-                                    playerStat?.koSidekick?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.damageSidekick,
-                                    playerStat?.damageSidekick?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.koSnowball,
-                                    playerStat?.koSnowball?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.hitSnowball,
-                                    playerStat?.hitSnowball?.formatted,
-                                    modifier = Modifier.animateItem()
-                                )
-                            }
-                        }
-
-                        StatFilterType.Legends -> {
-                            if (playerStat?.legends?.isNotEmpty() == true) {
-                                items(
-                                    playerStat.legends, { it.legendId },
-                                ) { legend ->
-                                    LegendStatItem(
-                                        legend,
-                                        onStatDetailAction = {
-                                            onStatDetailAction(
-                                                StatDetailAction.SelectRankingModalType(
-                                                    RankingModalType.StatLegend(legend)
-                                                )
-                                            )
-                                        },
-                                        modifier = Modifier.animateItem()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                StatType.Ranking -> {
-                    when (state.selectedRankingFilterType) {
-                        RankingFilterType.Stat -> {
-                            item {
-                                CustomRankingField(
-                                    R.string.rating,
-                                    playerRanking?.rating?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.peakRating,
-                                    playerRanking?.peakRating?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.games,
-                                    playerRanking?.games?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.wins,
-                                    playerRanking?.wins?.formatted,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-
-                            item {
-                                CustomRankingField(
-                                    R.string.tier,
-                                    playerRanking?.tier?.toLocalizedString(context),
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.region,
-                                    playerRanking?.region?.flag,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.regionRank,
-                                    playerRanking?.regionRank,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                            item {
-                                CustomRankingField(
-                                    R.string.globalRank,
-                                    playerRanking?.globalRank,
-                                    modifier = Modifier.animateItem()
-
-                                )
-                            }
-                        }
-
-                        RankingFilterType.Legends -> if (playerRanking != null) {
-                            items(
-                                playerRanking.legends, { it.legendId },
-                            ) { legend ->
-                                LegendRankingItem(
-                                    legend,
-                                    onClick = {
-                                        onStatDetailAction(
-                                            StatDetailAction.SelectRankingModalType(
-                                                RankingModalType.RankingLegend(legend)
-                                            )
-                                        )
-                                    },
-                                    modifier = Modifier.animateItem()
-                                )
-                            }
-                        }
-
-                        RankingFilterType.Teams ->
-                            if (playerRanking != null) {
-                                items(
-                                    playerRanking.teams,
-                                    { "${it.brawlhallaIdOne}${it.brawlhallaIdTwo}" },
-                                ) { team ->
-                                    TeamItem(
-                                        team,
-                                        modifier = Modifier.animateItem()
-                                    ) {
-                                        onStatDetailAction(
-                                            StatDetailAction.SelectRankingModalType(
-                                                RankingModalType.Team(team)
-                                            )
-                                        )
-                                    }
-                                }
-                            }
                     }
                 }
             }
