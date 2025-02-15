@@ -75,7 +75,6 @@ fun TeamItemDetail(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val background = MaterialTheme.colorScheme.surfaceContainerHigh
 
     Column(
@@ -84,21 +83,26 @@ fun TeamItemDetail(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        Text(
-            team.teamName,
-            fontSize = 30.sp,
-            lineHeight = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(team.region.flag)
+            Text(
+                team.teamName,
+                maxLines = 1,
+                fontSize = 30.sp,
+                lineHeight = 30.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        TierBox(team.rating, team.tier)
 
         RankWinRateRow(team.winRate)
 
-        Button(onClick = onClick) {
-            Text(
-                stringResource(R.string.goToTeamMate)
-            )
-        }
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
@@ -107,21 +111,16 @@ fun TeamItemDetail(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
 
-            item { CustomRankingField(R.string.rank, team.rank.formatted, background) }
             item { CustomRankingField(R.string.rating, team.rating.formatted, background) }
-            item {
-                CustomRankingField(
-                    R.string.tier,
-                    team.tier.toLocalizedString(context),
-                    background
-                )
-            }
+            item { CustomRankingField(R.string.peakRating, team.peakRating.formatted, background) }
             item { CustomRankingField(R.string.games, team.games.formatted, background) }
             item { CustomRankingField(R.string.wins, team.wins.formatted, background) }
-            item { CustomRankingField(R.string.winRate, team.winRate.formatted, background) }
-            item { CustomRankingField(R.string.losses, team.losses.formatted, background) }
-            item { CustomRankingField(R.string.region, team.region.flag, background) }
-            item { CustomRankingField(R.string.peakRating, team.peakRating.formatted, background) }
+        }
+
+        Button(onClick = onClick) {
+            Text(
+                stringResource(R.string.goToTeamMate)
+            )
         }
     }
 }
