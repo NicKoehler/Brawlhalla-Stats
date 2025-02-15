@@ -18,7 +18,7 @@ fun RankingSoloDto.toRanking(): Ranking {
         games,
         wins,
         region.toRegion(),
-        peakRating
+        peakRating,
     )
 }
 

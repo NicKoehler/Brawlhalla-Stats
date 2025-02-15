@@ -12,5 +12,7 @@ data class RankingDetail(
     val globalRank: Int,
     val regionRank: Int,
     val legends: List<RankingLegend>,
-    val teams: List<Ranking.RankingTeam>
+    val teams: List<Ranking.RankingTeam>,
+    val estimatedGlory: Int,
+    val estimatedEloReset: Int,
 )

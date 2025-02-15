@@ -16,7 +16,9 @@ data class RankingDetailUi(
     val globalRank: String,
     val regionRank: String,
     val legends: List<RankingLegendUi>,
-    val teams: List<RankingUi.RankingTeamUi>
+    val teams: List<RankingUi.RankingTeamUi>,
+    val estimatedGlory: DisplayableNumber,
+    val estimatedEloReset: DisplayableNumber,
 )
 
 fun RankingDetail.toRankingDetailUi(): RankingDetailUi {
@@ -32,6 +34,8 @@ fun RankingDetail.toRankingDetailUi(): RankingDetailUi {
         globalRank.toString(),
         regionRank.toString(),
         legends.map { it.toRankingLegendUi() },
-        teams.map { it.toRankingTeamUi() }
+        teams.map { it.toRankingTeamUi() },
+        estimatedGlory.toDisplayableNumber(),
+        estimatedEloReset.toDisplayableNumber()
     )
 }

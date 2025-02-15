@@ -369,6 +369,22 @@ private fun LazyGridScope.rankingStat(
 
         )
     }
+
+    item {
+        CustomRankingField(
+            R.string.estimatedGlory,
+            playerRanking?.estimatedGlory?.formatted,
+            modifier = Modifier.animateItem()
+        )
+    }
+
+    item {
+        CustomRankingField(
+            R.string.estimatedEloReset,
+            playerRanking?.estimatedEloReset?.formatted,
+            modifier = Modifier.animateItem()
+        )
+    }
 }
 
 private fun LazyGridScope.generalLegendStat(
@@ -1052,5 +1068,7 @@ internal val rankingDetailSample =
                 region = Region.EU,
                 peakRating = 2000,
             )
-        )
+        ),
+        estimatedGlory = 1023,
+        estimatedEloReset = 1800
     )

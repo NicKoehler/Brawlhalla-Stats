@@ -31,7 +31,6 @@ class RemoteRankingDataSource(
         page: Int,
         name: String?
     ): Result<List<Ranking>, NetworkError> {
-
         when (bracket) {
             Bracket.ONE_VS_ONE, Bracket.ROTATING -> return safeCall<List<RankingSoloDto>> {
                 httpClient.get(

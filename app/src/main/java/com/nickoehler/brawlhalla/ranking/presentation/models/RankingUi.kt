@@ -20,7 +20,6 @@ sealed interface RankingUi {
         val games: DisplayableNumber,
         val wins: DisplayableNumber,
         val winRate: DisplayableDouble,
-        val losses: DisplayableNumber,
         val region: RegionUi,
         val peakRating: DisplayableNumber,
     ) : RankingUi
@@ -35,7 +34,6 @@ sealed interface RankingUi {
         val games: DisplayableNumber,
         val wins: DisplayableNumber,
         val winRate: DisplayableDouble,
-        val losses: DisplayableNumber,
         val region: RegionUi,
         val peakRating: DisplayableNumber,
     ) : RankingUi
@@ -61,7 +59,6 @@ fun Ranking.RankingSolo.toRankingSoloUi(): RankingUi.RankingSoloUi {
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
         (wins.toDouble() / games * 100).toDisplayableDouble(),
-        (games - wins).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
     )
@@ -78,7 +75,6 @@ fun Ranking.RankingTeam.toRankingTeamUi(): RankingUi.RankingTeamUi {
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
         (wins.toDouble() / games * 100).toDisplayableDouble(),
-        (games - wins).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
     )

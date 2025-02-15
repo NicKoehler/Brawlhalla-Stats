@@ -83,7 +83,6 @@
     <string name="teams">Teams</string>
     <string name="tier">Tier</string>
     <string name="winRate">Win Rate</string>
-    <string name="losses">Losses</string>
     <string name="goToTeamMate">Go to Team Mate</string>
     <string name="globalRank">Global Rank</string>
     <string name="regionRank">Region Rank</string>
@@ -94,4 +93,6 @@
     <string name="koSnowball">Ko Snowball</string>
     <string name="rank">Rank</string>
     <string name="licenses">Licenses</string>
+    <string name="estimatedGlory">Estimated Glory</string>
+    <string name="estimatedEloReset">Estimated Elo Reset</string>
 </resources>
