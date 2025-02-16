@@ -38,7 +38,6 @@ import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
 import com.nickoehler.brawlhalla.info.presentation.screens.LicensesScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
-import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
@@ -128,19 +127,15 @@ class MainActivity : ComponentActivity() {
 
                                 StatDetailScreen(
                                     state,
-                                    onStatDetailAction = { action ->
-                                        statDetailViewModel.onStatDetailAction(action)
-                                        if (action is StatDetailAction.SelectClan) {
-                                            navController.navigate(
-                                                Route.Clan(action.clanId)
-                                            )
-                                        }
-                                    },
+                                    onStatDetailAction = statDetailViewModel::onStatDetailAction,
                                     onBack = { navController.popBackStack() },
                                     events = statDetailViewModel.uiEvents,
                                     onPlayerSelection = { brawlhallaId ->
                                         navController.navigate(Route.Stat(brawlhallaId))
                                     },
+                                    onClanSelection = { clanId ->
+                                        navController.navigate(Route.Clan(clanId))
+                                    }
                                 )
                             }
                             composable<Route.Rankings> {

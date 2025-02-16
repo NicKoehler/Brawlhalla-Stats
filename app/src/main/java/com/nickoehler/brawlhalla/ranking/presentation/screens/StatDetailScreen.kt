@@ -19,9 +19,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.QueryStats
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,9 +57,9 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.util.toString
-import com.nickoehler.brawlhalla.legends.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
@@ -78,14 +80,20 @@ import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
+import com.nickoehler.brawlhalla.ranking.presentation.models.GeneralRankingSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingModalType
+import com.nickoehler.brawlhalla.ranking.presentation.models.RankingSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
+import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
 import com.nickoehler.brawlhalla.ranking.presentation.models.getTeamMateId
+import com.nickoehler.brawlhalla.ranking.presentation.models.toIcon
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toStringResource
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
@@ -99,6 +107,7 @@ fun StatDetailScreen(
     state: StatDetailState,
     onBack: () -> Unit,
     onPlayerSelection: (Int) -> Unit,
+    onClanSelection: (Int) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
@@ -257,15 +266,16 @@ fun StatDetailScreen(
         ) {
 
             item(span = { GridItemSpan(columns) }) {
-                StatDetailHeader(state, onStatDetailAction)
+                StatDetailHeader(state, onClanSelection, onStatDetailAction)
             }
-            stats(state, playerStat, onStatDetailAction, playerRanking)
+            stats(state, columns, playerStat, onStatDetailAction, playerRanking)
         }
     }
 }
 
 private fun LazyGridScope.stats(
     state: StatDetailState,
+    columns: Int,
     playerStat: StatDetailUi?,
     onStatDetailAction: (StatDetailAction) -> Unit,
     playerRanking: RankingDetailUi?,
@@ -274,15 +284,34 @@ private fun LazyGridScope.stats(
         StatType.General -> {
             when (state.selectedStatFilterType) {
                 StatFilterType.Stat -> generalStat(playerStat)
-                StatFilterType.Legends -> generalLegendStat(playerStat, onStatDetailAction)
+                StatFilterType.Legends -> generalLegendStat(
+                    state.statLegendSortType,
+                    playerStat,
+                    columns,
+                    state.statLegendSortReversed,
+                    onStatDetailAction,
+                )
             }
         }
 
         StatType.Ranking -> {
             when (state.selectedRankingFilterType) {
                 RankingFilterType.Stat -> rankingStat(playerRanking)
-                RankingFilterType.Legends -> rankingLegends(playerRanking, onStatDetailAction)
-                RankingFilterType.Teams -> rankingTeams(playerRanking, onStatDetailAction)
+                RankingFilterType.Legends -> rankingLegends(
+                    playerRanking,
+                    state.rankedLegendSortType,
+                    state.rankedLegendSortReversed,
+                    columns,
+                    onStatDetailAction
+                )
+
+                RankingFilterType.Teams -> rankingTeams(
+                    playerRanking,
+                    state.teamSortType,
+                    state.teamSortReversed,
+                    columns,
+                    onStatDetailAction
+                )
             }
         }
     }
@@ -290,9 +319,24 @@ private fun LazyGridScope.stats(
 
 private fun LazyGridScope.rankingTeams(
     playerRanking: RankingDetailUi?,
+    sortType: GeneralRankingSortType,
+    reversed: Boolean,
+    columns: Int,
     onStatDetailAction: (StatDetailAction) -> Unit
 ) {
     if (playerRanking != null) {
+        item(span = { GridItemSpan(columns) }) {
+            CustomRankedDropDown(
+                sortType,
+                reversed,
+                onReverse = { onStatDetailAction(StatDetailAction.TeamSortTypeReversed) },
+                onSort = {
+                    onStatDetailAction(
+                        StatDetailAction.SortBy(RankingSortType.Team(it))
+                    )
+                }
+            )
+        }
         items(
             playerRanking.teams,
             { "${it.brawlhallaIdOne}${it.brawlhallaIdTwo}" },
@@ -313,9 +357,23 @@ private fun LazyGridScope.rankingTeams(
 
 private fun LazyGridScope.rankingLegends(
     playerRanking: RankingDetailUi?,
+    sortType: GeneralRankingSortType,
+    reversed: Boolean,
+    columns: Int,
     onStatDetailAction: (StatDetailAction) -> Unit
 ) {
     if (playerRanking != null) {
+        item(span = { GridItemSpan(columns) }) {
+            CustomRankedDropDown(sortType,
+                reversed,
+                onReverse = { onStatDetailAction(StatDetailAction.RankingLegendSortTypeReversed) },
+                onSort = {
+                    onStatDetailAction(
+                        StatDetailAction.SortBy(RankingSortType.RankingLegend(it))
+                    )
+                }
+            )
+        }
         items(
             playerRanking.legends, { it.legendId },
         ) { legend ->
@@ -388,10 +446,17 @@ private fun LazyGridScope.rankingStat(
 }
 
 private fun LazyGridScope.generalLegendStat(
+    legendSortType: StatLegendSortType,
     playerStat: StatDetailUi?,
+    columns: Int,
+    legendSortTypeReversed: Boolean,
     onStatDetailAction: (StatDetailAction) -> Unit
 ) {
+
     if (playerStat?.legends?.isNotEmpty() == true) {
+        item(span = { GridItemSpan(columns) }) {
+            CustomStatLegendDropDown(legendSortType, legendSortTypeReversed, onStatDetailAction)
+        }
         items(
             playerStat.legends, { it.legendId },
         ) { legend ->
@@ -409,6 +474,88 @@ private fun LazyGridScope.generalLegendStat(
         }
     }
 }
+
+@Composable
+private fun CustomStatLegendDropDown(
+    legendSortType: StatLegendSortType,
+    legendSortTypeReversed: Boolean,
+    onStatDetailAction: (StatDetailAction) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    CustomSortDropDownMenu(
+        selected = { Text(stringResource(legendSortType.toStringResource())) },
+        icon = Icons.AutoMirrored.Filled.Sort,
+        reversed = legendSortTypeReversed,
+        expanded = expanded,
+        onSortClick = { expanded = !expanded },
+        onReversedClick = {
+            onStatDetailAction(
+                StatDetailAction.StatLegendSortTypeReversed
+            )
+        }
+    ) {
+        StatLegendSortType.entries.forEach { sortType ->
+            DropdownMenuItem(
+                leadingIcon = { Icon(sortType.toIcon(), null) },
+                text = {
+                    Text(
+                        stringResource(
+                            sortType.toStringResource()
+                        )
+                    )
+                },
+                onClick = {
+                    onStatDetailAction(
+                        StatDetailAction.SortBy(
+                            RankingSortType.StatLegend(
+                                sortType
+                            )
+                        )
+                    )
+                    expanded = false
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CustomRankedDropDown(
+    rankedSortType: GeneralRankingSortType,
+    sortTypeReversed: Boolean,
+    onReverse: () -> Unit,
+    onSort: (GeneralRankingSortType) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    CustomSortDropDownMenu(
+        selected = { Text(stringResource(rankedSortType.toStringResource())) },
+        icon = Icons.AutoMirrored.Filled.Sort,
+        reversed = sortTypeReversed,
+        expanded = expanded,
+        onSortClick = { expanded = !expanded },
+        onReversedClick = {
+            onReverse()
+        }
+    ) {
+        GeneralRankingSortType.entries.forEach { sortType ->
+            DropdownMenuItem(
+                leadingIcon = { Icon(sortType.toIcon(), null) },
+                text = {
+                    Text(
+                        stringResource(
+                            sortType.toStringResource()
+                        )
+                    )
+                },
+                onClick = {
+                    onSort(sortType)
+                    expanded = false
+                }
+            )
+        }
+    }
+}
+
 
 private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
     item {
@@ -516,6 +663,7 @@ private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
 @Composable
 private fun StatDetailHeader(
     state: StatDetailState,
+    onClanSelection: (Int) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
 ) {
     Column(
@@ -546,11 +694,7 @@ private fun StatDetailHeader(
                 CustomCard(
                     contentPadding = 10.dp,
                     onClick = {
-                        onStatDetailAction(
-                            StatDetailAction.SelectClan(
-                                state.selectedStatDetail.clan.clanId
-                            )
-                        )
+                        onClanSelection(state.selectedStatDetail.clan.clanId)
                     }
                 ) {
                     Text(state.selectedStatDetail.clan.clanName)
@@ -686,6 +830,7 @@ private fun RankingDetailScreenPreview() {
                 ),
                 {},
                 {},
+                {},
                 {}
             )
         }
@@ -699,6 +844,7 @@ private fun RankingDetailScreenLoadingPreview() {
         Surface {
             StatDetailScreen(
                 state = StatDetailState(isStatDetailLoading = true),
+                {},
                 {},
                 {},
                 {}
@@ -721,6 +867,7 @@ private fun RankingDetailScreenRankingLoadingPreview() {
                 ),
                 {},
                 {},
+                {},
                 {}
             )
         }
@@ -738,6 +885,7 @@ private fun RankingDetailScreenRankingPreview() {
                     isRankingDetailLoading = true,
                     selectedStatType = StatType.Ranking
                 ),
+                {},
                 {},
                 {},
                 {}

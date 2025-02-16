@@ -5,7 +5,7 @@
 Welcome to the Brawlhalla Stats app for Android!
 
 This open-source Android application is developed by NicKoehler.
-The source code is available on GitHub under the MIT License.
+The source code is available on GitHub under the GPL3 License.
 
 ## Data Collection and Usage
 

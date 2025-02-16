@@ -15,7 +15,6 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
-import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
@@ -34,7 +33,6 @@ fun AdaptiveRankingPane(
     val context = LocalContext.current
     val rankingState by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
-
 
     ObserveAsEvents(viewModel.uiEvents) { event ->
         when (event) {
@@ -99,12 +97,8 @@ fun AdaptiveRankingPane(
                     StatDetailScreen(
                         statDetailState,
                         onPlayerSelection = onPlayerSelection,
-                        onStatDetailAction = { action ->
-                            statDetailViewModel.onStatDetailAction(action)
-                            if (action is StatDetailAction.SelectClan) {
-                                onClanSelection(action.clanId)
-                            }
-                        },
+                        onClanSelection = onClanSelection,
+                        onStatDetailAction = statDetailViewModel::onStatDetailAction,
                         onBack = {
                             navigator.navigateBack()
                         },

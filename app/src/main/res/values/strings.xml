@@ -95,4 +95,5 @@
     <string name="licenses">Licenses</string>
     <string name="estimatedGlory">Estimated Glory</string>
     <string name="estimatedEloReset">Estimated Elo Reset</string>
+    <string name="alphabetical">Alphabetical</string>
 </resources>
