@@ -85,15 +85,15 @@ fun AdaptiveRankingPane(
             }
         },
         detailPane = {
-            if (rankingState.selectedStatDetailId != null) {
+            AnimatedPane {
+                if (rankingState.selectedStatDetailId != null) {
 
-                val statDetailViewModel = koinViewModel<StatDetailViewModel>(
-                    key = rankingState.selectedStatDetailId.toString(),
-                    parameters = { parametersOf(rankingState.selectedStatDetailId) }
-                )
-                val statDetailState by statDetailViewModel.state.collectAsStateWithLifecycle()
+                    val statDetailViewModel = koinViewModel<StatDetailViewModel>(
+                        key = rankingState.selectedStatDetailId.toString(),
+                        parameters = { parametersOf(rankingState.selectedStatDetailId) }
+                    )
+                    val statDetailState by statDetailViewModel.state.collectAsStateWithLifecycle()
 
-                AnimatedPane {
                     StatDetailScreen(
                         statDetailState,
                         onPlayerSelection = onPlayerSelection,
