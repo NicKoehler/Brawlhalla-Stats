@@ -22,6 +22,7 @@ Please note that I will not be updating the older versions available in the Play
 <div align="center">
   <div style="display: flex; flex-flow: row wrap; justify-content: center; align-items: center;">
     <a href="https://github.com/ImranR98/Obtainium/releases"><img alt="Get it on Obtainium" width="200" height="80" src="https://github.com/user-attachments/assets/377575fe-a651-4420-afad-8dee21618c44" /></a>
+    <a href="https://play.google.com/store/apps/details?id=com.nickoehler.brawlhalla"><img alt="Get it on Google Play" width="200" height="80" src="https://github.com/user-attachments/assets/e4b9e82a-8630-45ba-90f4-de4cf3207ee6"></a>
   </div>
 </div>
 
