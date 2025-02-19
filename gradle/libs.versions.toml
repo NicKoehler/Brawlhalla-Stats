@@ -6,17 +6,16 @@ coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-kotlinxCoroutinesAndroid = "1.9.0"
-kotlinxSerializationJsonVersion = "1.7.3"
+kotlinxCoroutinesAndroid = "1.10.1"
+kotlinxSerializationJsonVersion = "1.8.0"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.0"
 composeBom = "2025.02.00"
 room = "2.6.1"
 adaptiveLayoutAndroid = "1.0.0"
 adaptiveNavigationAndroid = "1.0.0"
 navigationCompose = "2.8.7"
 ksp = "2.1.0-1.0.29"
-aboutlibraries = "11.5.0"
+aboutlibraries = "11.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,30 +24,30 @@ androidx-material3-adaptive-navigation-suite = { module = "androidx.compose.mate
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version = "3.0.4" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version = "3.0.4" }
-coil-svg = { module = "io.coil-kt.coil3:coil-svg", version = "3.0.4" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version = "3.1.0" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version = "3.1.0" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version = "3.1.0" }
 jetbrains-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.10.0" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.7.8" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-koin-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.1.0-Beta1" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.1.0-Beta5" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version = "3.0.2" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version = "3.0.2" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version = "3.0.2" }
-ktor-client-logging = { module = "io.ktor:ktor-client-logging", version = "3.0.2" }
-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version = "3.0.2" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version = "3.1.0" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version = "3.1.0" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version = "3.1.0" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version = "3.1.0" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version = "3.1.0" }
 androidx-adaptive-layout-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout-android", version.ref = "adaptiveLayoutAndroid" }
 androidx-adaptive-navigation-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation-android", version.ref = "adaptiveNavigationAndroid" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
