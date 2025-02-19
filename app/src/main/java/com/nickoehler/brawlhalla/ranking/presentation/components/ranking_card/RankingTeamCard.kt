@@ -69,7 +69,7 @@ fun RankingTeamCard(
                 ) {
                     if (ranking != null) {
                         listOf(
-                            ranking.brawlhallaIdTwo,
+                            ranking.brawlhallaIdOne,
                             ranking.brawlhallaIdTwo
                         ).forEachIndexed { index, playerId ->
                             Button(onClick = {
