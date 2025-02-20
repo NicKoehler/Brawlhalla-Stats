@@ -96,4 +96,7 @@
     <string name="estimatedGlory">Estimated Glory</string>
     <string name="estimatedEloReset">Estimated Elo Reset</string>
     <string name="alphabetical">Alphabetical</string>
+    <string name="joinDate">Join Date</string>
+    <string name="xp">Xp</string>
+    <string name="createDate">Create Date: %s</string>
 </resources>
