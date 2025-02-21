@@ -1,8 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
-import android.content.Context
 import androidx.compose.ui.graphics.Color
-import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.ranking.domain.Tier
 import com.nickoehler.brawlhalla.ui.theme.BronzeColor
 import com.nickoehler.brawlhalla.ui.theme.DiamondColor
@@ -19,22 +17,6 @@ data class TierUi(
 fun Tier.toTierUi(): TierUi {
     return TierUi(
         name = this
-    )
-}
-
-
-fun TierUi.toLocalizedString(context: Context): String {
-    return context.getString(
-        when (this.name) {
-            Tier.VALHALLAN -> R.string.tier_valhallan
-            Tier.DIAMOND -> R.string.tier_diamond
-            Tier.PLATINUM -> R.string.tier_platinum
-            Tier.GOLD -> R.string.tier_gold
-            Tier.SILVER -> R.string.tier_silver
-            Tier.BRONZE -> R.string.tier_bronze
-            Tier.TIN -> R.string.tier_tin
-            Tier.UNKNOWN -> R.string.tier_unknown
-        }
     )
 }
 

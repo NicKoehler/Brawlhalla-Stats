@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Brawlhalla Stats</string>
+    <string name="app_name" translatable="false">Brawlhalla Stats</string>
     <string name="error_request_timeout">Request timed out</string>
     <string name="error_too_many_requests">Too many requests</string>
     <string name="error_no_internet">No internet connection</string>
@@ -17,17 +17,8 @@
     <string name="error_not_found">Not found</string>
     <string name="more">More</string>
     <string name="no_players_found">No players found</string>
-    <string name="tier_valhallan">Valhallan</string>
-    <string name="tier_diamond">Diamond</string>
-    <string name="tier_platinum">Platinum</string>
-    <string name="tier_gold">Gold</string>
-    <string name="tier_silver">Silver</string>
-    <string name="tier_bronze">Bronze</string>
-    <string name="tier_tin">Tin</string>
-    <string name="tier_unknown">Unknown</string>
     <string name="rankings">Rankings</string>
     <string name="player">Player</string>
-    <string name="bracket">Bracket</string>
     <string name="region">Region</string>
     <string name="seasonal">Seasonal</string>
     <string name="region_all">All</string>
@@ -61,7 +52,6 @@
     <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
     <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
     <string name="info">Info</string>
-    <string name="goToLegend">Go to legend</string>
     <string name="damageDealt">Damage Dealt</string>
     <string name="damageTaken">Damage Taken</string>
     <string name="kos">Kos</string>
