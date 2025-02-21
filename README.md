@@ -47,14 +47,14 @@ Contributions are highly appreciated! To get involved, please follow these steps
 2. **Clone Your Fork**: Use the following command to clone your fork to your local machine:
 
     ```shell
-    git clone git@github.com:YourUsername/Brawlhalla.git
+    git clone git@github.com:YourUsername/Brawlhalla-Stats.git
     ```
 
 3. **Create a New Branch**: Navigate to the project directory and create a new branch for your
    feature or bug fix:
 
     ```shell
-    cd Brawlhalla
+    cd Brawlhalla-Stats
     git checkout -b feature-name
     ```
 
