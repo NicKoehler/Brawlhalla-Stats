@@ -58,7 +58,7 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
-            
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -100,21 +100,40 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.jetbrains.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.material.icons.extended)
+
+    // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
     implementation(libs.coil.network.okhttp)
+
+    // koin
     implementation(libs.koin.compose)
-    implementation(libs.ktor.client.android)
+
+    // adaptive navigation
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
+
+    // ktor
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.androidx.material3.adaptive.navigation.suite)
-    implementation(libs.material.icons.extended)
-    implementation(libs.kotlinx.coroutines.android)
+    
+    // splashscreen
     implementation(libs.androidx.core.splashscreen)
+
+    // room
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+
+    // licenses
     implementation(libs.aboutlibraries.compose.m3)
-    ksp(libs.androidx.room.compiler)
+
+    // widget
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
 }
