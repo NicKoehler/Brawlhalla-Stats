@@ -533,9 +533,7 @@ private fun CustomRankedDropDown(
         reversed = sortTypeReversed,
         expanded = expanded,
         onSortClick = { expanded = !expanded },
-        onReversedClick = {
-            onReverse()
-        }
+        onReversedClick = onReverse
     ) {
         GeneralRankingSortType.entries.forEach { sortType ->
             DropdownMenuItem(
