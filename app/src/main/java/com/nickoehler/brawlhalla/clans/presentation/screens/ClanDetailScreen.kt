@@ -55,6 +55,7 @@ import com.nickoehler.brawlhalla.clans.presentation.ClanState
 import com.nickoehler.brawlhalla.clans.presentation.components.ClanMemberCard
 import com.nickoehler.brawlhalla.clans.presentation.model.ClanSortType
 import com.nickoehler.brawlhalla.clans.presentation.model.toClanDetailUi
+import com.nickoehler.brawlhalla.clans.presentation.model.toIcon
 import com.nickoehler.brawlhalla.clans.presentation.model.toStringResource
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
@@ -241,7 +242,7 @@ fun ClanDetailScreen(
                             expanded = expanded,
                             icon = Icons.AutoMirrored.Filled.Sort,
                             onSortClick = {
-                                expanded = true
+                                expanded = !expanded
                             },
                             onReversedClick = {
                                 onClanAction(ClanAction.ReverseSortType)
@@ -252,13 +253,13 @@ fun ClanDetailScreen(
                         ) {
                             ClanSortType.entries.forEach { sort ->
                                 DropdownMenuItem(
+                                    leadingIcon = { Icon(sort.toIcon(), null) },
                                     text = { Text(stringResource(sort.toStringResource())) },
                                     onClick = {
                                         expanded = false
                                         onClanAction(ClanAction.SelectSortType(sort))
                                     }
                                 )
-
                             }
                         }
                     }
