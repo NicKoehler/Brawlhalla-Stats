@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -52,8 +52,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        enableEdgeToEdge()
         setContent {
+
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
@@ -109,6 +109,22 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) {
+
+                        val playerId = intent.extras?.getInt("OPEN_STAT")
+                        val clanId = intent.extras?.getInt("OPEN_CLAN")
+
+                        LaunchedEffect(playerId) {
+                            if (playerId != null && playerId != 0) {
+                                navController.navigate(Route.Stat(playerId))
+                            }
+                        }
+
+                        LaunchedEffect(clanId) {
+                            if (clanId != null && clanId != 0) {
+                                navController.navigate(Route.Clan(clanId))
+                            }
+                        }
+
                         NavHost(
                             modifier = Modifier
                                 .safeDrawingPadding()
