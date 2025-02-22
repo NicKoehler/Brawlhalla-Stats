@@ -160,8 +160,10 @@ fun ClanDetailScreen(
                     ) {
                         Icon(
                             Icons.Default.Favorite,
-                            null,
-                            tint = if (state.isClanDetailFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                            stringResource(R.string.favorites),
+                            tint = if (state.isClanDetailFavorite)
+                                MaterialTheme.colorScheme.primary else
+                                MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }

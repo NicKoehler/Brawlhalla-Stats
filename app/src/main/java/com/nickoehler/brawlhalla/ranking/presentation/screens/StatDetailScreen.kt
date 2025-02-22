@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material3.DropdownMenuItem
@@ -46,9 +47,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,6 +117,7 @@ fun StatDetailScreen(
 ) {
     val density = LocalDensity.current
     val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
     var screenWidth by remember { mutableStateOf(0.dp) }
@@ -205,6 +209,20 @@ fun StatDetailScreen(
                 actions = {
                     IconButton({
                         if (playerStat != null) {
+                            clipboard.setText(
+                                AnnotatedString(
+                                    state.selectedStatDetail.brawlhallaId.toString()
+                                )
+                            )
+                        }
+                    }) {
+                        Icon(
+                            Icons.Default.Pin,
+                            stringResource(R.string.copy_id),
+                        )
+                    }
+                    IconButton({
+                        if (playerStat != null) {
                             onStatDetailAction(
                                 StatDetailAction.TogglePlayerFavorites(
                                     playerStat.brawlhallaId,
@@ -215,7 +233,7 @@ fun StatDetailScreen(
                     }) {
                         Icon(
                             Icons.Default.Favorite,
-                            null,
+                            stringResource(R.string.favorites),
                             tint = if (state.isStatDetailFavorite) {
                                 MaterialTheme.colorScheme.primary
                             } else {
@@ -223,7 +241,6 @@ fun StatDetailScreen(
                             },
                         )
                     }
-
                 },
                 title = {
                     Row(
@@ -249,8 +266,6 @@ fun StatDetailScreen(
                             )
                         }
                     }
-
-
                 }
             )
         }

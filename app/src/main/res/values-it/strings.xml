@@ -89,5 +89,6 @@
     <string name="joinDate">Data di iscrizione</string>
     <string name="xp">Xp</string>
     <string name="createDate">Data di creazione: %s</string>
+    <string name="copy_id">Copia ID</string>
 </resources>
 
