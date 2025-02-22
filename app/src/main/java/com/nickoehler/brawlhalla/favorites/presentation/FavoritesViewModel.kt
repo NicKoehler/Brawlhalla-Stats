@@ -7,10 +7,13 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
-import com.nickoehler.brawlhalla.widgets.FavoriteWidget
+import com.nickoehler.brawlhalla.widgets.ClansWidget
+import com.nickoehler.brawlhalla.widgets.PlayersWidget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -37,15 +40,8 @@ class FavoritesViewModel(
     private fun loadData() {
         viewModelScope.launch {
             combine(database.getAllPlayers(), database.getAllClans()) { players, clans ->
-                val glanceIds =
-                    GlanceAppWidgetManager(context).getGlanceIds(FavoriteWidget::class.java)
-                glanceIds.forEach { id ->
-                    updateAppWidgetState(context, id) { prefs ->
-                        prefs[stringPreferencesKey("players")] = Json.encodeToString(players)
-                        prefs[stringPreferencesKey("clans")] = Json.encodeToString(clans)
-                    }
-                    FavoriteWidget().update(context, id)
-                }
+                updateWidgetState(players, clans)
+
                 _state.value.copy(
                     players = players.sortedBy { it.name.lowercase() },
                     clans = clans.sortedBy { it.name },
@@ -64,6 +60,29 @@ class FavoritesViewModel(
                     state
                 }
             }
+        }
+    }
+
+    private suspend fun updateWidgetState(
+        players: List<Player>,
+        clans: List<Clan>
+    ) {
+        val playersGlanceIds = GlanceAppWidgetManager(context)
+            .getGlanceIds(PlayersWidget::class.java)
+        val clansGlanceIds = GlanceAppWidgetManager(context)
+            .getGlanceIds(ClansWidget::class.java)
+        playersGlanceIds.forEach { id ->
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[stringPreferencesKey("players")] = Json.encodeToString(players)
+            }
+            PlayersWidget().update(context, id)
+        }
+
+        clansGlanceIds.forEach { id ->
+            updateAppWidgetState(context, id) { prefs ->
+                prefs[stringPreferencesKey("clans")] = Json.encodeToString(clans)
+            }
+            ClansWidget().update(context, id)
         }
     }
 

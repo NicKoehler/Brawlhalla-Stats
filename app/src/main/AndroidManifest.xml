@@ -28,14 +28,25 @@
         </activity>
 
         <receiver
-            android:name=".widgets.FavoriteWidgetReceiver"
+            android:name=".widgets.PlayersWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget" />
+                android:resource="@xml/players_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".widgets.ClansWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/clans_widget" />
         </receiver>
     </application>
 
