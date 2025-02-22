@@ -9,7 +9,6 @@ import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.action.actionStartActivity
@@ -20,7 +19,6 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
@@ -33,15 +31,15 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.nickoehler.brawlhalla.MainActivity
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
+import com.nickoehler.brawlhalla.widgets.components.EmptyFavorites
 import kotlinx.serialization.json.Json
 
-class FavoriteWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = FavoriteWidget()
+class PlayersWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = PlayersWidget()
 }
 
-class FavoriteWidget : GlanceAppWidget() {
+class PlayersWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -55,26 +53,9 @@ class FavoriteWidget : GlanceAppWidget() {
                 Json.decodeFromString<List<Player>>(it)
             }.orEmpty()
 
-            val clans = prefs[
-                stringPreferencesKey("clans")
-            ]?.let {
-                Json.decodeFromString<List<Clan>>(it)
-            }.orEmpty()
-
             GlanceTheme {
-                if (players.isEmpty() && clans.isEmpty()) {
-                    Box(
-                        modifier = GlanceModifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                            .background(GlanceTheme.colors.widgetBackground),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Button(
-                            text = context.getString(R.string.favorites),
-                            onClick = actionStartActivity<MainActivity>(),
-                        )
-                    }
+                if (players.isEmpty()) {
+                    EmptyFavorites(context)
                 } else {
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,56 +64,16 @@ class FavoriteWidget : GlanceAppWidget() {
                             .padding(12.dp)
                             .background(GlanceTheme.colors.widgetBackground)
                     ) {
-                        if (players.isNotEmpty()) {
-                            item {
-                                Text(
-                                    text = context.getString(R.string.players),
-                                    maxLines = 1,
-                                    style = TextStyle(color = GlanceTheme.colors.onBackground)
-                                )
-                            }
-                            players(players, context)
-
-                            item {
-                                Spacer(GlanceModifier.height(8.dp))
-                            }
-
+                        item {
+                            Text(
+                                text = context.getString(R.string.players),
+                                maxLines = 1,
+                                style = TextStyle(color = GlanceTheme.colors.onBackground)
+                            )
                         }
-
-                        if (clans.isNotEmpty()) {
-                            item {
-                                Text(
-                                    text = context.getString(R.string.clans),
-                                    maxLines = 1,
-                                    style = TextStyle(color = GlanceTheme.colors.onBackground)
-                                )
-                            }
-                            clans(clans, context)
-                        }
+                        players(players, context)
                     }
                 }
-            }
-        }
-    }
-
-    private fun LazyListScope.clans(
-        clans: List<Clan>,
-        context: Context
-    ) {
-        items(clans, { it.id.toLong() }) { clan ->
-            Column {
-                Spacer(GlanceModifier.height(8.dp))
-                Button(
-                    text = clan.name,
-                    maxLines = 1,
-                    onClick = actionStartActivity(
-                        Intent(context, MainActivity::class.java).apply {
-                            putExtra("OPEN_CLAN", clan.id)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                    ),
-                    modifier = GlanceModifier.fillMaxWidth()
-                )
             }
         }
     }
