@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -49,6 +50,12 @@ import org.koin.compose.KoinContext
 import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        println(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -115,13 +122,21 @@ class MainActivity : ComponentActivity() {
 
                         LaunchedEffect(playerId) {
                             if (playerId != null && playerId != 0) {
-                                navController.navigate(Route.Stat(playerId))
+                                navController.navigate(Route.Stat(playerId)) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
 
                         LaunchedEffect(clanId) {
                             if (clanId != null && clanId != 0) {
-                                navController.navigate(Route.Clan(clanId))
+                                navController.navigate(Route.Clan(clanId)) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
 
@@ -144,7 +159,11 @@ class MainActivity : ComponentActivity() {
                                 StatDetailScreen(
                                     state,
                                     onStatDetailAction = statDetailViewModel::onStatDetailAction,
-                                    onBack = { navController.popBackStack() },
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            finish()
+                                        }
+                                    },
                                     events = statDetailViewModel.uiEvents,
                                     onPlayerSelection = { brawlhallaId ->
                                         navController.navigate(Route.Stat(brawlhallaId))
@@ -236,7 +255,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     events = clanViewModel.uiEvents,
                                     onBack = {
-                                        navController.popBackStack()
+                                        if (!navController.popBackStack()) {
+                                            finish()
+                                        }
                                     }
                                 )
                             }

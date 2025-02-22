@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.widgets
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
@@ -9,11 +10,10 @@ import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.action.ActionParameters
-import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -36,23 +36,11 @@ import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import kotlinx.serialization.json.Json
 
 class FavoriteWidgetReceiver : GlanceAppWidgetReceiver() {
-
-
     override val glanceAppWidget: GlanceAppWidget = FavoriteWidget()
-
 }
-
 
 class FavoriteWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
-
-    private val openStat = ActionParameters.Key<Int>(
-        "OPEN_STAT"
-    )
-
-    private val openClan = ActionParameters.Key<Int>(
-        "OPEN_CLAN"
-    )
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
@@ -98,7 +86,7 @@ class FavoriteWidget : GlanceAppWidget() {
                                 Text(context.getString(R.string.players))
                             }
                             item {
-                                Players(players)
+                                Players(players, context)
                             }
                         }
 
@@ -107,7 +95,7 @@ class FavoriteWidget : GlanceAppWidget() {
                                 Text(context.getString(R.string.clans))
                             }
                             item {
-                                Clans(clans)
+                                Clans(clans, context)
                             }
                         }
                     }
@@ -115,9 +103,9 @@ class FavoriteWidget : GlanceAppWidget() {
             }
         }
     }
-    
+
     @Composable
-    fun Players(players: List<Player>) {
+    fun Players(players: List<Player>, context: Context) {
         Column(
             modifier = GlanceModifier
                 .fillMaxWidth()
@@ -128,8 +116,11 @@ class FavoriteWidget : GlanceAppWidget() {
             players.forEach { player ->
                 Button(
                     text = player.name,
-                    onClick = actionStartActivity<MainActivity>(
-                        actionParametersOf(openStat to player.id)
+                    onClick = actionStartActivity(
+                        Intent(context, MainActivity::class.java).apply {
+                            putExtra("OPEN_STAT", player.id)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     ),
                     modifier = GlanceModifier.fillMaxWidth()
                 )
@@ -139,7 +130,7 @@ class FavoriteWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun Clans(clans: List<Clan>) {
+    fun Clans(clans: List<Clan>, context: Context) {
         Column(
             modifier = GlanceModifier
                 .fillMaxWidth()
@@ -150,8 +141,11 @@ class FavoriteWidget : GlanceAppWidget() {
             clans.forEach { clan ->
                 Button(
                     text = clan.name,
-                    onClick = actionStartActivity<MainActivity>(
-                        actionParametersOf(openClan to clan.id)
+                    onClick = actionStartActivity(
+                        Intent(context, MainActivity::class.java).apply {
+                            putExtra("OPEN_CLAN", clan.id)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     ),
                     modifier = GlanceModifier.fillMaxWidth()
                 )
