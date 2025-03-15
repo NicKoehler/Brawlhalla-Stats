@@ -54,7 +54,9 @@ fun AdaptiveLegendsPane(
             }
 
             is UiEvent.GoToDetail -> {
-                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                coroutineScope.launch {
+                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                }
             }
 
             else -> {}
@@ -74,10 +76,13 @@ fun AdaptiveLegendsPane(
                     onAppBarAction = viewModel::onAppBarAction,
                     onLegendAction = { action ->
                         viewModel.onLegendAction(action)
-                        if (action is LegendAction.SelectLegend)
-                            navigator.navigateTo(
-                                ListDetailPaneScaffoldRole.Detail
-                            )
+                        if (action is LegendAction.SelectLegend) {
+                            coroutineScope.launch {
+                                navigator.navigateTo(
+                                    ListDetailPaneScaffoldRole.Detail
+                                )
+                            }
+                        }
                     },
                 )
             }
@@ -90,13 +95,17 @@ fun AdaptiveLegendsPane(
                         onWeaponAction = { action ->
                             viewModel.onWeaponAction(action)
                             if (action is WeaponAction.Click) {
-                                navigator.navigateBack()
+                                coroutineScope.launch {
+                                    navigator.navigateBack()
+                                }
                             }
                         },
                         onLegendAction = { action ->
                             viewModel.onLegendAction(action)
                             if (action is LegendAction.SelectStat) {
-                                navigator.navigateBack()
+                                coroutineScope.launch {
+                                    navigator.navigateBack()
+                                }
                             }
                         },
                     )

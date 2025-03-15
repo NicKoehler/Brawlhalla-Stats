@@ -8,6 +8,7 @@ import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneSca
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,18 +19,20 @@ import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveRankingPane(
+    modifier: Modifier = Modifier,
     onClanSelection: (Int) -> Unit,
     onLegendSelection: (Int) -> Unit,
     onPlayerSelection: (Int) -> Unit,
     viewModel: RankingViewModel = koinViewModel<RankingViewModel>(),
-    modifier: Modifier = Modifier,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val rankingState by viewModel.state.collectAsStateWithLifecycle()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
@@ -53,13 +56,17 @@ fun AdaptiveRankingPane(
             }
 
             is UiEvent.GoToDetail -> {
-                navigator.navigateTo(
-                    ListDetailPaneScaffoldRole.Detail
-                )
+                coroutineScope.launch {
+                    navigator.navigateTo(
+                        ListDetailPaneScaffoldRole.Detail
+                    )
+                }
             }
 
             is UiEvent.PopBack -> {
-                navigator.navigateBack()
+                coroutineScope.launch {
+                    navigator.navigateBack()
+                }
             }
 
             else -> {}
@@ -76,10 +83,13 @@ fun AdaptiveRankingPane(
                     onAppBarAction = viewModel::onAppBarAction,
                     onRankingAction = { action ->
                         viewModel.onRankingAction(action)
-                        if (action is RankingAction.SelectRanking)
-                            navigator.navigateTo(
-                                ListDetailPaneScaffoldRole.Detail
-                            )
+                        if (action is RankingAction.SelectRanking) {
+                            coroutineScope.launch {
+                                navigator.navigateTo(
+                                    ListDetailPaneScaffoldRole.Detail
+                                )
+                            }
+                        }
                     },
                 )
             }
@@ -100,7 +110,9 @@ fun AdaptiveRankingPane(
                         onClanSelection = onClanSelection,
                         onStatDetailAction = statDetailViewModel::onStatDetailAction,
                         onBack = {
-                            navigator.navigateBack()
+                            coroutineScope.launch {
+                                navigator.navigateBack()
+                            }
                         },
                         events = statDetailViewModel.uiEvents
                     )
