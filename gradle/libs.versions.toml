@@ -16,7 +16,7 @@ adaptiveLayoutAndroid = "1.0.0"
 adaptiveNavigationAndroid = "1.0.0"
 navigationCompose = "2.8.7"
 ksp = "2.1.0-1.0.29"
-aboutlibraries = "11.6.2"
+aboutlibraries = "12.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
