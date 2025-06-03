@@ -14,7 +14,7 @@ composeBom = "2025.02.00"
 room = "2.6.1"
 adaptiveLayoutAndroid = "1.0.0"
 adaptiveNavigationAndroid = "1.0.0"
-navigationCompose = "2.8.7"
+navigationCompose = "2.9.0"
 ksp = "2.1.0-1.0.29"
 aboutlibraries = "11.6.2"
 
