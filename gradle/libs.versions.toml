@@ -15,7 +15,7 @@ room = "2.7.1"
 adaptiveLayoutAndroid = "1.1.0"
 adaptiveNavigationAndroid = "1.1.0"
 navigationCompose = "2.9.0"
-ksp = "2.1.21-2.0.1"
+ksp = "2.1.21-2.0.2"
 aboutlibraries = "12.2.1"
 
 [libraries]
