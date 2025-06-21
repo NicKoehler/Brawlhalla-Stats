@@ -27,8 +27,8 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AdaptiveLegendsPane(
-    viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LegendsViewModel = koinViewModel<LegendsViewModel>()
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

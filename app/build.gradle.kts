@@ -106,7 +106,7 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.network.ktor)
 
     // koin
     implementation(libs.koin.compose)
@@ -120,7 +120,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
-    
+
     // splashscreen
     implementation(libs.androidx.core.splashscreen)
 

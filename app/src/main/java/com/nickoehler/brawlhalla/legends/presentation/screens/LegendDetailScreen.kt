@@ -44,6 +44,7 @@ fun LegendDetailScreen(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
     ) {
 
@@ -119,7 +120,6 @@ private fun LegendDetailScreenLoadingPreview() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
             ) {
                 LegendDetailScreen(
                     state = LegendsListState(isDetailLoading = true),

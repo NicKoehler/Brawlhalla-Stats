@@ -33,11 +33,12 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun LegendCard(
+    modifier: Modifier = Modifier,
     legend: LegendUi? = null,
     onLegendAction: (LegendAction) -> Unit = {},
-    onWeaponAction: (WeaponAction) -> Unit = {},
-    modifier: Modifier = Modifier
+    onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
+    println(legend?.image)
     CustomCard(
         onClick = { if (legend != null) onLegendAction(LegendAction.SelectLegend(legend.legendId)) },
         modifier = modifier,
@@ -93,7 +94,8 @@ fun LegendCard(
                     }
                 })
             Spacer(modifier = Modifier.size(10.dp))
-            WeaponButton(legend?.weaponTwo,
+            WeaponButton(
+                legend?.weaponTwo,
                 {
                     if (legend != null) {
                         onWeaponAction(WeaponAction.Click(legend.weaponTwo))

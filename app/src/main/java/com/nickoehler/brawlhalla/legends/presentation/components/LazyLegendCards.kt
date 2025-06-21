@@ -37,10 +37,10 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LazyLegendsCards(
     state: LegendsListState,
+    modifier: Modifier = Modifier,
     lazyColumnState: LazyListState = rememberLazyListState(),
     onLegendAction: (LegendAction) -> Unit = {},
-    onWeaponAction: (WeaponAction) -> Unit = {},
-    modifier: Modifier = Modifier
+    onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
@@ -109,14 +109,13 @@ fun LazyLegendsCards(
         } else {
             items(state.legends, key = { legend -> legend.legendId }) { legend ->
                 LegendCard(
-                    legend,
-                    onLegendAction,
-                    onWeaponAction,
-                    modifier = Modifier.animateItem()
+                    modifier = Modifier.animateItem(),
+                    legend = legend,
+                    onLegendAction = onLegendAction,
+                    onWeaponAction = onWeaponAction
                 )
             }
         }
-
     }
 }
 

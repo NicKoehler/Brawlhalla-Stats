@@ -39,11 +39,11 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LegendListScreen(
     state: LegendsListState,
+    modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     onLegendAction: (LegendAction) -> Unit,
     onWeaponAction: (WeaponAction) -> Unit,
-    onAppBarAction: (AppBarAction) -> Unit,
-    modifier: Modifier = Modifier
+    onAppBarAction: (AppBarAction) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -83,11 +83,11 @@ fun LegendListScreen(
             modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             LazyLegendsCards(
-                state,
-                lazyListState,
-                onLegendAction,
-                onWeaponAction,
+                state = state,
                 modifier = modifier.padding(it),
+                lazyColumnState = lazyListState,
+                onLegendAction = onLegendAction,
+                onWeaponAction = onWeaponAction,
             )
         }
     }
