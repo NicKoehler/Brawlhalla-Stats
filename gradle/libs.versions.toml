@@ -17,7 +17,7 @@ adaptiveNavigationAndroid = "1.1.0"
 navigationCompose = "2.9.1"
 ksp = "2.2.0-2.0.2"
 aboutlibraries = "12.2.4"
-ktor = "3.2.1"
+ktor = "3.2.2"
 coil = "3.2.0"
 
 [libraries]
