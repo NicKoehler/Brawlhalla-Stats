@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -121,12 +121,12 @@ fun CustomTopAppBar(
                         IconButton(
                             onClick = {
                                 onAppBarAction(
-                                    AppBarAction.OpenInfo
+                                    AppBarAction.OpenSettings
                                 )
                             }
                         ) {
                             Icon(
-                                Icons.Default.MoreVert,
+                                Icons.Default.Settings,
                                 null
                             )
                         }

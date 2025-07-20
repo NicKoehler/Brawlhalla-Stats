@@ -34,14 +34,14 @@ import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
-import com.nickoehler.brawlhalla.info.presentation.InfoViewModel
-import com.nickoehler.brawlhalla.info.presentation.screens.InfoScreen
-import com.nickoehler.brawlhalla.info.presentation.screens.LicensesScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.AdaptiveLegendsPane
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.AdaptiveRankingPane
 import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
+import com.nickoehler.brawlhalla.settings.presentation.SettingsViewModel
+import com.nickoehler.brawlhalla.settings.presentation.screens.LicensesScreen
+import com.nickoehler.brawlhalla.settings.presentation.screens.SettingsScreen
 import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        println(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -261,16 +260,18 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<Route.Info> {
-                            val infoViewModel = koinViewModel<InfoViewModel>()
-                            InfoScreen(
-                                onInfoAction = infoViewModel::onInfoAction,
+                            val settingsViewModel = koinViewModel<SettingsViewModel>()
+                            val state by settingsViewModel.state.collectAsStateWithLifecycle()
+                            SettingsScreen(
+                                settingsState = state,
+                                onSetttingsAction = settingsViewModel::onSettingsAction,
                                 onBack = {
                                     navController.popBackStack()
                                 },
                                 onLicensesPressed = {
                                     navController.navigate(Route.Licenses)
                                 },
-                                events = infoViewModel.events
+                                events = settingsViewModel.events
                             )
                         }
 

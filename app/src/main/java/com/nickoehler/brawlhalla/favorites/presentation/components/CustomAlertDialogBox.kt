@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.nickoehler.brawlhalla.R
 
 @Composable
-fun CustomDialogBox(
+fun CustomAlertDialogBox(
     title: String,
     description: String,
     shouldShowDialog: Boolean,

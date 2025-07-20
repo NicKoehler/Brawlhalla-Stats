@@ -38,7 +38,6 @@ fun LegendCard(
     onLegendAction: (LegendAction) -> Unit = {},
     onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
-    println(legend?.image)
     CustomCard(
         onClick = { if (legend != null) onLegendAction(LegendAction.SelectLegend(legend.legendId)) },
         modifier = modifier,

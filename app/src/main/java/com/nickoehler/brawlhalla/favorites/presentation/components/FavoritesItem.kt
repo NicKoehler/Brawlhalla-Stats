@@ -64,7 +64,7 @@ fun FavoritesItem(
         }
     }
 
-    CustomDialogBox(
+    CustomAlertDialogBox(
         deleteTitle,
         deleteDescription,
         isDialogOpen,

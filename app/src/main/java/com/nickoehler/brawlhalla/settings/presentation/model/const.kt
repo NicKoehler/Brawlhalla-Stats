@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.info.presentation.model
+package com.nickoehler.brawlhalla.settings.presentation.model
 
 import android.net.Uri
 

@@ -14,12 +14,12 @@ properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.nickoehler.brawlhalla"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nickoehler.brawlhalla"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 3
         versionName = "0.0.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.jetbrains.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.material.icons.extended)
+    implementation(libs.androidx.datastore.preferences)
 
     // coil
     implementation(libs.coil.compose)

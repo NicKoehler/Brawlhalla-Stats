@@ -57,7 +57,7 @@ fun FavoritesScreen(
                 showSearch = false,
                 showInfo = true,
                 onAppBarAction = { action ->
-                    if (action is AppBarAction.OpenInfo) {
+                    if (action is AppBarAction.OpenSettings) {
                         onInfoSelection()
                     }
                 }

@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.info.presentation.screens
+package com.nickoehler.brawlhalla.settings.presentation.screens
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -35,10 +35,12 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.BuildConfig
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.info.presentation.model.InfoAction
-import com.nickoehler.brawlhalla.info.presentation.model.InfoEvent
-import com.nickoehler.brawlhalla.info.presentation.model.uriGithubAuthor
-import com.nickoehler.brawlhalla.info.presentation.model.uriGithubProject
+import com.nickoehler.brawlhalla.settings.presentation.model.SettingsAction
+import com.nickoehler.brawlhalla.settings.presentation.model.SettingsEvent
+import com.nickoehler.brawlhalla.settings.presentation.model.SettingsState
+import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubAuthor
+import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubProject
+import com.nickoehler.brawlhalla.settings.presentation.screens.components.SettingCardTheme
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
@@ -46,19 +48,19 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoScreen(
-    onInfoAction: (InfoAction) -> Unit,
+fun SettingsScreen(
+    settingsState: SettingsState,
+    onSetttingsAction: (SettingsAction) -> Unit,
     onBack: () -> Unit,
     onLicensesPressed: () -> Unit,
-    events: Flow<InfoEvent>,
+    events: Flow<SettingsEvent>,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
     ObserveAsEvents(events) { event ->
-        println(event)
         when (event) {
-            is InfoEvent.ViewIntent -> context.startActivity(
+            is SettingsEvent.ViewIntent -> context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
                     event.uri
@@ -71,7 +73,7 @@ fun InfoScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.info), fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.settings_title), fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -91,7 +93,6 @@ fun InfoScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                 Image(
                     painterResource(R.drawable.logo),
                     "logo",
@@ -113,8 +114,13 @@ fun InfoScreen(
                 }
             }
             Spacer(Modifier)
+
+            SettingCardTheme(
+                settingsState.currentTheme,
+                { onSetttingsAction(SettingsAction.SetTheme(it)) }
+            )
             CustomCard(
-                onClick = { onInfoAction(InfoAction.ViewIntent(uriGithubAuthor)) },
+                onClick = { onSetttingsAction(SettingsAction.ViewIntent(uriGithubAuthor)) },
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -123,7 +129,7 @@ fun InfoScreen(
             }
 
             CustomCard(
-                onClick = { onInfoAction(InfoAction.ViewIntent(uriGithubProject)) },
+                onClick = { onSetttingsAction(SettingsAction.ViewIntent(uriGithubProject)) },
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -149,7 +155,8 @@ fun InfoScreen(
 private fun InfoScreenPreview() {
     BrawlhallaTheme {
         Surface {
-            InfoScreen(
+            SettingsScreen(
+                SettingsState(),
                 {},
                 {},
                 {},

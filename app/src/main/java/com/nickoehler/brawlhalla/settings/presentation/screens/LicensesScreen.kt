@@ -1,4 +1,4 @@
-package com.nickoehler.brawlhalla.info.presentation.screens
+package com.nickoehler.brawlhalla.settings.presentation.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

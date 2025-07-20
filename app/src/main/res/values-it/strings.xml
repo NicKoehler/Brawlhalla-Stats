@@ -51,7 +51,6 @@
     <string name="areYouSureDeletePlayerDesc">Conferma per eliminare questo giocatore</string>
     <string name="areYouSureDeleteClanTitle">Sei sicuro di voler eliminare questo clan?</string>
     <string name="areYouSureDeleteClanDesc">Conferma per eliminare questo clan</string>
-    <string name="info">Info</string>
     <string name="damageDealt">Danno inflitto</string>
     <string name="damageTaken">Danno subito</string>
     <string name="kos">Kos</string>
@@ -90,5 +89,10 @@
     <string name="xp">Xp</string>
     <string name="createDate">Data di creazione: %s</string>
     <string name="copy_id">Copia ID</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Chiaro</string>
+    <string name="settings_theme_dark">Scuro</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_title">Impostazioni</string>
 </resources>
 
