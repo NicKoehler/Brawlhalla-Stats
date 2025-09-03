@@ -10,15 +10,11 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nickoehler.brawlhalla.core.domain.model.Theme
-import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
-import org.koin.androidx.compose.koinViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -34,13 +30,12 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun BrawlhallaTheme(
+    theme: Theme = Theme.System,
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val view = LocalView.current
-    val viewModel = koinViewModel<ThemeViewModel>()
-    val theme by viewModel.theme.collectAsStateWithLifecycle()
 
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

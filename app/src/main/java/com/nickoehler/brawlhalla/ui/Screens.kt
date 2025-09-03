@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavKey
 import com.nickoehler.brawlhalla.R
 import kotlinx.serialization.Serializable
 
@@ -38,7 +39,7 @@ enum class Screens(
 }
 
 
-sealed interface Route {
+sealed interface Route : NavKey {
 
     @Serializable
     data object Info : Route

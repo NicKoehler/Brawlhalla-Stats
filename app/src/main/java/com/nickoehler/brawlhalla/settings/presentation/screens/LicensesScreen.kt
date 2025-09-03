@@ -12,10 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -26,6 +28,7 @@ fun LicensesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val libraries by rememberLibraries(R.raw.aboutlibraries)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,6 +44,7 @@ fun LicensesScreen(
         },
     ) {
         LibrariesContainer(
+            libraries,
             modifier
                 .padding(it)
                 .fillMaxSize()

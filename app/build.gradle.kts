@@ -43,6 +43,8 @@ android {
     buildTypes {
 
         debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
             buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
             buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         }
@@ -93,9 +95,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.adaptive)
     implementation(libs.androidx.adaptive.layout.android)
     implementation(libs.androidx.adaptive.navigation.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.material3.windowsizeclass)
+    implementation(libs.androidx.compose.adaptive.navigation3)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -141,5 +147,10 @@ dependencies {
     // widget
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.kotlinx.serialization.core)
 
 }
