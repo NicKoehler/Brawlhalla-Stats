@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -53,6 +56,7 @@ import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
@@ -74,7 +78,6 @@ import com.nickoehler.brawlhalla.ui.Route
 import com.nickoehler.brawlhalla.ui.Route.Stat
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -135,16 +138,29 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 icon = {
-                                    Icon(
-                                        if (isSelected) currentScreen.selectedIcon
-                                        else currentScreen.unselectedIcon,
-                                        stringResource(currentScreen.title),
-                                    )
+                                    AnimatedContent(
+                                        isSelected,
+                                        transitionSpec = {
+                                            fadeIn().togetherWith(
+                                                fadeOut()
+                                            )
+                                        }
+                                    ) {
+                                        if (it) {
+                                            Icon(
+                                                currentScreen.selectedIcon,
+                                                stringResource(currentScreen.title)
+                                            )
+                                        } else {
+                                            Icon(
+                                                currentScreen.unselectedIcon,
+                                                stringResource(currentScreen.title)
+                                            )
+                                        }
+                                    }
                                 },
                                 label = {
-                                    if (isSelected) {
-                                        Text(stringResource(currentScreen.title))
-                                    }
+                                    Text(stringResource(currentScreen.title))
                                 }
                             )
                         }
@@ -168,7 +184,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(playerId) {
                         if (playerId != null && playerId != 0) {
                             backStack.clear()
-                            backStack.add(Route.Stat(playerId))
+                            backStack.add(Stat(playerId))
                         }
                     }
 
@@ -183,7 +199,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .safeDrawingPadding()
                             .animateContentSize()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 16.dp),
                         backStack = backStack,
                         onBack = { backStack.removeLastOrNull() },
                         entryDecorators = listOf(
@@ -394,7 +410,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 RankingListScreen(
-                                    rankingState,
+                                    state = rankingState,
                                     onRankingAction = viewModel::onRankingAction
                                 )
                             }

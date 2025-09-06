@@ -20,4 +20,4 @@ fun provideDataBase(application: Application) =
         application,
         AppDatabase::class.java,
         "brawlhalla"
-    ).fallbackToDestructiveMigration().build()
+    ).fallbackToDestructiveMigration(false).build()

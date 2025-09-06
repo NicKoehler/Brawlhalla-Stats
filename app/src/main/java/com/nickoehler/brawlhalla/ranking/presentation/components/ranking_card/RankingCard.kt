@@ -23,7 +23,7 @@ fun RankingCard(
 ) {
     when (ranking) {
         is RankingUi.RankingSoloUi -> RankingSoloCard(
-            ranking,
+            ranking = ranking,
             onRankingAction = onRankingAction
         )
 

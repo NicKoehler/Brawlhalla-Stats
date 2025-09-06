@@ -64,7 +64,7 @@ import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

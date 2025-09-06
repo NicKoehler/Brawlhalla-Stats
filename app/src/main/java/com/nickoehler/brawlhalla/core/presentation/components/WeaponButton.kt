@@ -42,7 +42,8 @@ fun WeaponButton(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .shimmerEffect())
+                    .shimmerEffect()
+            )
         }
     }
 }

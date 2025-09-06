@@ -21,9 +21,9 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun RankingSoloCard(
+    modifier: Modifier = Modifier,
     ranking: RankingUi.RankingSoloUi? = null,
-    onRankingAction: (RankingAction) -> Unit = {},
-    modifier: Modifier = Modifier
+    onRankingAction: (RankingAction) -> Unit = {}
 ) {
     CustomCard(
         modifier = modifier,
@@ -61,7 +61,7 @@ private fun RankingSoloCardPreview() {
         Surface {
             Column {
                 RankingSoloCard(
-                    rankingSoloSample.toRankingSoloUi()
+                    ranking = rankingSoloSample.toRankingSoloUi()
                 )
                 RankingSoloCard()
             }

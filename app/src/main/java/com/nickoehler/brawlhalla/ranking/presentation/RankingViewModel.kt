@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
-import com.nickoehler.brawlhalla.core.presentation.AppBarAction
-import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
@@ -29,7 +28,6 @@ class RankingViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(RankingState())
     private var currentPage = 1
-    private var currentSearch: String? = null
     val state = _state.onStart {
         if (_state.value.players.isEmpty()) loadRankings()
     }.stateIn(
@@ -41,7 +39,23 @@ class RankingViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
+    fun onRankingAction(action: RankingAction) {
+        when (action) {
+            is RankingAction.LoadMore -> loadMore()
+            is RankingAction.SelectRegion -> selectRegion(action.region)
+            is RankingAction.SelectBracket -> selectBracket(action.bracket)
+            is RankingAction.QueryChange -> updateSearchQuery(action.query)
+            is RankingAction.OnFilterToggle -> onFilterToggle()
+            is RankingAction.Search -> search(_state.value.searchQuery)
+            is RankingAction.SelectRanking -> selectRanking(action.brawlhallaId)
+            is RankingAction.ResetSearch -> removeSearch()
+        }
+    }
+
     private fun loadRankings(shouldResetPlayers: Boolean = false) {
+        if (shouldResetPlayers) {
+            currentPage = 1
+        }
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -53,23 +67,17 @@ class RankingViewModel(
                 _state.value.selectedBracket,
                 _state.value.selectedRegion,
                 currentPage,
-                currentSearch
             ).onSuccess { players ->
                 _state.update { state ->
                     state.copy(
-                        shouldLoadMore = currentSearch == null && players.isNotEmpty(),
+                        shouldLoadMore = players.isNotEmpty(),
                         isListLoading = false,
                         isLoadingMore = false,
-                        appBarState = _state.value.appBarState.copy(
-                            searchQuery = if (currentSearch == null) "" else currentSearch!!,
-                        ),
                         players = (if (shouldResetPlayers)
                             emptyList()
                         else
                             _state.value.players) +
                                 players.map { it.toRankingUi() }
-
-
                     )
                 }
             }.onError { error ->
@@ -84,14 +92,64 @@ class RankingViewModel(
         }
     }
 
+    private fun search(currentQuery: String) {
+        val currentBracket = _state.value.selectedBracket
+        val currentRegion = _state.value.selectedRegion
 
-    private fun selectStatDetail(id: Int) {
-        _state.update { state ->
-            state.copy(
-                selectedStatDetailId = id,
-            )
+        val searchPlayers = {
+            viewModelScope.launch {
+                _state.update { state ->
+                    state.copy(
+                        searchedQuery = currentQuery,
+                        searchResults = emptyList(),
+                        isListLoading = true,
+                    )
+                }
+                rankingsDataSource.getRankings(
+                    currentBracket,
+                    currentRegion,
+                    1,
+                    currentQuery
+                ).onSuccess { rankings ->
+                    _state.update { state ->
+                        state.copy(
+                            searchResults = rankings.map { it.toRankingUi() },
+                            isListLoading = false,
+                            searchQuery = ""
+                        )
+                    }
+                    if (rankings.isEmpty()) {
+                        _uiEvents.send(UiEvent.Message(RankingMessage.NoResult))
+                    }
+                }.onError {
+                    _state.update { state ->
+                        state.copy(
+                            isListLoading = false,
+                            searchQuery = ""
+                        )
+                    }
+                    _uiEvents.send(UiEvent.Error(it))
+                }
+            }
+        }
+
+        if (currentQuery.all { it.isDigit() }) {
+            try {
+                val id = currentQuery.toInt()
+                _state.update {
+                    it.copy(isFilterOpen = false)
+                }
+                viewModelScope.launch {
+                    _uiEvents.send(UiEvent.GoToDetail(id))
+                }
+            } catch (_: NumberFormatException) {
+                searchPlayers()
+            }
+        } else {
+            searchPlayers()
         }
     }
+
 
     private fun selectRegion(region: Region) {
         if (region == _state.value.selectedRegion) {
@@ -100,7 +158,12 @@ class RankingViewModel(
         _state.update { state ->
             state.copy(selectedRegion = region)
         }
-        resetSearch()
+        if (_state.value.searchedQuery.isNotBlank()) {
+            search(_state.value.searchedQuery)
+        } else {
+            loadRankings(true)
+        }
+
     }
 
     private fun selectBracket(bracket: Bracket) {
@@ -110,69 +173,49 @@ class RankingViewModel(
         _state.update { state ->
             state.copy(selectedBracket = bracket)
         }
-        resetSearch()
+        if (_state.value.searchedQuery.isNotBlank()) {
+            search(_state.value.searchedQuery)
+        } else {
+            loadRankings(true)
+        }
     }
 
     private fun updateSearchQuery(query: String) {
         viewModelScope.launch {
             _state.update { state ->
                 state.copy(
-                    appBarState = CustomAppBarState(
-                        searchQuery = query,
-                        isOpenSearch = true
-                    )
+                    searchQuery = query,
                 )
             }
         }
     }
 
-    private fun search() {
-        val currentQuery = _state.value.appBarState.searchQuery
-        currentPage = 1
-        currentSearch = currentQuery
-
-        if (currentQuery.all { it.isDigit() }) {
-            try {
-                val id = currentQuery.toInt()
-                viewModelScope.launch {
-                    _uiEvents.send(UiEvent.GoToDetail)
-                }
-                selectStatDetail(id)
-            } catch (e: NumberFormatException) {
-                loadRankings(true)
+    private fun onFilterToggle() {
+        viewModelScope.launch {
+            _uiEvents.send(UiEvent.ScrollToTop)
+            _state.update { state ->
+                state.copy(
+                    isFilterOpen = !state.isFilterOpen,
+                )
             }
-        } else {
-            loadRankings(true)
         }
     }
 
-    private fun resetSearch() {
-        currentPage = 1
-        currentSearch = null
-        loadRankings(true)
-        _state.update { state ->
-            state.copy(
-                appBarState = CustomAppBarState(
-                    isOpenSearch = false,
-                    searchQuery = ""
-                )
+
+    private fun removeSearch() {
+        _state.update {
+            it.copy(
+                searchQuery = "",
+                searchedQuery = "",
+                searchResults = emptyList()
             )
         }
+        loadRankings(true)
     }
 
-
-    private fun openSearch() {
-        _state.update { state ->
-            state.copy(appBarState = CustomAppBarState(isOpenSearch = true))
-        }
-    }
-
-    fun onRankingAction(action: RankingAction) {
-        when (action) {
-            is RankingAction.LoadMore -> loadMore()
-            is RankingAction.SelectRegion -> selectRegion(action.region)
-            is RankingAction.SelectBracket -> selectBracket(action.bracket)
-            is RankingAction.SelectRanking -> selectStatDetail(action.brawlhallaId)
+    private fun selectRanking(brawlhallaId: Int) {
+        viewModelScope.launch {
+            _uiEvents.send(UiEvent.GoToDetail(brawlhallaId))
         }
     }
 
@@ -180,17 +223,6 @@ class RankingViewModel(
         if (currentPage <= MAX_PAGE) {
             currentPage++
             loadRankings()
-        }
-    }
-
-
-    fun onAppBarAction(action: AppBarAction) {
-        when (action) {
-            is AppBarAction.CloseSearch -> resetSearch()
-            is AppBarAction.OpenSearch -> openSearch()
-            is AppBarAction.QueryChange -> updateSearchQuery(action.query)
-            is AppBarAction.Search -> search()
-            else -> {}
         }
     }
 }

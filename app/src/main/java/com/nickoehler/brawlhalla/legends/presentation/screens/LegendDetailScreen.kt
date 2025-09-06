@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailState
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendBioContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailStats
@@ -36,10 +36,10 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LegendDetailScreen(
-    state: LegendsListState,
+    state: LegendDetailState,
     modifier: Modifier = Modifier,
-    onWeaponAction: (WeaponAction) -> Unit = {},
-    onLegendAction: (LegendAction) -> Unit = {},
+    onLegendAction: (LegendDetailAction) -> Unit = {},
+    onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -101,7 +101,7 @@ private fun LegendDetailScreenPreview() {
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 LegendDetailScreen(
-                    state = LegendsListState(
+                    state = LegendDetailState(
                         selectedLegendUi = legendDetailSample
                             .toLegendDetailUi(),
                     ),
@@ -122,7 +122,7 @@ private fun LegendDetailScreenLoadingPreview() {
                     .fillMaxSize()
             ) {
                 LegendDetailScreen(
-                    state = LegendsListState(isDetailLoading = true),
+                    state = LegendDetailState(isDetailLoading = true),
                 )
             }
         }

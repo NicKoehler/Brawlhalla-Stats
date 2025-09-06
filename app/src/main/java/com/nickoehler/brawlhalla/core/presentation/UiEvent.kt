@@ -6,7 +6,8 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 sealed interface UiEvent {
     data class Error(val error: NetworkError) : UiEvent
     data class Message(val message: RankingMessage) : UiEvent
+    data class GoToDetail(val id: Int) : UiEvent
     data object ScrollToTop : UiEvent
-    data object GoToDetail : UiEvent
-    data object PopBack : UiEvent
+    data object HideNavBar : UiEvent
+    data object ShowNavBar : UiEvent
 }

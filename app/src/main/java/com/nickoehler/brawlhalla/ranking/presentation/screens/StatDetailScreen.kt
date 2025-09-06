@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -47,7 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -99,7 +100,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStringResource
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.plcoding.cryptotracker.core.presentation.util.ObserveAsEvents
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -117,7 +118,7 @@ fun StatDetailScreen(
 ) {
     val density = LocalDensity.current
     val context = LocalContext.current
-    val clipboard = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val playerStat = state.selectedStatDetail
     val playerRanking = state.selectedRankingDetail
     var screenWidth by remember { mutableStateOf(0.dp) }
@@ -209,9 +210,12 @@ fun StatDetailScreen(
                 actions = {
                     IconButton({
                         if (playerStat != null) {
-                            clipboard.setText(
-                                AnnotatedString(
-                                    state.selectedStatDetail.brawlhallaId.toString()
+                            clipboard.nativeClipboard.setPrimaryClip(
+                                ClipData.newPlainText(
+                                    "",
+                                    AnnotatedString(
+                                        state.selectedStatDetail.brawlhallaId.toString()
+                                    )
                                 )
                             )
                         }
@@ -379,7 +383,8 @@ private fun LazyGridScope.rankingLegends(
 ) {
     if (playerRanking != null) {
         item(span = { GridItemSpan(columns) }) {
-            CustomRankedDropDown(sortType,
+            CustomRankedDropDown(
+                sortType,
                 reversed,
                 onReverse = { onStatDetailAction(StatDetailAction.RankingLegendSortTypeReversed) },
                 onSort = {
@@ -1063,161 +1068,161 @@ internal val rankingDetailSample =
         globalRank = 0,
         regionRank = 0,
         legends =
-        listOf(
-            RankingLegend(
-                3,
-                "bodvar",
-                758,
-                0,
-                "Tin 2".toTier(),
-                0,
-                0
+            listOf(
+                RankingLegend(
+                    3,
+                    "bodvar",
+                    758,
+                    0,
+                    "Tin 2".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    4,
+                    "cassidy",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    5,
+                    "orion",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    19,
+                    "brynn",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    22,
+                    "ulgrim",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    25,
+                    "diana",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    18,
+                    "ember",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    16,
+                    "teros",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    14,
+                    "ada",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    29,
+                    "wu shang",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    28,
+                    "kor",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    35,
+                    "mordex",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    38,
+                    "caspian",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    31,
+                    "ragnir",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    46,
+                    "rayman",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    26,
+                    "jhala",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                ),
+                RankingLegend(
+                    36,
+                    "yumiko",
+                    750,
+                    0,
+                    "Tin 1".toTier(),
+                    0,
+                    0
+                )
             ),
-            RankingLegend(
-                4,
-                "cassidy",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                5,
-                "orion",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                19,
-                "brynn",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                22,
-                "ulgrim",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                25,
-                "diana",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                18,
-                "ember",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                16,
-                "teros",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                14,
-                "ada",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                29,
-                "wu shang",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                28,
-                "kor",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                35,
-                "mordex",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                38,
-                "caspian",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                31,
-                "ragnir",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                46,
-                "rayman",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                26,
-                "jhala",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            ),
-            RankingLegend(
-                36,
-                "yumiko",
-                750,
-                0,
-                "Tin 1".toTier(),
-                0,
-                0
-            )
-        ),
 
         teams = listOf(
             Ranking.RankingTeam(

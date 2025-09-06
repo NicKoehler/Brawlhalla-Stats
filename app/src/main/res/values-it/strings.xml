@@ -94,5 +94,7 @@
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_theme_title">Tema</string>
     <string name="settings_title">Impostazioni</string>
+    <string name="filters">Filtri</string>
+    <string name="search_cant_search">Non puoi cercare in 2v2</string>
 </resources>
 

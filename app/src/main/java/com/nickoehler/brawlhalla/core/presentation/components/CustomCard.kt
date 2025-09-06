@@ -23,8 +23,8 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun CustomCard(
-    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     color: Color = MaterialTheme.colorScheme.surfaceContainer,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
@@ -32,9 +32,10 @@ fun CustomCard(
     contentPadding: Dp = 20.dp,
     content: @Composable (RowScope.() -> Unit),
 ) {
-    var cardModifier = modifier.clip(
-        shape = RoundedCornerShape(size = borderRadius)
-    )
+    var cardModifier = modifier
+        .clip(
+            shape = RoundedCornerShape(size = borderRadius)
+        )
 
     if (onClick != null) {
         cardModifier = cardModifier.clickable {

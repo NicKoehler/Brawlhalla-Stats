@@ -94,4 +94,6 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_title">Settings</string>
+    <string name="filters">Filters</string>
+    <string name="search_cant_search">Can\'t search on 2v2</string>
 </resources>

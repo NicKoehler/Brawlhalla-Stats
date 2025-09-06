@@ -1,4 +1,4 @@
-package com.plcoding.cryptotracker.core.presentation.util
+package com.nickoehler.brawlhalla.core.presentation.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

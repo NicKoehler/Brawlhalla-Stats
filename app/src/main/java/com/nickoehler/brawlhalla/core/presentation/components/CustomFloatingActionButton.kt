@@ -11,7 +11,13 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -19,9 +25,16 @@ fun CustomFloatingActionButton(
     scrollState: LazyListState,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var visibleIndexIsNotZero by remember { mutableStateOf(false) }
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.firstVisibleItemIndex }
+            .collect {
+                visibleIndexIsNotZero = it != 0;
+            }
+    }
 
     AnimatedVisibility(
-        scrollState.lastScrolledBackward,
+        scrollState.lastScrolledBackward && visibleIndexIsNotZero,
         enter = fadeIn() + slideInVertically { it },
         exit = fadeOut() + slideOutVertically { it }
     ) {

@@ -28,6 +28,7 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
@@ -38,7 +39,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 fun LegendStatItem(
     stat: LegendStat,
     statValue: Int? = null,
-    onLegendAction: (LegendAction) -> Unit = {},
+    onLegendAction: (LegendDetailAction) -> Unit = {},
     delayMillis: Int = 0,
     height: Dp = 40.dp,
     modifier: Modifier = Modifier
@@ -47,7 +48,7 @@ fun LegendStatItem(
         modifier = modifier.fillMaxWidth(),
         contentPadding = 15.dp,
         onClick = {
-            if (statValue != null) onLegendAction(LegendAction.SelectStat(stat, statValue))
+            if (statValue != null) onLegendAction(LegendDetailAction.SelectStat(stat, statValue))
         },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
