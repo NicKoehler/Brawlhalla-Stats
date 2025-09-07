@@ -1,9 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableTime
-import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableTime
 import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
@@ -13,30 +12,30 @@ import java.util.Locale
 data class StatLegendUi(
     val legendId: Int,
     val legendNameKey: String,
-    val damageDealt: DisplayableNumber,
-    val damageTaken: DisplayableNumber,
-    val kos: DisplayableNumber,
-    val falls: DisplayableNumber,
-    val suicides: DisplayableNumber,
-    val teamKos: DisplayableNumber,
+    val damageDealt: DisplayableInt,
+    val damageTaken: DisplayableInt,
+    val kos: DisplayableInt,
+    val falls: DisplayableInt,
+    val suicides: DisplayableInt,
+    val teamKos: DisplayableInt,
     val matchTime: DisplayableTime,
-    val games: DisplayableNumber,
-    val wins: DisplayableNumber,
-    val damageUnarmed: DisplayableNumber,
-    val damageThrownItem: DisplayableNumber,
-    val damageWeaponOne: DisplayableNumber,
-    val damageWeaponTwo: DisplayableNumber,
-    val damageGadgets: DisplayableNumber,
-    val koUnarmed: DisplayableNumber,
-    val koThrownItem: DisplayableNumber,
-    val koWeaponOne: DisplayableNumber,
-    val koWeaponTwo: DisplayableNumber,
-    val koGadgets: DisplayableNumber,
+    val games: DisplayableInt,
+    val wins: DisplayableInt,
+    val damageUnarmed: DisplayableInt,
+    val damageThrownItem: DisplayableInt,
+    val damageWeaponOne: DisplayableInt,
+    val damageWeaponTwo: DisplayableInt,
+    val damageGadgets: DisplayableInt,
+    val koUnarmed: DisplayableInt,
+    val koThrownItem: DisplayableInt,
+    val koWeaponOne: DisplayableInt,
+    val koWeaponTwo: DisplayableInt,
+    val koGadgets: DisplayableInt,
     val timeHeldWeaponOne: DisplayableTime,
     val timeHeldWeaponTwo: DisplayableTime,
-    val xp: DisplayableNumber,
-    val level: DisplayableNumber,
-    val nextLevel: DisplayableNumber?,
+    val xp: DisplayableInt,
+    val level: DisplayableInt,
+    val nextLevel: DisplayableInt?,
     val xpPercentage: DisplayableDouble,
     val image: String,
 )
@@ -74,7 +73,7 @@ fun StatLegend.toStatLegendUi(): StatLegendUi {
         xp.toDisplayableNumber(),
         level.toDisplayableNumber(),
         nextLevel = if (level == 100) null else (level + 1).toDisplayableNumber(),
-        if (level == 100) 1.0.toDisplayableDouble() else xpPercentage.toDisplayableDouble(),
+        if (level == 100) 1.0.toDisplayableNumber() else xpPercentage.toDisplayableNumber(),
         getMiniImageUrlFromLegendNameKey(legendNameKey)
     )
 }

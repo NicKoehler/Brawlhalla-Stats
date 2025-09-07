@@ -96,6 +96,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            val navTransition = NavDisplay.transitionSpec {
+                EnterTransition.None.togetherWith(ExitTransition.None)
+            } + NavDisplay.popTransitionSpec {
+                EnterTransition.None.togetherWith(ExitTransition.None)
+            } + NavDisplay.predictivePopTransitionSpec {
+                EnterTransition.None.togetherWith(ExitTransition.None)
+            }
+
             val themeViewModel = koinViewModel<ThemeViewModel>()
             val theme by themeViewModel.theme.collectAsStateWithLifecycle()
 
@@ -157,8 +165,8 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
 
-                    val playerId = intent.extras?.getInt("OPEN_STAT")
-                    val clanId = intent.extras?.getInt("OPEN_CLAN")
+                    val playerId = intent.extras?.getLong("OPEN_STAT")
+                    val clanId = intent.extras?.getLong("OPEN_CLAN")
 
                     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
                     val directive = remember(windowAdaptiveInfo) {
@@ -172,14 +180,14 @@ class MainActivity : ComponentActivity() {
                         rememberListDetailSceneStrategy(directive = directive)
 
                     LaunchedEffect(playerId) {
-                        if (playerId != null && playerId != 0) {
+                        if (playerId != null && playerId != 0L) {
                             backStack.clear()
                             backStack.add(Route.Stat(playerId))
                         }
                     }
 
                     LaunchedEffect(clanId) {
-                        if (clanId != null && clanId != 0) {
+                        if (clanId != null && clanId != 0L) {
                             backStack.clear()
                             backStack.add(Route.Clan(clanId))
                         }
@@ -237,13 +245,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
-                            entry<Route.Favorites>(metadata = NavDisplay.transitionSpec {
-                                EnterTransition.None.togetherWith(ExitTransition.None)
-                            } + NavDisplay.popTransitionSpec {
-                                EnterTransition.None.togetherWith(ExitTransition.None)
-                            } + NavDisplay.predictivePopTransitionSpec {
-                                EnterTransition.None.togetherWith(ExitTransition.None)
-                            }) {
+                            entry<Route.Favorites>(metadata = navTransition) {
                                 val favoritesViewModel = koinViewModel<FavoritesViewModel>()
                                 val favoritesState by favoritesViewModel.state.collectAsStateWithLifecycle()
 
@@ -318,13 +320,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Legends>(
-                                metadata = NavDisplay.transitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                } + NavDisplay.popTransitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                } + NavDisplay.predictivePopTransitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                }
+                                metadata = navTransition
                             ) {
                                 val state by legendsViewModel.state.collectAsStateWithLifecycle()
 
@@ -352,13 +348,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Rankings>(
-                                metadata = NavDisplay.transitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                } + NavDisplay.popTransitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                } + NavDisplay.predictivePopTransitionSpec {
-                                    EnterTransition.None.togetherWith(ExitTransition.None)
-                                }
+                                metadata = navTransition
                             ) {
 
                                 val viewModel = koinViewModel<RankingViewModel>()
@@ -375,8 +365,16 @@ class MainActivity : ComponentActivity() {
                                             }
 
                                             is RankingAction.Search -> {
-                                                if (action.query.all { it.isDigit() }) {
-                                                    backStack.add(Route.Stat(action.query.toInt()))
+                                                try {
+                                                    if (action.query.all { it.isDigit() }) {
+                                                        backStack.add(Route.Stat(action.query.toLong()))
+                                                    }
+                                                } catch (e: Exception) {
+                                                    viewModel.onRankingAction(
+                                                        RankingAction.Search(
+                                                            action.query, force = true
+                                                        )
+                                                    )
                                                 }
                                             }
 

@@ -30,7 +30,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun ClanMemberCard(
     member: ClanMemberUi,
-    onClick: (id: Int) -> Unit,
+    onClick: (id: Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomCard(

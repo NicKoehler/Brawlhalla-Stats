@@ -63,6 +63,7 @@ import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
@@ -100,7 +101,6 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStringResource
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -110,8 +110,8 @@ import kotlinx.coroutines.flow.emptyFlow
 fun StatDetailScreen(
     state: StatDetailState,
     onBack: () -> Unit,
-    onPlayerSelection: (Int) -> Unit,
-    onClanSelection: (Int) -> Unit,
+    onPlayerSelection: (Long) -> Unit,
+    onClanSelection: (Long) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
@@ -681,7 +681,7 @@ private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
 @Composable
 private fun StatDetailHeader(
     state: StatDetailState,
-    onClanSelection: (Int) -> Unit,
+    onClanSelection: (Long) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
 ) {
     Column(

@@ -8,9 +8,9 @@ data class StatClanDto(
     @SerialName("clan_name")
     val clanName: String,
     @SerialName("clan_id")
-    val clanId: Int,
+    val clanId: Long,
     @SerialName("clan_xp")
-    val clanXp: Int,
+    val clanXp: Long,
     @SerialName("personal_xp")
-    val personalXp: Int,
+    val personalXp: Long,
 )

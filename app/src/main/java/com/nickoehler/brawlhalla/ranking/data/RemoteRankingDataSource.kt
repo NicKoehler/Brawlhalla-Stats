@@ -62,7 +62,7 @@ class RemoteRankingDataSource(
         }
     }
 
-    override suspend fun getStat(brawlhallaId: Int): Result<StatDetail, NetworkError> {
+    override suspend fun getStat(brawlhallaId: Long): Result<StatDetail, NetworkError> {
         return safeCall<StatDetailDto> {
             httpClient.get(
                 "/player/$brawlhallaId/stats"
@@ -72,7 +72,7 @@ class RemoteRankingDataSource(
         }
     }
 
-    override suspend fun getRanked(brawlhallaId: Int): Result<RankingDetail, NetworkError> {
+    override suspend fun getRanked(brawlhallaId: Long): Result<RankingDetail, NetworkError> {
         return safeCall<RankingDetailDto> {
             httpClient.get(
                 "/player/$brawlhallaId/ranked"

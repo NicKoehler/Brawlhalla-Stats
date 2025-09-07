@@ -1,24 +1,24 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 
 data class RankingDetailUi(
     val name: String,
-    val brawlhallaId: Int,
-    val rating: DisplayableNumber,
-    val peakRating: DisplayableNumber,
+    val brawlhallaId: Long,
+    val rating: DisplayableInt,
+    val peakRating: DisplayableInt,
     val tier: TierUi,
-    val wins: DisplayableNumber,
-    val games: DisplayableNumber,
+    val wins: DisplayableInt,
+    val games: DisplayableInt,
     val region: RegionUi,
     val globalRank: String,
     val regionRank: String,
     val legends: List<RankingLegendUi>,
     val teams: List<RankingUi.RankingTeamUi>,
-    val estimatedGlory: DisplayableNumber,
-    val estimatedEloReset: DisplayableNumber,
+    val estimatedGlory: DisplayableInt,
+    val estimatedEloReset: DisplayableInt,
 )
 
 fun RankingDetail.toRankingDetailUi(): RankingDetailUi {

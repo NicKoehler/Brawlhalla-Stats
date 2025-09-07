@@ -1,41 +1,40 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
-import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
 sealed interface RankingUi {
     data class RankingSoloUi(
-        val rank: DisplayableNumber,
+        val rank: DisplayableInt,
         val name: String,
-        val brawlhallaId: Int,
-        val bestLegend: Int? = null,
-        val bestLegendGames: DisplayableNumber? = null,
-        val bestLegendWins: DisplayableNumber? = null,
-        val rating: DisplayableNumber,
+        val brawlhallaId: Long,
+        val bestLegend: Long? = null,
+        val bestLegendGames: DisplayableInt? = null,
+        val bestLegendWins: DisplayableInt? = null,
+        val rating: DisplayableInt,
         val tier: TierUi,
-        val games: DisplayableNumber,
-        val wins: DisplayableNumber,
+        val games: DisplayableInt,
+        val wins: DisplayableInt,
         val winRate: DisplayableDouble,
         val region: RegionUi,
-        val peakRating: DisplayableNumber,
+        val peakRating: DisplayableInt,
     ) : RankingUi
 
     data class RankingTeamUi(
-        val rank: DisplayableNumber,
+        val rank: DisplayableInt,
         val teamName: String,
-        val brawlhallaIdOne: Int,
-        val brawlhallaIdTwo: Int,
-        val rating: DisplayableNumber,
+        val brawlhallaIdOne: Long,
+        val brawlhallaIdTwo: Long,
+        val rating: DisplayableInt,
         val tier: TierUi,
-        val games: DisplayableNumber,
-        val wins: DisplayableNumber,
+        val games: DisplayableInt,
+        val wins: DisplayableInt,
         val winRate: DisplayableDouble,
         val region: RegionUi,
-        val peakRating: DisplayableNumber,
+        val peakRating: DisplayableInt,
     ) : RankingUi
 }
 
@@ -58,7 +57,7 @@ fun Ranking.RankingSolo.toRankingSoloUi(): RankingUi.RankingSoloUi {
         tier.toTierUi(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
-        (wins.toDouble() / games * 100).toDisplayableDouble(),
+        (wins.toDouble() / games * 100).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
     )
@@ -74,13 +73,13 @@ fun Ranking.RankingTeam.toRankingTeamUi(): RankingUi.RankingTeamUi {
         tier.toTierUi(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
-        (wins.toDouble() / games * 100).toDisplayableDouble(),
+        (wins.toDouble() / games * 100).toDisplayableNumber(),
         region.toRegionUi(),
         peakRating.toDisplayableNumber()
     )
 }
 
-fun RankingUi.RankingTeamUi.getTeamMateId(mainId: Int): Int {
+fun RankingUi.RankingTeamUi.getTeamMateId(mainId: Long): Long {
     return if (mainId == brawlhallaIdOne)
         brawlhallaIdTwo else
         brawlhallaIdOne

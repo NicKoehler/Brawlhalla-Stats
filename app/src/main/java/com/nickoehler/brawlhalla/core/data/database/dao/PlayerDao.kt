@@ -12,11 +12,11 @@ interface PlayerDao {
     fun getAllPlayers(): Flow<List<Player>>
 
     @Query("SELECT * FROM players WHERE id=:id")
-    fun getPlayer(id: Int): Flow<Player?>
+    fun getPlayer(id: Long): Flow<Player?>
 
     @Insert
     suspend fun insertPlayer(player: Player)
 
     @Query("DELETE FROM players WHERE id=:id")
-    suspend fun deletePlayer(id: Int)
+    suspend fun deletePlayer(id: Long)
 }

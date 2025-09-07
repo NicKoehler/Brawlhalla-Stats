@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LegendDetailViewModel(
-    private val legendId: Int = 0,
+    private val legendId: Long,
     private val legendsDataSource: LegendsDataSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(LegendDetailState())
@@ -31,7 +31,7 @@ class LegendDetailViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    private fun selectLegend(legendId: Int) {
+    private fun selectLegend(legendId: Long) {
         viewModelScope.launch {
             if (_state.value.selectedLegendUi?.legendId != legendId) {
                 _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }

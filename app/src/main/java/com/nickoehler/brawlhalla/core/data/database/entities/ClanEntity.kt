@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "clans")
 data class Clan(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val name: String
 )

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class ClanMemberDto(
 
     @SerialName("brawlhalla_id")
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
 
     @SerialName("name")
     val name: String,
@@ -19,5 +19,5 @@ data class ClanMemberDto(
     val joinDate: Long,
 
     @SerialName("xp")
-    val xp: Int
+    val xp: Long
 )

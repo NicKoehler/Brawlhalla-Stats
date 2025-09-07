@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 
 class StatDetailViewModel(
-    private val brawlhallaId: Int,
+    private val brawlhallaId: Long,
     private val rankingsDataSource: RankingsDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
@@ -47,7 +47,7 @@ class StatDetailViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    private fun selectStatDetail(id: Int) {
+    private fun selectStatDetail(id: Long) {
         if (_state.value.selectedStatDetail?.brawlhallaId == id) {
             return
         }
@@ -89,7 +89,7 @@ class StatDetailViewModel(
         }
     }
 
-    private fun selectRankingDetail(id: Int) {
+    private fun selectRankingDetail(id: Long) {
         if (_state.value.selectedRankingDetail?.brawlhallaId == id) {
             return
         }
@@ -327,7 +327,7 @@ class StatDetailViewModel(
         }
     }
 
-    private fun togglePlayerFavorites(brawlhallaId: Int, name: String) {
+    private fun togglePlayerFavorites(brawlhallaId: Long, name: String) {
         viewModelScope.launch {
             if (_state.value.isStatDetailFavorite) {
                 database.deletePlayer(brawlhallaId)

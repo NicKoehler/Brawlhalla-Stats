@@ -46,7 +46,7 @@ class RankingViewModel(
             is RankingAction.SelectBracket -> selectBracket(action.bracket)
             is RankingAction.QueryChange -> updateSearchQuery(action.query)
             is RankingAction.OnFilterToggle -> onFilterToggle()
-            is RankingAction.Search -> search(_state.value.searchQuery)
+            is RankingAction.Search -> search(_state.value.searchQuery, action.force)
             is RankingAction.SelectRanking -> selectRanking(action.brawlhallaId)
             is RankingAction.ResetSearch -> removeSearch()
         }
@@ -92,7 +92,7 @@ class RankingViewModel(
         }
     }
 
-    private fun search(currentQuery: String) {
+    private fun search(currentQuery: String, force: Boolean = false) {
         val currentBracket = _state.value.selectedBracket
         val currentRegion = _state.value.selectedRegion
 
@@ -132,8 +132,8 @@ class RankingViewModel(
                 }
             }
         }
-        
-        if (!currentQuery.all { it.isDigit() }) {
+
+        if (force || !currentQuery.all { it.isDigit() }) {
             searchPlayers()
         }
     }
@@ -200,7 +200,7 @@ class RankingViewModel(
         loadRankings(true)
     }
 
-    private fun selectRanking(brawlhallaId: Int) {
+    private fun selectRanking(brawlhallaId: Long) {
         viewModelScope.launch {
             _uiEvents.send(UiEvent.GoToDetail(brawlhallaId))
         }

@@ -158,7 +158,7 @@ private fun LegendListScreenPreview() {
         Surface {
             LegendListScreen(
                 LegendsListState(
-                    legends = (0..100).map {
+                    legends = (0L..100L).map {
                         legendSample.copy(legendId = it).toLegendUi()
                     },
                 ),

@@ -54,16 +54,16 @@ sealed interface Route : NavKey {
     data object Legends : Route
 
     @Serializable
-    data class Legend(val id: Int) : Route
+    data class Legend(val id: Long) : Route
 
     @Serializable
-    data class Clan(val clanId: Int) : Route
+    data class Clan(val clanId: Long) : Route
 
     @Serializable
     data object Rankings : Route
 
     @Serializable
-    data class Stat(val playerId: Int) : Route
+    data class Stat(val playerId: Long) : Route
 }
 
 

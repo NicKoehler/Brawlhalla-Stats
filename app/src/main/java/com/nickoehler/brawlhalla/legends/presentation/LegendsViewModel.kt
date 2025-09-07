@@ -83,7 +83,7 @@ class LegendsViewModel(
         }
     }
 
-    private fun selectLegend(legendId: Int) {
+    private fun selectLegend(legendId: Long) {
         viewModelScope.launch {
             if (_state.value.selectedLegendUi?.legendId != legendId) {
                 _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }

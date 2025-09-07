@@ -5,19 +5,19 @@ import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
-    suspend fun savePlayer(brawlhallaId: Int, name: String)
+    suspend fun savePlayer(brawlhallaId: Long, name: String)
 
-    suspend fun deletePlayer(brawlhallaId: Int)
+    suspend fun deletePlayer(brawlhallaId: Long)
 
-    fun getPlayer(brawlhallaId: Int): Flow<Player?>
+    fun getPlayer(brawlhallaId: Long): Flow<Player?>
 
     fun getAllPlayers(): Flow<List<Player>>
 
-    suspend fun saveClan(clanId: Int, name: String)
+    suspend fun saveClan(clanId: Long, name: String)
 
-    suspend fun deleteClan(clanId: Int)
+    suspend fun deleteClan(clanId: Long)
 
-    fun getClan(clanId: Int): Flow<Clan?>
+    fun getClan(clanId: Long): Flow<Clan?>
 
     fun getAllClans(): Flow<List<Clan>>
 }

@@ -4,8 +4,8 @@ sealed interface Ranking {
     data class RankingSolo(
         val rank: Int,
         val name: String,
-        val brawlhallaId: Int,
-        val bestLegend: Int? = null,
+        val brawlhallaId: Long,
+        val bestLegend: Long? = null,
         val bestLegendGames: Int? = null,
         val bestLegendWins: Int? = null,
         val rating: Int,
@@ -19,8 +19,8 @@ sealed interface Ranking {
     data class RankingTeam(
         val rank: Int,
         val teamName: String,
-        val brawlhallaIdOne: Int,
-        val brawlhallaIdTwo: Int,
+        val brawlhallaIdOne: Long,
+        val brawlhallaIdTwo: Long,
         val rating: Int,
         val tier: Tier,
         val games: Int,

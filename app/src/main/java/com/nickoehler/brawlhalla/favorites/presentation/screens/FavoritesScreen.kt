@@ -202,9 +202,9 @@ private fun FavoritesScreenPreview() {
         Surface {
             FavoritesScreen(
                 state = FavoritesState(
-                    players = (1..100).map
+                    players = (1L..100L).map
                     { Player(it, name = "Nic") },
-                    clans = (1..3).map
+                    clans = (1L..3L).map
                     { Clan(it, name = "Nic") }
                 )
             )

@@ -13,10 +13,10 @@ data class RankingTeamDto(
     val teamName: String,
 
     @SerialName("brawlhalla_id_one")
-    val brawlhallaIdOne: Int,
+    val brawlhallaIdOne: Long,
 
     @SerialName("brawlhalla_id_two")
-    val brawlhallaIdTwo: Int,
+    val brawlhallaIdTwo: Long,
 
     @SerialName("rating")
     val rating: Int,

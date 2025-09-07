@@ -1,7 +1,7 @@
 package com.nickoehler.brawlhalla.legends.domain
 
 data class LegendDetail(
-    val legendId: Int,
+    val legendId: Long,
     val legendNameKey: String,
     val bioName: String,
     val bioAka: String,

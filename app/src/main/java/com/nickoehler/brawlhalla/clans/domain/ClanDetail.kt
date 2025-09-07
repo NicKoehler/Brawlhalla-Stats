@@ -4,9 +4,9 @@ import java.time.LocalDateTime
 
 
 data class ClanDetail(
-    val id: Int,
+    val id: Long,
     val name: String,
     val createDate: LocalDateTime,
-    val xp: Int,
+    val xp: Long,
     val members: List<ClanMember>
 )

@@ -12,10 +12,10 @@ data class RankingSoloDto(
     val name: String,
 
     @SerialName("brawlhalla_id")
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
 
     @SerialName("best_legend")
-    val bestLegend: Int? = null,
+    val bestLegend: Long? = null,
 
     @SerialName("best_legend_games")
     val bestLegendGames: Int? = null,

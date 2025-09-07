@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 
 class ClanViewModel(
-    private val clanId: Int,
+    private val clanId: Long,
     private val clanDataSource: ClanDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
@@ -36,7 +36,7 @@ class ClanViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    private fun selectClan(clanId: Int) {
+    private fun selectClan(clanId: Long) {
 
         if (_state.value.selectedClan?.id == clanId) {
             return
@@ -129,7 +129,7 @@ class ClanViewModel(
     }
 
 
-    private fun toggleClanFavorites(clanId: Int, name: String) {
+    private fun toggleClanFavorites(clanId: Long, name: String) {
 
         viewModelScope.launch {
 
