@@ -1,7 +1,6 @@
 package com.nickoehler.brawlhalla.legends.presentation
 
 import androidx.compose.runtime.Immutable
-import com.nickoehler.brawlhalla.core.presentation.CustomAppBarState
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
@@ -15,9 +14,9 @@ data class LegendsListState(
     val legends: List<LegendUi> = emptyList(),
     val weapons: List<WeaponUi> = emptyList(),
     val selectedLegendUi: LegendDetailUi? = null,
-    val openFilters: Boolean = false,
+    val isFilterOpen: Boolean = false,
     val selectedStatType: LegendStat = LegendStat.STRENGTH,
     val selectedStatValue: Int = 3,
     val selectedFilter: FilterOptions = FilterOptions.WEAPONS,
-    val appBarState: CustomAppBarState = CustomAppBarState(),
+    val searchQuery: String = ""
 )

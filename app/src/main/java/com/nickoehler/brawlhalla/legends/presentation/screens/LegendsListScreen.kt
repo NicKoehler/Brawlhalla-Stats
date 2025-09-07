@@ -3,93 +3,150 @@ package com.nickoehler.brawlhalla.legends.presentation.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.core.presentation.AppBarAction
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActionButton
-import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
+import com.nickoehler.brawlhalla.core.presentation.components.SimpleSearchBar
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.components.LazyLegendsCards
 import com.nickoehler.brawlhalla.legends.presentation.components.legendSample
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LegendListScreen(
     state: LegendsListState,
+    events: Flow<UiEvent>,
     modifier: Modifier = Modifier,
-    lazyListState: LazyListState = rememberLazyListState(),
+    lazyColumnState: LazyListState = rememberLazyListState(),
     onLegendAction: (LegendAction) -> Unit,
     onWeaponAction: (WeaponAction) -> Unit,
-    onAppBarAction: (AppBarAction) -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
+    val toolbarHeight = 80.dp
+    val coroutineScope = rememberCoroutineScope()
+    val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.roundToPx().toFloat() }
+    var toolbarOffsetHeightPx by remember { mutableFloatStateOf(0f) }
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = available.y
+                val newOffset = toolbarOffsetHeightPx + delta
+                toolbarOffsetHeightPx = newOffset.coerceIn(-toolbarHeightPx, 0f)
+                return Offset.Zero
+            }
+        }
+    }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val searchBarHeight by remember {
+        derivedStateOf {
+            toolbarHeight + toolbarOffsetHeightPx.dp
+        }
+    }
 
-        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    ObserveAsEvents(events) { event ->
+        if (event is UiEvent.ScrollToTop) {
+            coroutineScope.launch {
+                lazyColumnState.animateScrollToItem(0)
+            }
+        }
+    }
 
-        Scaffold(
-            topBar = {
-                CustomTopAppBar(
-                    title = stringResource(R.string.legends),
-                    state = state.appBarState,
-                    onAppBarAction = onAppBarAction,
-                    scrollBehavior = scrollBehavior,
-                ) {
-                    IconButton(
-                        onClick = { onLegendAction(LegendAction.ToggleFilters) },
-                        colors = if (state.openFilters) {
-                            IconButtonDefaults.iconButtonColors().copy(
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
-                        } else {
-                            IconButtonDefaults.iconButtonColors()
-                        }
-                    ) {
-                        Icon(
-                            Icons.Default.FilterAlt,
-                            null,
-                        )
-                    }
-                }
-            },
-            floatingActionButton = {
-                CustomFloatingActionButton(lazyListState)
-            },
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    LaunchedEffect(lazyColumnState.isScrollInProgress) {
+        focusManager.clearFocus()
+    }
+
+    Scaffold(
+        floatingActionButton = {
+            CustomFloatingActionButton(lazyColumnState)
+        },
+        modifier = modifier.nestedScroll(nestedScrollConnection),
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .semantics { isTraversalGroup = true }
+                .zIndex(1f)
+                .offset {
+                    IntOffset(
+                        x = 0,
+                        y = toolbarOffsetHeightPx.roundToInt()
+                    )
+                },
+            contentAlignment = Alignment.Center
         ) {
-            LazyLegendsCards(
-                state = state,
-                modifier = modifier.padding(it),
-                lazyColumnState = lazyListState,
-                onLegendAction = onLegendAction,
-                onWeaponAction = onWeaponAction,
+            SimpleSearchBar(
+                query = state.searchQuery,
+                focusManager = focusManager,
+                focusRequester = focusRequester,
+                lazyColumnState = lazyColumnState,
+                isFilterOpen = state.isFilterOpen,
+                isFilterEnabled = state.searchQuery.isBlank(),
+                onFilterToggle = {
+                    onLegendAction(LegendAction.OnFilterToggle)
+                    coroutineScope.launch {
+                        lazyColumnState.animateScrollToItem(0)
+                    }
+                },
+                onSearch = {},
+                onQueryChange = {
+                    onLegendAction(LegendAction.QueryChange(it))
+                },
+                placeholder = {
+                    Text(
+                        stringResource(R.string.search)
+                    )
+                },
             )
         }
+        LazyLegendsCards(
+            state = state,
+            modifier = Modifier.padding(padding),
+            lazyColumnState = lazyColumnState,
+            onLegendAction = onLegendAction,
+            onWeaponAction = onWeaponAction,
+            searchBarHeight = searchBarHeight
+        )
     }
 }
 
@@ -105,12 +162,12 @@ private fun LegendListScreenPreview() {
                         legendSample.copy(legendId = it).toLegendUi()
                     },
                 ),
+                events = emptyFlow(),
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
                 onLegendAction = {},
                 onWeaponAction = {},
-                onAppBarAction = {}
             )
         }
     }

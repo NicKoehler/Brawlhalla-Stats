@@ -3,7 +3,6 @@ package com.nickoehler.brawlhalla
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -33,10 +32,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -54,9 +51,7 @@ import com.nickoehler.brawlhalla.clans.presentation.ClanAction
 import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
-import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
@@ -66,19 +61,17 @@ import com.nickoehler.brawlhalla.legends.presentation.LegendDetailViewModel
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.LegendDetailScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.LegendListScreen
+import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.screens.RankingListScreen
 import com.nickoehler.brawlhalla.ranking.presentation.screens.StatDetailScreen
-import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.settings.presentation.SettingsViewModel
 import com.nickoehler.brawlhalla.settings.presentation.screens.LicensesScreen
 import com.nickoehler.brawlhalla.settings.presentation.screens.SettingsScreen
 import com.nickoehler.brawlhalla.ui.Route
-import com.nickoehler.brawlhalla.ui.Route.Stat
 import com.nickoehler.brawlhalla.ui.Screens
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -95,10 +88,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val backStack = rememberNavBackStack<Route>(Route.Favorites)
-
-
             val configuration = LocalConfiguration.current
-            val coroutineScope = rememberCoroutineScope()
             val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
             val layoutType by remember {
                 derivedStateOf {
@@ -184,7 +174,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(playerId) {
                         if (playerId != null && playerId != 0) {
                             backStack.clear()
-                            backStack.add(Stat(playerId))
+                            backStack.add(Route.Stat(playerId))
                         }
                     }
 
@@ -340,6 +330,7 @@ class MainActivity : ComponentActivity() {
 
                                 LegendListScreen(
                                     state = state,
+                                    events = legendsViewModel.uiEvents,
                                     onLegendAction = { action ->
                                         legendsViewModel.onLegendAction(action)
                                         if (action is LegendAction.SelectLegend) {
@@ -349,7 +340,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onWeaponAction = legendsViewModel::onWeaponAction,
-                                    onAppBarAction = legendsViewModel::onAppBarAction
                                 )
                             }
 
@@ -370,48 +360,29 @@ class MainActivity : ComponentActivity() {
                                     EnterTransition.None.togetherWith(ExitTransition.None)
                                 }
                             ) {
-                                val context = LocalContext.current
+
                                 val viewModel = koinViewModel<RankingViewModel>()
                                 val rankingState by viewModel.state.collectAsStateWithLifecycle()
 
-                                ObserveAsEvents(viewModel.uiEvents) { event ->
-                                    when (event) {
-                                        is UiEvent.GoToDetail -> {
-                                            backStack.add(Stat(event.id))
-                                        }
-
-                                        is UiEvent.Message -> Toast.makeText(
-                                            context,
-                                            event.message.toString(context),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        is UiEvent.Error ->
-                                            Toast.makeText(
-                                                context,
-                                                event.error.toString(),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        is UiEvent.ShowNavBar -> {
-                                            coroutineScope.launch {
-                                                navigatorScaffoldState.show()
-                                            }
-                                        }
-
-                                        is UiEvent.HideNavBar -> {
-                                            coroutineScope.launch {
-                                                navigatorScaffoldState.hide()
-                                            }
-                                        }
-
-                                        else -> {}
-                                    }
-                                }
-
                                 RankingListScreen(
                                     state = rankingState,
-                                    onRankingAction = viewModel::onRankingAction
+                                    events = viewModel.uiEvents,
+                                    onRankingAction = { action ->
+                                        viewModel.onRankingAction(action)
+                                        when (action) {
+                                            is RankingAction.SelectRanking -> {
+                                                backStack.add(Route.Stat(action.brawlhallaId))
+                                            }
+
+                                            is RankingAction.Search -> {
+                                                if (action.query.all { it.isDigit() }) {
+                                                    backStack.add(Route.Stat(action.query.toInt()))
+                                                }
+                                            }
+
+                                            else -> Unit
+                                        }
+                                    }
                                 )
                             }
 

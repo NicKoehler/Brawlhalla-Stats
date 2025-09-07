@@ -132,20 +132,8 @@ class RankingViewModel(
                 }
             }
         }
-
-        if (currentQuery.all { it.isDigit() }) {
-            try {
-                val id = currentQuery.toInt()
-                _state.update {
-                    it.copy(isFilterOpen = false)
-                }
-                viewModelScope.launch {
-                    _uiEvents.send(UiEvent.GoToDetail(id))
-                }
-            } catch (_: NumberFormatException) {
-                searchPlayers()
-            }
-        } else {
+        
+        if (!currentQuery.all { it.isDigit() }) {
             searchPlayers()
         }
     }
@@ -200,7 +188,6 @@ class RankingViewModel(
             }
         }
     }
-
 
     private fun removeSearch() {
         _state.update {

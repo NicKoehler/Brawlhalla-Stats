@@ -9,7 +9,7 @@ sealed interface RankingAction {
     data class SelectRegion(val region: Region) : RankingAction
     data class SelectBracket(val bracket: Bracket) : RankingAction
     data class QueryChange(val query: String) : RankingAction
-    data object Search : RankingAction
+    data class Search(val query: String) : RankingAction
     data object OnFilterToggle : RankingAction
     data object ResetSearch : RankingAction
 }

@@ -2,18 +2,24 @@ package com.nickoehler.brawlhalla.legends.presentation.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -24,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
@@ -34,10 +41,12 @@ import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LazyLegendsCards(
     state: LegendsListState,
     modifier: Modifier = Modifier,
+    searchBarHeight: Dp,
     lazyColumnState: LazyListState = rememberLazyListState(),
     onLegendAction: (LegendAction) -> Unit = {},
     onWeaponAction: (WeaponAction) -> Unit = {}
@@ -50,11 +59,16 @@ fun LazyLegendsCards(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
+            Spacer(
+                if (state.isFilterOpen) Modifier.height(
+                    searchBarHeight
+                ) else Modifier.height(searchBarHeight - 16.dp)
+            )
             AnimatedVisibility(
-                state.openFilters,
+                state.isFilterOpen,
                 label = "openFilters",
-                enter = fadeIn() + slideInVertically { -it },
-                exit = fadeOut() + slideOutVertically { -it }
+                enter = fadeIn() + slideInVertically { -it } + expandVertically(),
+                exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -100,6 +114,13 @@ fun LazyLegendsCards(
                     }
                 }
             }
+            AnimatedVisibility(
+                visible = state.isListLoading,
+                enter = slideInVertically { -it } + expandVertically(),
+                exit = slideOutVertically { -it } + shrinkVertically()
+            ) {
+                LoadingIndicator()
+            }
         }
 
         if (state.isListLoading) {
@@ -127,10 +148,11 @@ private fun LazyLegendsCardsPreview() {
         Surface {
             LazyLegendsCards(
                 LegendsListState(
-                    openFilters = true,
+                    isFilterOpen = true,
                     legends = listOf(legendSample.toLegendUi()),
                     weapons = listOf("sword".toWeaponUi()),
-                )
+                ),
+                searchBarHeight = 80.dp
             )
         }
     }

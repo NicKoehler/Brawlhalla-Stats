@@ -12,14 +12,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,8 +36,6 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
-import com.nickoehler.brawlhalla.core.presentation.AppBarAction
-import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
 import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesState
 import com.nickoehler.brawlhalla.favorites.presentation.components.FavoritesItem
@@ -52,13 +53,11 @@ fun FavoritesScreen(
     Scaffold(
         modifier.fillMaxSize(),
         topBar = {
-            CustomTopAppBar(
-                stringResource(R.string.favorites),
-                showSearch = false,
-                showInfo = true,
-                onAppBarAction = { action ->
-                    if (action is AppBarAction.OpenSettings) {
-                        onInfoSelection()
+            TopAppBar(
+                { Text(stringResource(R.string.favorites), fontWeight = FontWeight.Bold) },
+                actions = {
+                    IconButton(onClick = onInfoSelection) {
+                        Icon(Icons.Default.Settings, stringResource(R.string.settings_title))
                     }
                 }
             )
@@ -86,7 +85,6 @@ fun FavoritesScreen(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 val players = state.players
                 val clans = state.clans
                 SingleChoiceSegmentedButtonRow {

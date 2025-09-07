@@ -1,11 +1,11 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
-import androidx.compose.animation.AnimatedContent
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -30,21 +29,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.FilterAltOff
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,15 +43,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -77,8 +65,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.nickoehler.brawlhalla.R
+import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActionButton
+import com.nickoehler.brawlhalla.core.presentation.components.SimpleSearchBar
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.ranking.domain.Bracket
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
@@ -89,15 +80,18 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRegionUi
+import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RankingListScreen(
     state: RankingState,
+    events: Flow<UiEvent>,
     modifier: Modifier = Modifier,
     onRankingAction: (RankingAction) -> Unit = {},
 ) {
@@ -117,15 +111,38 @@ fun RankingListScreen(
             }
         }
     }
-    val lazyColumnState = rememberLazyListState()
-
     val searchBarHeight by remember {
         derivedStateOf {
             toolbarHeight + toolbarOffsetHeightPx.dp
         }
     }
+    val lazyColumnState = rememberLazyListState()
+
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
+    ObserveAsEvents(events) { event ->
+        when (event) {
+            is UiEvent.Message -> Toast.makeText(
+                context,
+                event.message.toString(context),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            is UiEvent.Error ->
+                Toast.makeText(
+                    context,
+                    event.error.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            else -> {}
+        }
+    }
+
+    LaunchedEffect(lazyColumnState.isScrollInProgress) {
+        focusManager.clearFocus()
+    }
 
     Scaffold(
         modifier = modifier
@@ -147,79 +164,41 @@ fun RankingListScreen(
                 },
             contentAlignment = Alignment.Center
         ) {
-            SearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                inputField = {
-                    SearchBarDefaults.InputField(
-                        enabled = state.selectedBracket != Bracket.TWO_VS_TWO,
-                        query = state.searchQuery,
-                        onQueryChange = { onRankingAction(RankingAction.QueryChange(it)) },
-                        onSearch = {
-                            onRankingAction(RankingAction.Search)
-                            focusManager.clearFocus()
-                        },
-                        expanded = false,
-                        placeholder = {
-                            Text(
-                                stringResource(
-                                    if (state.selectedBracket != Bracket.TWO_VS_TWO) {
-                                        R.string.search_name_or_id
-                                    } else {
-                                        R.string.search_cant_search
-                                    }
-                                )
-                            )
-                        },
-                        leadingIcon = {
-                            if (state.searchQuery.isNotBlank()) {
-                                IconButton(
-                                    {
-                                        onRankingAction(RankingAction.QueryChange(""))
-                                    }
-                                ) {
-                                    Icon(Icons.Default.Close, stringResource(R.string.cancel))
-                                }
+            SimpleSearchBar(
+                query = state.searchQuery,
+                focusManager = focusManager,
+                focusRequester = focusRequester,
+                lazyColumnState = lazyColumnState,
+                isFilterOpen = state.isFilterOpen,
+                onFilterToggle = {
+                    onRankingAction(RankingAction.OnFilterToggle)
+                },
+                onSearch = {
+                    onRankingAction(RankingAction.Search(state.searchQuery))
+                },
+                onQueryChange = {
+                    onRankingAction(RankingAction.QueryChange(it))
+                },
+                placeholder = {
+                    Text(
+                        stringResource(
+                            if (state.selectedBracket != Bracket.TWO_VS_TWO) {
+                                R.string.search_name_or_id
                             } else {
-                                Icon(Icons.Default.Search, stringResource(R.string.search))
+                                R.string.search_cant_search
                             }
-                        },
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    onRankingAction(RankingAction.OnFilterToggle)
-                                    coroutineScope.launch {
-                                        lazyColumnState.animateScrollToItem(0)
-                                    }
-                                }
-                            ) {
-                                AnimatedContent(
-                                    state.isFilterOpen
-                                ) {
-                                    Icon(
-                                        if (it) Icons.Default.FilterAltOff else Icons.Default.FilterAlt,
-                                        stringResource(R.string.filters),
-                                        tint = MaterialTheme.colorScheme.onBackground
-                                    )
-
-                                }
-                            }
-                        },
-                        onExpandedChange = {}
+                        )
                     )
                 },
-                onExpandedChange = {},
-                expanded = false,
-                content = {}
+                enabled = state.selectedBracket != Bracket.TWO_VS_TWO,
             )
         }
+
         LazyColumn(
             state = lazyColumnState,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .fillMaxSize()
                 .padding(padding)
         ) {
 
@@ -229,16 +208,16 @@ fun RankingListScreen(
                         searchBarHeight
                     ) else Modifier.height(searchBarHeight - 16.dp)
                 )
-
                 AnimatedVisibility(
                     state.isFilterOpen,
-                    enter = expandIn() + fadeIn() + slideInVertically { -it },
-                    exit = shrinkOut() + fadeOut() + slideOutVertically { -it },
+                    label = "openFilters",
+                    enter = fadeIn() + slideInVertically { -it } + expandVertically(),
+                    exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
                 ) {
                     Column {
                         LazyHorizontalStaggeredGrid(
                             state = gridState,
-                            modifier = modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 40.dp, max = 65.dp),
                             rows = StaggeredGridCells.FixedSize(30.dp),
@@ -266,7 +245,7 @@ fun RankingListScreen(
                             }
                         }
                         LazyRow(
-                            modifier = modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 40.dp, max = 100.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -292,7 +271,6 @@ fun RankingListScreen(
                             }
                         }
                     }
-
                 }
                 if (state.searchedQuery.isNotBlank()) {
                     Row(Modifier.fillMaxWidth()) {
@@ -313,8 +291,8 @@ fun RankingListScreen(
                 }
                 AnimatedVisibility(
                     visible = state.isListLoading,
-                    enter = expandIn() + fadeIn() + slideInVertically { -it },
-                    exit = shrinkOut() + fadeOut() + slideOutVertically { -it },
+                    enter = slideInVertically { -it } + expandVertically(),
+                    exit = slideOutVertically { -it } + shrinkVertically()
                 ) {
                     LoadingIndicator()
                 }
@@ -324,11 +302,10 @@ fun RankingListScreen(
                 items(10) {
                     RankingCard(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
+                            .animateItem()
+                            .fillMaxWidth(),
                         selectedBracket = state.selectedBracket.toBracketUi()
                     )
-
                 }
             } else if (state.searchedQuery.isNotBlank()) {
                 if (state.searchResults.isNotEmpty()) {
@@ -341,8 +318,8 @@ fun RankingListScreen(
                         RankingCard(
                             ranking = ranking,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem(),
+                                .animateItem()
+                                .fillMaxWidth(),
                             onRankingAction = onRankingAction
                         )
                     }
@@ -362,8 +339,8 @@ fun RankingListScreen(
                     RankingCard(
                         ranking = ranking,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
+                            .animateItem()
+                            .fillMaxWidth(),
                         onRankingAction = onRankingAction
                     )
                 }
@@ -371,8 +348,8 @@ fun RankingListScreen(
                     if (state.isLoadingMore) {
                         RankingCard(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem(),
+                                .animateItem()
+                                .fillMaxWidth(),
                         )
                     }
                 }
@@ -404,6 +381,7 @@ private fun SearchScreenPreview() {
                         rankingSoloSample.toRankingSoloUi().copy(rank = it.toDisplayableNumber())
                     }
                 ),
+                events = emptyFlow()
             )
         }
     }
