@@ -320,7 +320,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Legends>(
-                                metadata = navTransition
+                                metadata = navTransition + ListDetailSceneStrategy.listPane(),
                             ) {
                                 val state by legendsViewModel.state.collectAsStateWithLifecycle()
 
@@ -348,7 +348,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Rankings>(
-                                metadata = navTransition
+                                metadata = navTransition + ListDetailSceneStrategy.listPane()
                             ) {
 
                                 val viewModel = koinViewModel<RankingViewModel>()
@@ -369,7 +369,7 @@ class MainActivity : ComponentActivity() {
                                                     if (action.query.all { it.isDigit() }) {
                                                         backStack.add(Route.Stat(action.query.toLong()))
                                                     }
-                                                } catch (e: Exception) {
+                                                } catch (_: Exception) {
                                                     viewModel.onRankingAction(
                                                         RankingAction.Search(
                                                             action.query, force = true
