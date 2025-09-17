@@ -278,7 +278,7 @@ class MainActivity : ComponentActivity() {
                                 val state by settingsViewModel.state.collectAsStateWithLifecycle()
                                 SettingsScreen(
                                     settingsState = state,
-                                    onSetttingsAction = settingsViewModel::onSettingsAction,
+                                    onSettingsAction = settingsViewModel::onSettingsAction,
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },

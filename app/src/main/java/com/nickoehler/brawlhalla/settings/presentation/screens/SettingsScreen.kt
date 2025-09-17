@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.BuildConfig
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.settings.presentation.model.SettingsAction
 import com.nickoehler.brawlhalla.settings.presentation.model.SettingsEvent
 import com.nickoehler.brawlhalla.settings.presentation.model.SettingsState
@@ -42,7 +43,6 @@ import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubAuthor
 import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubProject
 import com.nickoehler.brawlhalla.settings.presentation.screens.components.SettingCardTheme
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
-import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -50,7 +50,7 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun SettingsScreen(
     settingsState: SettingsState,
-    onSetttingsAction: (SettingsAction) -> Unit,
+    onSettingsAction: (SettingsAction) -> Unit,
     onBack: () -> Unit,
     onLicensesPressed: () -> Unit,
     events: Flow<SettingsEvent>,
@@ -117,10 +117,10 @@ fun SettingsScreen(
 
             SettingCardTheme(
                 settingsState.currentTheme,
-                { onSetttingsAction(SettingsAction.SetTheme(it)) }
+                { onSettingsAction(SettingsAction.SetTheme(it)) }
             )
             CustomCard(
-                onClick = { onSetttingsAction(SettingsAction.ViewIntent(uriGithubAuthor)) },
+                onClick = { onSettingsAction(SettingsAction.ViewIntent(uriGithubAuthor)) },
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -129,7 +129,7 @@ fun SettingsScreen(
             }
 
             CustomCard(
-                onClick = { onSetttingsAction(SettingsAction.ViewIntent(uriGithubProject)) },
+                onClick = { onSettingsAction(SettingsAction.ViewIntent(uriGithubProject)) },
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
