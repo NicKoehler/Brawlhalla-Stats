@@ -71,7 +71,6 @@ fun SettingCardTheme(
         animatedFloat.snapTo(0f)
     }
 
-
     if (isOpen) {
         ModalBottomSheet(dismiss) {
             Box(

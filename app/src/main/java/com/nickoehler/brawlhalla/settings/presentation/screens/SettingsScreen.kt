@@ -117,7 +117,7 @@ fun SettingsScreen(
 
             SettingCardTheme(
                 settingsState.currentTheme,
-                { onSettingsAction(SettingsAction.SetTheme(it)) }
+                { theme -> onSettingsAction(SettingsAction.SetTheme(theme)) }
             )
             CustomCard(
                 onClick = { onSettingsAction(SettingsAction.ViewIntent(uriGithubAuthor)) },
@@ -125,7 +125,7 @@ fun SettingsScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(Icons.Default.DeveloperMode, null)
-                Text("NicKoehler")
+                Text(stringResource(R.string.developer))
             }
 
             CustomCard(
@@ -134,7 +134,7 @@ fun SettingsScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(Icons.Default.Code, null)
-                Text("GitHub")
+                Text(stringResource(R.string.source_code))
             }
 
             CustomCard(

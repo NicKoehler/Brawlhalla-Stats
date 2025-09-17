@@ -93,5 +93,7 @@
     <string name="filters">Filtri</string>
     <string name="search_cant_search">Non puoi cercare in 2v2</string>
     <string name="deleted">Cancellato</string>
+    <string name="source_code">Codice sorgente</string>
+    <string name="developer">Sviluppatore</string>
 </resources>
 
