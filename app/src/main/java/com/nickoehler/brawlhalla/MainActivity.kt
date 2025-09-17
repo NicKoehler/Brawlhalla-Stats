@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -106,8 +107,8 @@ class MainActivity : ComponentActivity() {
 
             val themeViewModel = koinViewModel<ThemeViewModel>()
             val theme by themeViewModel.theme.collectAsStateWithLifecycle()
-
             val navigatorScaffoldState = rememberNavigationSuiteScaffoldState()
+            val snackBarHostState = remember { SnackbarHostState() }
 
             LaunchedEffect(backStack.last(), isPortrait) {
                 if (!isPortrait || Screens.entries.map { it.route }.contains(backStack.last())) {
@@ -251,14 +252,15 @@ class MainActivity : ComponentActivity() {
 
                                 FavoritesScreen(
                                     state = favoritesState,
+                                    snackBarHostState = snackBarHostState,
                                     onFavoriteAction = { action ->
                                         favoritesViewModel.onFavoriteAction(action)
                                         when (action) {
-                                            is FavoriteAction.SelectClan -> backStack.add(
+                                            is FavoriteAction.ClanClicked -> backStack.add(
                                                 Route.Clan(clanId = action.clanId)
                                             )
 
-                                            is FavoriteAction.SelectPlayer -> backStack.add(
+                                            is FavoriteAction.PlayerClicked -> backStack.add(
                                                 Route.Stat(playerId = action.brawlhallaId)
                                             )
 
@@ -387,9 +389,10 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Stat>(
                                 metadata = ListDetailSceneStrategy.detailPane()
                             ) {
-                                val statDetailViewModel = koinViewModel<StatDetailViewModel>(
-                                    parameters = { parametersOf(it.playerId) }
-                                )
+                                val statDetailViewModel =
+                                    koinViewModel<StatDetailViewModel>(
+                                        parameters = { parametersOf(it.playerId) }
+                                    )
                                 val state by statDetailViewModel.state.collectAsStateWithLifecycle()
 
                                 StatDetailScreen(
@@ -413,6 +416,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }

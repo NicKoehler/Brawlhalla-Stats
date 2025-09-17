@@ -20,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -46,12 +48,17 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun FavoritesScreen(
     state: FavoritesState,
+    snackBarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onInfoSelection: () -> Unit = {},
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
+
     Scaffold(
         modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
         topBar = {
             TopAppBar(
                 { Text(stringResource(R.string.favorites), fontWeight = FontWeight.Bold) },
@@ -141,11 +148,10 @@ fun FavoritesScreen(
                             FavoriteType.Players ->
                                 items(players, { player -> player.id }) { player ->
                                     FavoritesItem(
-                                        coroutineScope,
                                         player.name,
-                                        stringResource(R.string.areYouSureDeletePlayerTitle),
-                                        stringResource(R.string.areYouSureDeletePlayerDesc),
                                         Icons.Default.Person,
+                                        coroutineScope,
+                                        snackBarHostState,
                                         {
                                             onFavoriteAction(
                                                 FavoriteAction.DeletePlayer(player.id)
@@ -153,36 +159,46 @@ fun FavoritesScreen(
                                         },
                                         {
                                             onFavoriteAction(
-                                                FavoriteAction.SelectPlayer(player.id)
+                                                FavoriteAction.RestorePlayer(player)
+                                            )
+                                        },
+                                        {
+                                            onFavoriteAction(
+                                                FavoriteAction.PlayerClicked(player.id)
                                             )
                                         },
                                         Modifier
-                                            .fillParentMaxWidth()
                                             .animateItem()
+                                            .fillParentMaxWidth()
                                     )
                                 }
 
                             FavoriteType.Clans ->
                                 items(clans, { clan -> clan.id }) { clan ->
                                     FavoritesItem(
-                                        coroutineScope,
                                         clan.name,
-                                        stringResource(R.string.areYouSureDeleteClanTitle),
-                                        stringResource(R.string.areYouSureDeleteClanDesc),
                                         Icons.Default.People,
+                                        coroutineScope,
+                                        snackBarHostState,
                                         {
                                             onFavoriteAction(
                                                 FavoriteAction.DeleteClan(clan.id)
                                             )
                                         },
+
                                         {
                                             onFavoriteAction(
-                                                FavoriteAction.SelectClan(clan.id)
+                                                FavoriteAction.RestoreClan(clan)
+                                            )
+                                        },
+                                        {
+                                            onFavoriteAction(
+                                                FavoriteAction.ClanClicked(clan.id)
                                             )
                                         },
                                         Modifier
-                                            .fillParentMaxWidth()
                                             .animateItem()
+                                            .fillParentMaxWidth()
                                     )
                                 }
 
@@ -205,8 +221,10 @@ private fun FavoritesScreenPreview() {
                     players = (1L..100L).map
                     { Player(it, name = "Nic") },
                     clans = (1L..3L).map
-                    { Clan(it, name = "Nic") }
-                )
+                    { Clan(it, name = "Nic") },
+                    selectedFavoriteType = FavoriteType.Players
+                ),
+                SnackbarHostState()
             )
         }
     }

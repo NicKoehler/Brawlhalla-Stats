@@ -37,11 +37,33 @@ class FavoritesViewModel(
         FavoritesState()
     )
 
+    fun onFavoriteAction(action: FavoriteAction) {
+        when (action) {
+            is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
+            is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
+            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
+            is FavoriteAction.RestorePlayer -> restorePlayer(action.player)
+            is FavoriteAction.RestoreClan -> restoreClan(action.clan)
+            else -> Unit
+        }
+    }
+
+    private fun restorePlayer(player: Player) {
+        viewModelScope.launch {
+            database.savePlayer(player.id, player.name)
+        }
+    }
+
+    private fun restoreClan(clan: Clan) {
+        viewModelScope.launch {
+            database.saveClan(clan.id, clan.name)
+        }
+    }
+
     private fun loadData() {
         viewModelScope.launch {
             combine(database.getAllPlayers(), database.getAllClans()) { players, clans ->
                 updateWidgetState(players, clans)
-
                 _state.value.copy(
                     players = players.sortedBy { it.name.lowercase() },
                     clans = clans.sortedBy { it.name },
@@ -55,7 +77,6 @@ class FavoritesViewModel(
                         }
                 )
             }.collect { state ->
-
                 _state.update {
                     state
                 }
@@ -86,7 +107,6 @@ class FavoritesViewModel(
         }
     }
 
-
     private fun selectFavorite(fav: FavoriteType) {
         _state.update { state ->
             state.copy(selectedFavoriteType = fav)
@@ -105,12 +125,4 @@ class FavoritesViewModel(
         }
     }
 
-    fun onFavoriteAction(action: FavoriteAction) {
-        when (action) {
-            is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
-            is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
-            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
-            else -> {}
-        }
-    }
 }

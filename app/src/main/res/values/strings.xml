@@ -47,10 +47,6 @@
     <string name="players">Players</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="areYouSureDeletePlayerTitle">Are you sure want to delete this player?</string>
-    <string name="areYouSureDeletePlayerDesc">Confirm to delete this player</string>
-    <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
-    <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
     <string name="damageDealt">Damage Dealt</string>
     <string name="damageTaken">Damage Taken</string>
     <string name="kos">Kos</string>
@@ -96,4 +92,5 @@
     <string name="settings_title">Settings</string>
     <string name="filters">Filters</string>
     <string name="search_cant_search">Can\'t search on 2v2</string>
+    <string name="deleted">Deleted</string>
 </resources>
