@@ -96,5 +96,6 @@
     <string name="source_code">Codice sorgente</string>
     <string name="developer">Sviluppatore</string>
     <string name="settings_language_title">Lingua</string>
+    <string name="goToLegend">Vai a %s</string>
 </resources>
 

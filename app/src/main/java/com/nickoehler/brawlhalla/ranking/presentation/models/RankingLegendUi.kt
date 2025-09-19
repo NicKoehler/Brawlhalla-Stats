@@ -8,7 +8,7 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
 import java.util.Locale
 
 data class RankingLegendUi(
-    val legendId: Int,
+    val legendId: Long,
     val legendNameKey: String,
     val rating: DisplayableInt,
     val peakRating: DisplayableInt,

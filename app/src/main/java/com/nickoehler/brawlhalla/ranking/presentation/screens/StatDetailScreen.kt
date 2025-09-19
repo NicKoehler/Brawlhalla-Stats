@@ -112,6 +112,7 @@ fun StatDetailScreen(
     onBack: () -> Unit,
     onPlayerSelection: (Long) -> Unit,
     onClanSelection: (Long) -> Unit,
+    onLegendSelection: (Long) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow(),
@@ -164,16 +165,24 @@ fun StatDetailScreen(
 
                 is RankingModalType.StatLegend -> {
                     LegendStatItemDetail(
-                        state.modalType.statLegend,
+                        legend = state.modalType.statLegend,
                         columns = columns,
+                        onClick = {
+                            onStatDetailAction(
+                                StatDetailAction.SelectRankingModalType(null)
+                            )
+                            onLegendSelection(
+                                state.modalType.statLegend.legendId
+                            )
+                        }
                     )
                 }
 
                 is RankingModalType.Team -> {
                     TeamItemDetail(
-                        state.modalType.team,
+                        team = state.modalType.team,
                         columns = columns,
-                        {
+                        onClick = {
                             if (state.selectedStatDetail != null) {
                                 onStatDetailAction(
                                     StatDetailAction.SelectRankingModalType(null)
@@ -188,8 +197,16 @@ fun StatDetailScreen(
 
                 is RankingModalType.RankingLegend -> {
                     LegendRankingItemDetail(
-                        state.modalType.legend,
+                        legend = state.modalType.legend,
                         columns = columns,
+                        onClick = {
+                            onStatDetailAction(
+                                StatDetailAction.SelectRankingModalType(null)
+                            )
+                            onLegendSelection(
+                                state.modalType.legend.legendId
+                            )
+                        }
                     )
                 }
             }
@@ -851,6 +868,7 @@ private fun RankingDetailScreenPreview() {
                 {},
                 {},
                 {},
+                {},
                 {}
             )
         }
@@ -864,6 +882,7 @@ private fun RankingDetailScreenLoadingPreview() {
         Surface {
             StatDetailScreen(
                 state = StatDetailState(isStatDetailLoading = true),
+                {},
                 {},
                 {},
                 {},
@@ -888,6 +907,7 @@ private fun RankingDetailScreenRankingLoadingPreview() {
                 {},
                 {},
                 {},
+                {},
                 {}
             )
         }
@@ -905,6 +925,7 @@ private fun RankingDetailScreenRankingPreview() {
                     isRankingDetailLoading = true,
                     selectedStatType = StatType.Ranking
                 ),
+                {},
                 {},
                 {},
                 {},

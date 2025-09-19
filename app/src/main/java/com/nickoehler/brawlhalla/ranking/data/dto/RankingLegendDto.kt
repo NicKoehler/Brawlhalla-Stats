@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RankingLegendDto(
     @SerialName("legend_id")
-    val legendId: Int,
+    val legendId: Long,
 
     @SerialName("legend_name_key")
     val legendNameKey: String,

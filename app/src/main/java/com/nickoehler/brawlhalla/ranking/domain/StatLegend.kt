@@ -1,7 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.domain
 
 data class StatLegend(
-    val legendId: Int,
+    val legendId: Long,
     val legendNameKey: String,
     val damageDealt: Int,
     val damageTaken: Int,

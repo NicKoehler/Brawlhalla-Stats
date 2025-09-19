@@ -405,6 +405,10 @@ class MainActivity : ComponentActivity() {
                                     onPlayerSelection = { brawlhallaId ->
                                         backStack.add(Route.Stat(brawlhallaId))
                                     },
+                                    onLegendSelection = { legendId ->
+                                        backStack.add(Route.Legends)
+                                        backStack.add(Route.Legend(legendId))
+                                    },
                                     onClanSelection = { clanId ->
                                         backStack.add(Route.Clan(clanId))
                                     }

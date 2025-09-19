@@ -96,4 +96,5 @@
     <string name="source_code">Source code</string>
     <string name="developer">Developer</string>
     <string name="settings_language_title">Language</string>
+    <string name="goToLegend">Go to %s</string>
 </resources>

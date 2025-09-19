@@ -10,7 +10,7 @@ import com.nickoehler.brawlhalla.ranking.domain.StatLegend
 import java.util.Locale
 
 data class StatLegendUi(
-    val legendId: Int,
+    val legendId: Long,
     val legendNameKey: String,
     val damageDealt: DisplayableInt,
     val damageTaken: DisplayableInt,

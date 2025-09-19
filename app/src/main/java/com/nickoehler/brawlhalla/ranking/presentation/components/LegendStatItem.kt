@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,6 +95,7 @@ fun LegendStatItem(
 fun LegendStatItemDetail(
     legend: StatLegendUi,
     columns: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val background = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -117,7 +120,11 @@ fun LegendStatItemDetail(
         )
 
         Text(legend.matchTime.formatted)
-
+        Button(onClick = onClick) {
+            Text(
+                stringResource(R.string.goToLegend, legend.legendNameKey)
+            )
+        }
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
             columns = GridCells.Fixed(columns),
@@ -281,7 +288,8 @@ private fun LegendStatItemDetailPreview() {
         Surface {
             LegendStatItemDetail(
                 statDetailSample.legends[0].toStatLegendUi(),
-                2
+                2,
+                {}
             )
         }
     }
