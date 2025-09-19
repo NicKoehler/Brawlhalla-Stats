@@ -1,11 +1,15 @@
 package com.nickoehler.brawlhalla.favorites.presentation.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -53,11 +57,12 @@ fun FavoritesItem(
     val dismissState = rememberSwipeToDismissBoxState()
 
     val color by animateColorAsState(
-        when (dismissState.targetValue) {
+        targetValue = when (dismissState.dismissDirection) {
             SwipeToDismissBoxValue.Settled -> MaterialTheme.colorScheme.surfaceContainerHighest
             SwipeToDismissBoxValue.StartToEnd -> LoseColor
             SwipeToDismissBoxValue.EndToStart -> LoseColor
         },
+        animationSpec = tween(200),
         label = "animatedColor:$item",
     )
 
@@ -92,7 +97,11 @@ fun FavoritesItem(
                     .background(color),
                 contentAlignment = Alignment.Center
             ) {
-                Row(horizontalArrangement = Arrangement.Start) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Spacer(Modifier.width(24.dp))
                     Icon(Icons.Default.Delete, null)
                 }
             }

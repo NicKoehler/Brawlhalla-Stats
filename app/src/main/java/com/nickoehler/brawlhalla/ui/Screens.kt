@@ -42,7 +42,7 @@ enum class Screens(
 sealed interface Route : NavKey {
 
     @Serializable
-    data object Info : Route
+    data object Settings : Route
 
     @Serializable
     data object Licenses : Route

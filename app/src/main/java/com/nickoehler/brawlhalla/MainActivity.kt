@@ -268,12 +268,12 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onInfoSelection = {
-                                        backStack.add(Route.Info)
+                                        backStack.add(Route.Settings)
                                     }
                                 )
                             }
 
-                            entry<Route.Info> {
+                            entry<Route.Settings> {
                                 val settingsViewModel = koinViewModel<SettingsViewModel>()
                                 val state by settingsViewModel.state.collectAsStateWithLifecycle()
                                 SettingsScreen(

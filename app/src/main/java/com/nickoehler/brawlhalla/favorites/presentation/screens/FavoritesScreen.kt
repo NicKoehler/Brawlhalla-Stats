@@ -84,126 +84,125 @@ fun FavoritesScreen(
                     textAlign = TextAlign.Center
                 )
             }
-        } else {
-            val coroutineScope = rememberCoroutineScope()
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val players = state.players
-                val clans = state.clans
-                SingleChoiceSegmentedButtonRow {
-                    SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.Players,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
-                        icon = {
-                            SegmentedButtonDefaults.Icon(
-                                activeContent = {
-                                    Icon(
-                                        Icons.Default.Person,
-                                        null
-                                    )
-                                },
-                                active = state.selectedFavoriteType == FavoriteType.Players
-                            )
-                        },
-                        enabled = state.players.isNotEmpty(),
-                        shape = SegmentedButtonDefaults.itemShape(0, 2),
-                    ) {
-                        Text(stringResource(R.string.players))
-                    }
-
-                    SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.Clans,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
-                        icon = {
-                            SegmentedButtonDefaults.Icon(
-                                activeContent = {
-                                    Icon(
-                                        Icons.Default.People,
-                                        null
-                                    )
-                                },
-                                active = state.selectedFavoriteType == FavoriteType.Clans
-                            )
-                        },
-                        enabled = state.clans.isNotEmpty(),
-                        shape = SegmentedButtonDefaults.itemShape(1, 2)
-                    ) {
-                        Text(stringResource(R.string.clans))
-                    }
+        }
+        val coroutineScope = rememberCoroutineScope()
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val players = state.players
+            val clans = state.clans
+            SingleChoiceSegmentedButtonRow {
+                SegmentedButton(
+                    state.selectedFavoriteType == FavoriteType.Players,
+                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
+                    icon = {
+                        SegmentedButtonDefaults.Icon(
+                            activeContent = {
+                                Icon(
+                                    Icons.Default.Person,
+                                    null
+                                )
+                            },
+                            active = state.selectedFavoriteType == FavoriteType.Players
+                        )
+                    },
+                    enabled = state.players.isNotEmpty(),
+                    shape = SegmentedButtonDefaults.itemShape(0, 2),
+                ) {
+                    Text(stringResource(R.string.players))
                 }
-                AnimatedContent(
-                    state.selectedFavoriteType,
-                    label = "selectedFavoriteType"
-                ) { type ->
-                    LazyColumn(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        item { Spacer(Modifier) }
-                        when (type) {
-                            FavoriteType.Players ->
-                                items(players, { player -> player.id }) { player ->
-                                    FavoritesItem(
-                                        player.name,
-                                        Icons.Default.Person,
-                                        coroutineScope,
-                                        snackBarHostState,
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.DeletePlayer(player.id)
-                                            )
-                                        },
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.RestorePlayer(player)
-                                            )
-                                        },
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.PlayerClicked(player.id)
-                                            )
-                                        },
-                                        Modifier
-                                            .animateItem()
-                                            .fillParentMaxWidth()
-                                    )
-                                }
 
-                            FavoriteType.Clans ->
-                                items(clans, { clan -> clan.id }) { clan ->
-                                    FavoritesItem(
-                                        clan.name,
-                                        Icons.Default.People,
-                                        coroutineScope,
-                                        snackBarHostState,
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.DeleteClan(clan.id)
-                                            )
-                                        },
+                SegmentedButton(
+                    state.selectedFavoriteType == FavoriteType.Clans,
+                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
+                    icon = {
+                        SegmentedButtonDefaults.Icon(
+                            activeContent = {
+                                Icon(
+                                    Icons.Default.People,
+                                    null
+                                )
+                            },
+                            active = state.selectedFavoriteType == FavoriteType.Clans
+                        )
+                    },
+                    enabled = state.clans.isNotEmpty(),
+                    shape = SegmentedButtonDefaults.itemShape(1, 2)
+                ) {
+                    Text(stringResource(R.string.clans))
+                }
+            }
+            AnimatedContent(
+                state.selectedFavoriteType,
+                label = "selectedFavoriteType"
+            ) { type ->
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    item { Spacer(Modifier) }
+                    when (type) {
+                        FavoriteType.Players ->
+                            items(players, { player -> player.id }) { player ->
+                                FavoritesItem(
+                                    player.name,
+                                    Icons.Default.Person,
+                                    coroutineScope,
+                                    snackBarHostState,
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.DeletePlayer(player.id)
+                                        )
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.RestorePlayer(player)
+                                        )
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.PlayerClicked(player.id)
+                                        )
+                                    },
+                                    Modifier
+                                        .animateItem()
+                                        .fillParentMaxWidth()
+                                )
+                            }
 
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.RestoreClan(clan)
-                                            )
-                                        },
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.ClanClicked(clan.id)
-                                            )
-                                        },
-                                        Modifier
-                                            .animateItem()
-                                            .fillParentMaxWidth()
-                                    )
-                                }
+                        FavoriteType.Clans ->
+                            items(clans, { clan -> clan.id }) { clan ->
+                                FavoritesItem(
+                                    clan.name,
+                                    Icons.Default.People,
+                                    coroutineScope,
+                                    snackBarHostState,
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.DeleteClan(clan.id)
+                                        )
+                                    },
 
-                            else -> {}
-                        }
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.RestoreClan(clan)
+                                        )
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.ClanClicked(clan.id)
+                                        )
+                                    },
+                                    Modifier
+                                        .animateItem()
+                                        .fillParentMaxWidth()
+                                )
+                            }
+
+                        else -> {}
                     }
                 }
             }
