@@ -101,6 +101,11 @@ fun TeamItemDetail(
 
         RankWinRateRow(team.winRate)
 
+        Button(onClick = onClick) {
+            Text(
+                stringResource(R.string.goToTeamMate)
+            )
+        }
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
@@ -115,11 +120,6 @@ fun TeamItemDetail(
             item { CustomRankingField(R.string.wins, team.wins.formatted, background) }
         }
 
-        Button(onClick = onClick) {
-            Text(
-                stringResource(R.string.goToTeamMate)
-            )
-        }
     }
 }
 
