@@ -62,19 +62,24 @@ class FavoritesViewModel(
 
     private fun loadData() {
         viewModelScope.launch {
-            combine(database.getAllPlayers(), database.getAllClans()) { players, clans ->
+            combine(database.getAllPlayers(), database.getAllClans())
+            { players, clans ->
                 updateWidgetState(players, clans)
+                val favoriteType = if (_state.value.selectedFavoriteType == null) {
+                    if (players.isNotEmpty()) {
+                        FavoriteType.Players
+                    } else if (clans.isNotEmpty()) {
+                        FavoriteType.Clans
+                    } else {
+                        null
+                    }
+                } else {
+                    _state.value.selectedFavoriteType
+                }
                 _state.value.copy(
                     players = players.sortedBy { it.name.lowercase() },
                     clans = clans.sortedBy { it.name },
-                    selectedFavoriteType =
-                        if (players.isNotEmpty()) {
-                            FavoriteType.Players
-                        } else if (clans.isNotEmpty()) {
-                            FavoriteType.Clans
-                        } else {
-                            null
-                        }
+                    selectedFavoriteType = favoriteType
                 )
             }.collect { state ->
                 _state.update {
