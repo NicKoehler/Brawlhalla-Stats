@@ -1,14 +1,12 @@
 package com.nickoehler.brawlhalla.settings.presentation.screens
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +52,7 @@ import com.nickoehler.brawlhalla.settings.presentation.model.SettingsState
 import com.nickoehler.brawlhalla.settings.presentation.model.appLanguages
 import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubAuthor
 import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubProject
+import com.nickoehler.brawlhalla.settings.presentation.screens.components.BouncyLogo
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -152,14 +150,11 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(
-                    painterResource(R.drawable.logo),
-                    "logo",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .padding(vertical = 20.dp)
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                BouncyLogo()
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
