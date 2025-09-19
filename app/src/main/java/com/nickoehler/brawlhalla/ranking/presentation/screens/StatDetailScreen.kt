@@ -175,6 +175,9 @@ fun StatDetailScreen(
                         columns = columns,
                         {
                             if (state.selectedStatDetail != null) {
+                                onStatDetailAction(
+                                    StatDetailAction.SelectRankingModalType(null)
+                                )
                                 onPlayerSelection(
                                     state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
                                 )
