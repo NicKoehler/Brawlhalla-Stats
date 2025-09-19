@@ -85,7 +85,7 @@
     <string name="xp">Xp</string>
     <string name="createDate">Data di creazione: %s</string>
     <string name="copy_id">Copia ID</string>
-    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_system">Sistema</string>
     <string name="settings_theme_light">Chiaro</string>
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_theme_title">Tema</string>
@@ -95,5 +95,6 @@
     <string name="deleted">Cancellato</string>
     <string name="source_code">Codice sorgente</string>
     <string name="developer">Sviluppatore</string>
+    <string name="settings_language_title">Lingua</string>
 </resources>
 

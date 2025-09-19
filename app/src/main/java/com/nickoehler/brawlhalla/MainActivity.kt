@@ -207,16 +207,16 @@ class MainActivity : ComponentActivity() {
                             rememberSceneSetupNavEntryDecorator()
                         ),
                         transitionSpec = {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { -it })
+                            fadeIn() + slideInHorizontally(initialOffsetX = { it }) togetherWith
+                                    fadeOut() + slideOutHorizontally(targetOffsetX = { -it })
                         },
                         popTransitionSpec = {
-                            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
+                            fadeIn() + slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    fadeOut() + slideOutHorizontally(targetOffsetX = { it })
                         },
                         predictivePopTransitionSpec = {
-                            slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
+                            fadeIn() + slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                                    fadeOut() + slideOutHorizontally(targetOffsetX = { it })
                         },
                         sceneStrategy = listDetailStrategy,
                         entryProvider = entryProvider {
