@@ -357,8 +357,7 @@ private fun LazyGridScope.rankingTeams(
             )
         }
         items(
-            playerRanking.teams,
-            { "${it.brawlhallaIdOne}${it.brawlhallaIdTwo}" },
+            playerRanking.teams
         ) { team ->
             TeamItem(
                 team,
