@@ -168,11 +168,11 @@ fun StatDetailScreen(
                         legend = state.modalType.statLegend,
                         columns = columns,
                         onClick = {
-                            onStatDetailAction(
-                                StatDetailAction.SelectRankingModalType(null)
-                            )
                             onLegendSelection(
                                 state.modalType.statLegend.legendId
+                            )
+                            onStatDetailAction(
+                                StatDetailAction.SelectRankingModalType(null)
                             )
                         }
                     )
@@ -184,11 +184,11 @@ fun StatDetailScreen(
                         columns = columns,
                         onClick = {
                             if (state.selectedStatDetail != null) {
-                                onStatDetailAction(
-                                    StatDetailAction.SelectRankingModalType(null)
-                                )
                                 onPlayerSelection(
                                     state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
+                                )
+                                onStatDetailAction(
+                                    StatDetailAction.SelectRankingModalType(null)
                                 )
                             }
                         }
@@ -200,11 +200,11 @@ fun StatDetailScreen(
                         legend = state.modalType.legend,
                         columns = columns,
                         onClick = {
-                            onStatDetailAction(
-                                StatDetailAction.SelectRankingModalType(null)
-                            )
                             onLegendSelection(
                                 state.modalType.legend.legendId
+                            )
+                            onStatDetailAction(
+                                StatDetailAction.SelectRankingModalType(null)
                             )
                         }
                     )
