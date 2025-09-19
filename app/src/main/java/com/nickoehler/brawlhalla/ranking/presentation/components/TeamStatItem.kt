@@ -101,10 +101,12 @@ fun TeamItemDetail(
 
         RankWinRateRow(team.winRate)
 
-        Button(onClick = onClick) {
-            Text(
-                stringResource(R.string.goToTeamMate)
-            )
+        if (team.brawlhallaIdOne != team.brawlhallaIdTwo) {
+            Button(onClick = onClick) {
+                Text(
+                    stringResource(R.string.goToTeamMate)
+                )
+            }
         }
 
         LazyVerticalGrid(

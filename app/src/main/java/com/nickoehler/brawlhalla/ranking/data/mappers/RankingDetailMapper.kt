@@ -22,8 +22,7 @@ fun RankingDetailDto.toRankingDetail(): RankingDetail {
         globalRank,
         regionRank,
         legends.map { it.toRankingLegend() },
-        teams.map { it.toRankingTeam() },
-
+        teams.map { it.toRankingTeam() }.distinct(),
         estimatedGlory = getEstimatedGlory(
             games = legends.sumOf { it.games },
             wins = legends.sumOf { it.wins },
