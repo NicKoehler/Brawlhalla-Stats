@@ -13,8 +13,8 @@ class DatabaseDataSource(
     private val playerDao = database.playerDao()
     private val clanDao = database.clanDao()
 
-    override suspend fun savePlayer(brawlhallaId: Long, name: String) {
-        playerDao.insertPlayer(Player(brawlhallaId, name))
+    override suspend fun savePlayer(player: Player) {
+        playerDao.insertPlayer(player)
     }
 
     override suspend fun deletePlayer(brawlhallaId: Long) {
@@ -29,8 +29,8 @@ class DatabaseDataSource(
         return playerDao.getAllPlayers()
     }
 
-    override suspend fun saveClan(clanId: Long, name: String) {
-        clanDao.insertClan(Clan(clanId, name))
+    override suspend fun saveClan(clan: Clan) {
+        clanDao.insertClan(clan)
     }
 
     override suspend fun deleteClan(clanId: Long) {
@@ -44,4 +44,15 @@ class DatabaseDataSource(
     override fun getAllClans(): Flow<List<Clan>> {
         return clanDao.getAllClans()
     }
+
+    override suspend fun updatePlayers(players: List<Player>) {
+        playerDao.updatePlayers(players.withIndex().map { (i, player) -> player.copy(order = i) })
+    }
+
+    override suspend fun updateClans(clans: List<Clan>) {
+        clanDao.updateClans(clans.withIndex().map { (i, clan) -> clan.copy(order = i) })
+
+    }
+
+
 }

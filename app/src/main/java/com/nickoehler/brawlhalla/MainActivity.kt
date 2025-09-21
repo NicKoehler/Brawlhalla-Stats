@@ -53,8 +53,8 @@ import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
-import com.nickoehler.brawlhalla.favorites.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction

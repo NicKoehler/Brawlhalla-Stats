@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
@@ -335,8 +336,11 @@ class StatDetailViewModel(
                 _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
             } else {
                 database.savePlayer(
-                    brawlhallaId,
-                    name
+                    Player(
+                        id = brawlhallaId,
+                        name = name,
+                        order = 0
+                    )
                 )
                 _state.update { state -> state.copy(isStatDetailFavorite = true) }
                 _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))

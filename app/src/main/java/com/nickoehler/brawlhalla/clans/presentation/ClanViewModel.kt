@@ -6,6 +6,7 @@ import com.nickoehler.brawlhalla.clans.domain.ClanDataSource
 import com.nickoehler.brawlhalla.clans.presentation.model.ClanMemberUi
 import com.nickoehler.brawlhalla.clans.presentation.model.ClanSortType
 import com.nickoehler.brawlhalla.clans.presentation.model.toClanDetailUi
+import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
@@ -139,8 +140,11 @@ class ClanViewModel(
                 _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
             } else {
                 database.saveClan(
-                    clanId,
-                    name
+                    Clan(
+                        id = clanId,
+                        name = name,
+                        order = 0
+                    )
                 )
                 _state.update { state -> state.copy(isClanDetailFavorite = true) }
                 _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))

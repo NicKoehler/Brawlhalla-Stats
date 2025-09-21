@@ -3,12 +3,13 @@ package com.nickoehler.brawlhalla.core.data.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ClanDao {
-    @Query("SELECT * FROM clans")
+    @Query("SELECT * FROM clans ORDER by `order` ASC")
     fun getAllClans(): Flow<List<Clan>>
 
     @Query("SELECT * FROM clans WHERE id=:id")
@@ -19,4 +20,7 @@ interface ClanDao {
 
     @Query("DELETE FROM clans WHERE id=:id")
     suspend fun deleteClan(id: Long)
+
+    @Update
+    suspend fun updateClans(clans: List<Clan>)
 }

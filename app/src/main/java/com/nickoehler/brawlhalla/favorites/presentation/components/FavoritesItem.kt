@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
+import com.nickoehler.brawlhalla.core.presentation.components.DraggableListState
+import com.nickoehler.brawlhalla.core.presentation.components.dragHandle
+import com.nickoehler.brawlhalla.core.presentation.components.rememberDraggableListState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.LoseColor
 import kotlinx.coroutines.CoroutineScope
@@ -44,11 +48,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FavoritesItem(
-    item: String,
+    itemId: Long,
+    itemName: String,
     leadingIcon: ImageVector,
     coroutineScope: CoroutineScope,
     snackBarHostState: SnackbarHostState,
     dismissState: SwipeToDismissBoxState,
+    draggableState: DraggableListState,
     onSwipeAction: () -> Unit,
     onActionPerformed: () -> Unit,
     onClickAction: () -> Unit,
@@ -56,7 +62,6 @@ fun FavoritesItem(
 ) {
 
     val context = LocalContext.current
-
     val color by animateColorAsState(
         targetValue = when (dismissState.dismissDirection) {
             SwipeToDismissBoxValue.Settled -> MaterialTheme.colorScheme.surfaceContainerHighest
@@ -64,13 +69,11 @@ fun FavoritesItem(
             SwipeToDismissBoxValue.EndToStart -> LoseColor
         },
         animationSpec = tween(500),
-        label = "animatedColor:$item",
+        label = "animatedColor:$itemName",
     )
     SwipeToDismissBox(
         state = dismissState,
-        modifier = modifier,
         onDismiss = { direction ->
-            println(direction)
             coroutineScope.launch {
                 onSwipeAction()
                 val result = snackBarHostState.showSnackbar(
@@ -114,7 +117,16 @@ fun FavoritesItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(leadingIcon, null)
-            Text(item, Modifier.weight(1f))
+            Text(itemName, Modifier.weight(1f))
+            Icon(
+                Icons.Default.DragHandle,
+                null,
+                modifier = Modifier.dragHandle(
+                    key = itemId,
+                    state = draggableState,
+                ),
+
+                )
         }
     }
 }
@@ -126,11 +138,16 @@ private fun FavoritesItemPreview() {
     BrawlhallaTheme {
         Surface {
             FavoritesItem(
+                1,
                 "ops",
                 Icons.Default.Person,
                 rememberCoroutineScope(),
                 SnackbarHostState(),
                 rememberSwipeToDismissBoxState(),
+                rememberDraggableListState(
+                    onMove = { _, _ -> },
+                    onMoveCompleted = {}
+                ),
                 {},
                 {},
                 {}

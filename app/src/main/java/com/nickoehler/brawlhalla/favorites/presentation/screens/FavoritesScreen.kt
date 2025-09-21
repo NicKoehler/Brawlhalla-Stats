@@ -1,15 +1,15 @@
 package com.nickoehler.brawlhalla.favorites.presentation.screens
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
@@ -46,11 +46,14 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
-import com.nickoehler.brawlhalla.favorites.FavoriteAction
-import com.nickoehler.brawlhalla.favorites.presentation.FavoritesState
+import com.nickoehler.brawlhalla.core.presentation.components.draggableItems
+import com.nickoehler.brawlhalla.core.presentation.components.rememberDraggableListState
 import com.nickoehler.brawlhalla.favorites.presentation.components.FavoritesItem
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoritesState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -64,6 +67,27 @@ fun FavoritesScreen(
 
     val dismissPlayersStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
     val dismissClansStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
+    val coroutineScope = rememberCoroutineScope()
+
+    val draggablePlayersState = rememberDraggableListState(
+        onMove = { fromIndex, toIndex ->
+            onFavoriteAction(FavoriteAction.PlayerDragged(fromIndex, toIndex))
+        },
+        onMoveCompleted = {
+            onFavoriteAction(FavoriteAction.PersistPlayers)
+        },
+    )
+
+    val draggableClansState = rememberDraggableListState(
+        onMove = { fromIndex, toIndex ->
+            onFavoriteAction(FavoriteAction.ClanDragged(fromIndex, toIndex))
+        },
+        onMoveCompleted = {
+            onFavoriteAction(FavoriteAction.PersistClans)
+        },
+    )
+    val players = state.players
+    val clans = state.clans
 
     Scaffold(
         modifier.fillMaxSize(),
@@ -96,15 +120,12 @@ fun FavoritesScreen(
                 )
             }
         }
-        val coroutineScope = rememberCoroutineScope()
         Column(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val players = state.players
-            val clans = state.clans
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -142,26 +163,34 @@ fun FavoritesScreen(
                     Text(stringResource(R.string.clans))
                 }
             }
-            AnimatedContent(
-                state.selectedFavoriteType,
-                label = "selectedFavoriteType"
-            ) { type ->
+            Spacer(Modifier.height(10.dp))
+            if (state.selectedFavoriteType != null) {
                 LazyColumn(
+                    state = when (state.selectedFavoriteType) {
+                        FavoriteType.Players -> draggablePlayersState.listState
+                        FavoriteType.Clans -> draggableClansState.listState
+                    },
+                    modifier = Modifier.fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    item { Spacer(Modifier) }
-                    when (type) {
+
+                    when (state.selectedFavoriteType) {
                         FavoriteType.Players ->
-                            items(players, { player -> player.id }) { player ->
+                            draggableItems(
+                                draggablePlayersState,
+                                players,
+                                { player -> player.id }) { player, isDragging ->
                                 val dismissState =
                                     dismissPlayersStateMap.getOrPut(player.id) { rememberSwipeToDismissBoxState() }
                                 FavoritesItem(
+                                    player.id,
                                     player.name,
                                     Icons.Default.Person,
                                     coroutineScope,
                                     snackBarHostState,
                                     dismissState,
+                                    draggablePlayersState,
                                     {
                                         onFavoriteAction(
                                             FavoriteAction.DeletePlayer(player.id)
@@ -184,21 +213,26 @@ fun FavoritesScreen(
                             }
 
                         FavoriteType.Clans ->
-                            items(clans, { clan -> clan.id }) { clan ->
+                            draggableItems(
+                                draggableClansState,
+                                clans,
+                                { clan -> clan.id }
+                            ) { clan, isDragging ->
                                 val dismissState =
                                     dismissClansStateMap.getOrPut(clan.id) { rememberSwipeToDismissBoxState() }
                                 FavoritesItem(
+                                    clan.id,
                                     clan.name,
                                     Icons.Default.People,
                                     coroutineScope,
                                     snackBarHostState,
                                     dismissState,
+                                    draggableClansState,
                                     {
                                         onFavoriteAction(
                                             FavoriteAction.DeleteClan(clan.id)
                                         )
                                     },
-
                                     {
                                         onFavoriteAction(
                                             FavoriteAction.RestoreClan(clan)
@@ -214,8 +248,6 @@ fun FavoritesScreen(
                                         .fillParentMaxWidth()
                                 )
                             }
-
-                        else -> {}
                     }
                 }
             }
@@ -231,9 +263,9 @@ private fun FavoritesScreenPreview() {
             FavoritesScreen(
                 state = FavoritesState(
                     players = (1L..100L).map
-                    { Player(it, name = "Nic") },
+                    { Player(it, name = "Nic", 0) },
                     clans = (1L..3L).map
-                    { Clan(it, name = "Nic") },
+                    { Clan(it, name = "Nic", 0) },
                     selectedFavoriteType = FavoriteType.Players
                 ),
                 SnackbarHostState()

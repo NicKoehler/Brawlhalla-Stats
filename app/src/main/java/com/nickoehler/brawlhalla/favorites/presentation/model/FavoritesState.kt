@@ -1,9 +1,8 @@
-package com.nickoehler.brawlhalla.favorites.presentation
+package com.nickoehler.brawlhalla.favorites.presentation.model
 
 import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
-import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
 
 @Immutable
 data class FavoritesState(
