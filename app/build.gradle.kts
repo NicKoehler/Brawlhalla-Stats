@@ -25,7 +25,7 @@ android {
         versionName = "0.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     @Suppress("UnstableApiUsage")
     androidResources {
         generateLocaleConfig = true

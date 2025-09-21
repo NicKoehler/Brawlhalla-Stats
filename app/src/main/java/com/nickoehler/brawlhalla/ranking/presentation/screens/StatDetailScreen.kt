@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,18 +26,18 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.QueryStats
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -52,6 +53,9 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -698,6 +702,7 @@ private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun StatDetailHeader(
     state: StatDetailState,
@@ -750,31 +755,36 @@ private fun StatDetailHeader(
             Text("XP ${state.selectedStatDetail.xp.formatted}")
         }
 
-        SingleChoiceSegmentedButtonRow {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
             StatType.entries.forEachIndexed { index, statType ->
-                SegmentedButton(
-                    state.selectedStatType == statType,
-                    onClick = {
+                ToggleButton(
+                    checked = state.selectedStatType == statType,
+                    onCheckedChange = {
                         onStatDetailAction(
                             StatDetailAction.SelectStatType(
                                 statType
                             )
                         )
                     },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index,
-                        StatType.entries.size
-                    ),
-                    icon = {
-                        Icon(
-                            when (statType) {
-                                StatType.General -> Icons.Default.QueryStats
-                                StatType.Ranking -> Icons.Default.Poll
-                            },
-                            null
-                        )
-                    }
+                    shapes = when (index) {
+                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                        StatFilterType.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.RadioButton },
                 ) {
+                    Icon(
+                        when (statType) {
+                            StatType.General -> Icons.Default.QueryStats
+                            StatType.Ranking -> Icons.Default.Poll
+                        },
+                        null
+                    )
                     Text(
                         stringResource(
                             when (statType) {
@@ -790,64 +800,74 @@ private fun StatDetailHeader(
         AnimatedContent(
             state.selectedStatType,
         ) { stateType ->
-            SingleChoiceSegmentedButtonRow {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
                 when (stateType) {
                     StatType.General -> {
                         StatFilterType.entries.forEachIndexed { index, statType ->
-                            SegmentedButton(
-                                selected = state.selectedStatFilterType == statType,
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index,
-                                    StatFilterType.entries.size
-                                ),
-                                onClick = {
+                            ToggleButton(
+                                checked = state.selectedStatFilterType == statType,
+                                onCheckedChange = {
                                     onStatDetailAction(
                                         StatDetailAction.SelectStatFilterType(
                                             statType
                                         )
                                     )
                                 },
-                                label = {
-                                    Text(
-                                        stringResource(
-                                            when (statType) {
-                                                StatFilterType.Stat -> R.string.stats
-                                                StatFilterType.Legends -> R.string.legends
-                                            }
-                                        )
-                                    )
+                                shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    StatFilterType.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                                 },
-                            )
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .semantics { role = Role.RadioButton },
+                            ) {
+                                Text(
+                                    stringResource(
+                                        when (statType) {
+                                            StatFilterType.Stat -> R.string.stats
+                                            StatFilterType.Legends -> R.string.legends
+                                        }
+                                    )
+                                )
+                            }
                         }
                     }
 
                     StatType.Ranking -> {
                         RankingFilterType.entries.forEachIndexed { index, statType ->
-                            SegmentedButton(
-                                selected = state.selectedRankingFilterType == statType,
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index,
-                                    RankingFilterType.entries.size
-                                ),
-                                onClick = {
+                            ToggleButton(
+                                checked = state.selectedRankingFilterType == statType,
+                                onCheckedChange = {
                                     onStatDetailAction(
                                         StatDetailAction.SelectRankingFilterType(
                                             statType
                                         )
                                     )
                                 },
-                                label = {
-                                    Text(
-                                        stringResource(
-                                            when (statType) {
-                                                RankingFilterType.Legends -> R.string.legends
-                                                RankingFilterType.Teams -> R.string.teams
-                                                RankingFilterType.Stat -> R.string.stats
-                                            }
-                                        )
-                                    )
+                                shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    RankingFilterType.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                                 },
-                            )
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .semantics { role = Role.RadioButton },
+                            ) {
+
+                                Text(
+                                    stringResource(
+                                        when (statType) {
+                                            RankingFilterType.Legends -> R.string.legends
+                                            RankingFilterType.Teams -> R.string.teams
+                                            RankingFilterType.Stat -> R.string.stats
+                                        }
+                                    )
+                                )
+                            }
                         }
                     }
                 }

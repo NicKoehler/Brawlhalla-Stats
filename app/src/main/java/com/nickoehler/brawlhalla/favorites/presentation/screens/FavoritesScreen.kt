@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,23 +14,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +48,7 @@ import com.nickoehler.brawlhalla.favorites.presentation.components.FavoritesItem
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FavoritesScreen(
     state: FavoritesState,
@@ -94,44 +98,40 @@ fun FavoritesScreen(
         ) {
             val players = state.players
             val clans = state.clans
-            SingleChoiceSegmentedButtonRow {
-                SegmentedButton(
-                    state.selectedFavoriteType == FavoriteType.Players,
-                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
-                    icon = {
-                        SegmentedButtonDefaults.Icon(
-                            activeContent = {
-                                Icon(
-                                    Icons.Default.Person,
-                                    null
-                                )
-                            },
-                            active = state.selectedFavoriteType == FavoriteType.Players
-                        )
-                    },
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                ToggleButton(
+                    checked = state.selectedFavoriteType == FavoriteType.Players,
+                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
+                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.RadioButton },
                     enabled = state.players.isNotEmpty(),
-                    shape = SegmentedButtonDefaults.itemShape(0, 2),
                 ) {
+                    Icon(
+                        Icons.Default.Person,
+                        stringResource(R.string.players)
+                    )
                     Text(stringResource(R.string.players))
                 }
 
-                SegmentedButton(
-                    state.selectedFavoriteType == FavoriteType.Clans,
-                    { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
-                    icon = {
-                        SegmentedButtonDefaults.Icon(
-                            activeContent = {
-                                Icon(
-                                    Icons.Default.People,
-                                    null
-                                )
-                            },
-                            active = state.selectedFavoriteType == FavoriteType.Clans
-                        )
-                    },
+                ToggleButton(
+                    checked = state.selectedFavoriteType == FavoriteType.Clans,
+                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
+                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.RadioButton },
                     enabled = state.clans.isNotEmpty(),
-                    shape = SegmentedButtonDefaults.itemShape(1, 2)
                 ) {
+                    Icon(
+                        Icons.Default.People,
+                        stringResource(R.string.clans)
+                    )
                     Text(stringResource(R.string.clans))
                 }
             }
