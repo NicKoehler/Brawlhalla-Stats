@@ -23,10 +23,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +61,9 @@ fun FavoritesScreen(
     onInfoSelection: () -> Unit = {},
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
+
+    val dismissPlayersStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
+    val dismissClansStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
 
     Scaffold(
         modifier.fillMaxSize(),
@@ -147,11 +154,14 @@ fun FavoritesScreen(
                     when (type) {
                         FavoriteType.Players ->
                             items(players, { player -> player.id }) { player ->
+                                val dismissState =
+                                    dismissPlayersStateMap.getOrPut(player.id) { rememberSwipeToDismissBoxState() }
                                 FavoritesItem(
                                     player.name,
                                     Icons.Default.Person,
                                     coroutineScope,
                                     snackBarHostState,
+                                    dismissState,
                                     {
                                         onFavoriteAction(
                                             FavoriteAction.DeletePlayer(player.id)
@@ -175,11 +185,14 @@ fun FavoritesScreen(
 
                         FavoriteType.Clans ->
                             items(clans, { clan -> clan.id }) { clan ->
+                                val dismissState =
+                                    dismissClansStateMap.getOrPut(clan.id) { rememberSwipeToDismissBoxState() }
                                 FavoritesItem(
                                     clan.name,
                                     Icons.Default.People,
                                     coroutineScope,
                                     snackBarHostState,
+                                    dismissState,
                                     {
                                         onFavoriteAction(
                                             FavoriteAction.DeleteClan(clan.id)

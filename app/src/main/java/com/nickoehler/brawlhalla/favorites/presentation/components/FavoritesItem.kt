@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -47,6 +48,7 @@ fun FavoritesItem(
     leadingIcon: ImageVector,
     coroutineScope: CoroutineScope,
     snackBarHostState: SnackbarHostState,
+    dismissState: SwipeToDismissBoxState,
     onSwipeAction: () -> Unit,
     onActionPerformed: () -> Unit,
     onClickAction: () -> Unit,
@@ -54,7 +56,6 @@ fun FavoritesItem(
 ) {
 
     val context = LocalContext.current
-    val dismissState = rememberSwipeToDismissBoxState()
 
     val color by animateColorAsState(
         targetValue = when (dismissState.dismissDirection) {
@@ -62,18 +63,16 @@ fun FavoritesItem(
             SwipeToDismissBoxValue.StartToEnd -> LoseColor
             SwipeToDismissBoxValue.EndToStart -> LoseColor
         },
-        animationSpec = tween(200),
+        animationSpec = tween(500),
         label = "animatedColor:$item",
     )
-
     SwipeToDismissBox(
-        dismissState,
+        state = dismissState,
         modifier = modifier,
-        onDismiss = {
-            onSwipeAction()
+        onDismiss = { direction ->
+            println(direction)
             coroutineScope.launch {
-                dismissState.snapTo(SwipeToDismissBoxValue.Settled)
-                snackBarHostState.currentSnackbarData?.dismiss()
+                onSwipeAction()
                 val result = snackBarHostState.showSnackbar(
                     message = context.getString(R.string.deleted),
                     actionLabel = context.getString(R.string.cancel),
@@ -81,8 +80,9 @@ fun FavoritesItem(
                 )
 
                 when (result) {
-                    SnackbarResult.Dismissed -> {}
+                    SnackbarResult.Dismissed -> Unit
                     SnackbarResult.ActionPerformed -> {
+                        dismissState.reset()
                         onActionPerformed()
                     }
                 }
@@ -106,6 +106,7 @@ fun FavoritesItem(
                 }
             }
         }
+
     ) {
         CustomCard(
             modifier = modifier,
@@ -129,6 +130,7 @@ private fun FavoritesItemPreview() {
                 Icons.Default.Person,
                 rememberCoroutineScope(),
                 SnackbarHostState(),
+                rememberSwipeToDismissBoxState(),
                 {},
                 {},
                 {}
