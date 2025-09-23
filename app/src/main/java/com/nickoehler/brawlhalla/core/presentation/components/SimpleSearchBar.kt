@@ -31,12 +31,12 @@ import kotlinx.coroutines.launch
 fun SimpleSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearch: () -> Unit,
     onFilterToggle: () -> Unit,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
+    onSearch: () -> Unit = {},
     placeholder: @Composable () -> Unit = {},
     enabled: Boolean = true,
     isFilterOpen: Boolean = false,

@@ -30,6 +30,7 @@ fun LicensesScreen(
 ) {
     val libraries by rememberLibraries(R.raw.aboutlibraries)
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {

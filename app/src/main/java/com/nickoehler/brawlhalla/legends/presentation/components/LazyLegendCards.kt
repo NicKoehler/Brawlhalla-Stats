@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,7 +12,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,18 +55,17 @@ fun LazyLegendsCards(
     onLegendAction: (LegendAction) -> Unit = {},
     onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
+    val height by animateDpAsState(if (state.isFilterOpen) searchBarHeight else searchBarHeight - 16.dp)
+
     LazyColumn(
         modifier = modifier,
         state = lazyColumnState,
-        contentPadding = PaddingValues(bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
             Spacer(
-                if (state.isFilterOpen) Modifier.height(
-                    searchBarHeight
-                ) else Modifier.height(searchBarHeight - 16.dp)
+                Modifier.height(height)
             )
             AnimatedVisibility(
                 state.isFilterOpen,

@@ -54,6 +54,7 @@ import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubAuthor
 import com.nickoehler.brawlhalla.settings.presentation.model.uriGithubProject
 import com.nickoehler.brawlhalla.settings.presentation.screens.components.BouncyLogo
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -188,7 +189,7 @@ fun SettingsScreen(
                             Theme.Light -> Icons.Default.LightMode
                             Theme.Dark -> Icons.Default.DarkMode
                         },
-                        onClick = { onSettingsAction(SettingsAction.SelectSetting(SettingType.Theme)) }
+                        onClick = { onSettingsAction(SettingsAction.SelectSetting(SettingType.Theme)) },
                     ),
                     SettingTile(
                         title = stringResource(R.string.settings_language_title),
@@ -200,8 +201,9 @@ fun SettingsScreen(
                             },
                         icon = Icons.Default.Language,
                         onClick = { onSettingsAction(SettingsAction.SelectSetting(SettingType.Language)) }
-                    )
-                )
+                    ),
+                ),
+                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
             )
 
             CustomSettingTile(
@@ -225,7 +227,8 @@ fun SettingsScreen(
                         icon = Icons.AutoMirrored.Filled.Article,
                         onClick = onLicensesPressed
                     )
-                )
+                ),
+                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
             )
         }
     }

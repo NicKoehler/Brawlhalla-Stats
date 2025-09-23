@@ -53,6 +53,7 @@ import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoritesState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -90,7 +91,8 @@ fun FavoritesScreen(
     val clans = state.clans
 
     Scaffold(
-        modifier.fillMaxSize(),
+        modifier
+            .fillMaxSize(),
         snackbarHost = {
             SnackbarHost(snackBarHostState)
         },
@@ -103,7 +105,7 @@ fun FavoritesScreen(
                     }
                 }
             )
-        }
+        },
     ) {
         if (state.players.isEmpty() && state.clans.isEmpty()) {
             Box(
@@ -127,6 +129,7 @@ fun FavoritesScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FlowRow(
+                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets),
                 horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
@@ -170,7 +173,9 @@ fun FavoritesScreen(
                         FavoriteType.Players -> draggablePlayersState.listState
                         FavoriteType.Clans -> draggableClansState.listState
                     },
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .padding(horizontal = Spacing.scaffoldWindowInsets)
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {

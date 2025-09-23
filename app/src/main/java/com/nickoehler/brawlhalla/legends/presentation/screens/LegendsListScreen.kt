@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,7 @@ import com.nickoehler.brawlhalla.legends.presentation.components.LazyLegendsCard
 import com.nickoehler.brawlhalla.legends.presentation.components.legendSample
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -101,8 +103,11 @@ fun LegendListScreen(
         floatingActionButton = {
             CustomFloatingActionButton(lazyColumnState)
         },
-        modifier = modifier.nestedScroll(nestedScrollConnection),
+        modifier = modifier
+            .safeDrawingPadding()
+            .nestedScroll(nestedScrollConnection),
     ) { padding ->
+
         Box(
             modifier = Modifier
                 .semantics { isTraversalGroup = true }
@@ -128,7 +133,6 @@ fun LegendListScreen(
                         lazyColumnState.animateScrollToItem(0)
                     }
                 },
-                onSearch = {},
                 onQueryChange = {
                     onLegendAction(LegendAction.QueryChange(it))
                 },
@@ -137,11 +141,13 @@ fun LegendListScreen(
                         stringResource(R.string.search)
                     )
                 },
+                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
             )
         }
         LazyLegendsCards(
             state = state,
-            modifier = Modifier.padding(padding),
+            modifier = Modifier
+                .padding(horizontal = Spacing.scaffoldWindowInsets),
             lazyColumnState = lazyColumnState,
             onLegendAction = onLegendAction,
             onWeaponAction = onWeaponAction,

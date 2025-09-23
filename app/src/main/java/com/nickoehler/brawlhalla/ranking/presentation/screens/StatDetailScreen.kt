@@ -3,16 +3,19 @@ package com.nickoehler.brawlhalla.ranking.presentation.screens
 import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -22,8 +25,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material3.ButtonGroupDefaults
@@ -32,13 +35,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -48,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
@@ -105,6 +111,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStringResource
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -133,6 +140,10 @@ fun StatDetailScreen(
             screenWidth.div(itemSize).toInt().coerceAtLeast(2)
         }
     }
+
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
 
     ObserveAsEvents(events) { event ->
         when (event) {
@@ -217,12 +228,15 @@ fun StatDetailScreen(
         }
     }
     Scaffold(
-        modifier = modifier.onGloballyPositioned { layoutCoordinates ->
-            val widthInPx = layoutCoordinates.size.width
-            screenWidth = with(density) { widthInPx.toDp() }
-        },
+        modifier = modifier
+            .onGloballyPositioned { layoutCoordinates ->
+                val widthInPx = layoutCoordinates.size.width
+                screenWidth = with(density) { widthInPx.toDp() }
+            }
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -232,23 +246,7 @@ fun StatDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton({
-                        if (playerStat != null) {
-                            clipboard.nativeClipboard.setPrimaryClip(
-                                ClipData.newPlainText(
-                                    "",
-                                    AnnotatedString(
-                                        state.selectedStatDetail.brawlhallaId.toString()
-                                    )
-                                )
-                            )
-                        }
-                    }) {
-                        Icon(
-                            Icons.Default.Pin,
-                            stringResource(R.string.copy_id),
-                        )
-                    }
+
                     IconButton({
                         if (playerStat != null) {
                             onStatDetailAction(
@@ -273,6 +271,7 @@ fun StatDetailScreen(
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         if (state.isStatDetailLoading) {
@@ -292,15 +291,42 @@ fun StatDetailScreen(
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
+
+                            Spacer(Modifier.width(10.dp))
+                            Row(verticalAlignment = Alignment.Bottom) {
+                                Text(
+                                    "id",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                )
+                                Icon(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable {
+                                            clipboard.nativeClipboard.setPrimaryClip(
+                                                ClipData.newPlainText(
+                                                    "",
+                                                    AnnotatedString(
+                                                        state.selectedStatDetail.brawlhallaId.toString()
+                                                    )
+                                                )
+                                            )
+                                        },
+                                    imageVector = Icons.Default.CopyAll,
+                                    contentDescription = stringResource(R.string.copy_id),
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
                 }
             )
         }
-    ) { paddingValues ->
+    ) { padding ->
         LazyVerticalGrid(
             modifier = modifier
-                .padding(paddingValues)
+                .padding(padding)
+                .padding(horizontal = Spacing.scaffoldWindowInsets)
                 .fillMaxWidth(),
             contentPadding = PaddingValues(8.dp),
             columns = GridCells.Fixed(columns),
