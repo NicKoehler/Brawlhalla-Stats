@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.settings.presentation.screens
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -161,7 +162,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text("Brawlhalla", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    CustomCard(contentPadding = 4.dp) {
+                    CustomCard(contentPadding = PaddingValues(4.dp)) {
                         Text(
                             BuildConfig.VERSION_NAME,
                             modifier = Modifier.padding(horizontal = 4.dp)

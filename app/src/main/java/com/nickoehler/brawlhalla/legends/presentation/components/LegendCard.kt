@@ -86,16 +86,16 @@ fun LegendCard(
         Spacer(Modifier.size(20.dp))
         Column(verticalArrangement = Arrangement.SpaceAround) {
             WeaponButton(
-                legend?.weaponOne,
-                {
+                weapon = legend?.weaponOne,
+                onClick = {
                     if (legend != null) {
                         onWeaponAction(WeaponAction.Click(legend.weaponOne))
                     }
                 })
             Spacer(modifier = Modifier.size(10.dp))
             WeaponButton(
-                legend?.weaponTwo,
-                {
+                weapon = legend?.weaponTwo,
+                onClick = {
                     if (legend != null) {
                         onWeaponAction(WeaponAction.Click(legend.weaponTwo))
                     }

@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
@@ -28,7 +29,7 @@ fun RankingSoloCard(
     CustomCard(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        contentPadding = 10.dp,
+        contentPadding = PaddingValues(10.dp),
         onClick = {
             if (ranking != null) {
                 onRankingAction(

@@ -34,8 +34,14 @@ fun LegendDetailToolBar(
                 Icon(Icons.Default.Info, "lore")
             }
             Spacer(modifier = Modifier.weight(1f))
-            WeaponButton(legend?.weaponOne, onWeaponAction)
-            WeaponButton(legend?.weaponTwo, onWeaponAction)
+            WeaponButton(
+                weapon = legend?.weaponOne,
+                onClick = onWeaponAction
+            )
+            WeaponButton(
+                weapon = legend?.weaponTwo,
+                onClick = onWeaponAction
+            )
         }
     }
 }

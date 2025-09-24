@@ -15,9 +15,9 @@ fun LegendDetailStats(
     if (isLoading || legend != null) {
         LegendStat.entries.forEachIndexed { index, stat ->
             LegendStatItem(
-                stat,
-                legend?.getStat(stat),
-                onLegendAction,
+                stat = stat,
+                statValue = legend?.getStat(stat),
+                onLegendAction = onLegendAction,
                 delayMillis = 100 * index
             )
         }

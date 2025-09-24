@@ -28,7 +28,7 @@ fun RankingCard(
         )
 
         is RankingUi.RankingTeamUi -> RankingTeamCard(
-            ranking,
+            ranking = ranking,
             onRankingAction = onRankingAction
         )
 

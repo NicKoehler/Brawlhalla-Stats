@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +30,7 @@ fun CustomCard(
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     borderRadius: Dp = 40.dp,
-    contentPadding: Dp = 20.dp,
+    contentPadding: PaddingValues = PaddingValues(20.dp),
     content: @Composable (RowScope.() -> Unit),
 ) {
     var cardModifier = modifier

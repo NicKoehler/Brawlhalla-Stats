@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.core.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -20,14 +21,14 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun WeaponButton(
+    modifier: Modifier = Modifier,
     weapon: WeaponUi? = null,
-    onClick: (WeaponAction) -> Unit = {},
-    modifier: Modifier = Modifier
+    onClick: (WeaponAction) -> Unit = {}
 ) {
     CustomCard(
         modifier = modifier.size(35.dp),
         horizontalArrangement = Arrangement.Center,
-        contentPadding = if (weapon != null) 8.dp else 0.dp,
+        contentPadding = PaddingValues(if (weapon != null) 8.dp else 0.dp),
         borderRadius = 12.dp,
         onClick = { if (weapon != null) onClick(WeaponAction.Click(weapon)) },
         color = MaterialTheme.colorScheme.primary,
@@ -58,8 +59,8 @@ private fun WeaponButtonPreview() {
             Column {
 
                 WeaponButton(
-                    "hammer".toWeaponUi(),
-                    {}
+                    weapon = "hammer".toWeaponUi(),
+                    onClick = {}
                 )
 
                 WeaponButton()
