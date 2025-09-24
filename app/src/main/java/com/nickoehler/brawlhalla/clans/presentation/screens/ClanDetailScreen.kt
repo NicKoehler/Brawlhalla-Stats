@@ -186,8 +186,8 @@ fun ClanDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Spacing.scaffoldWindowInsets)
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

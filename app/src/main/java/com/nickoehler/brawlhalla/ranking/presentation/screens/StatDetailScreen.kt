@@ -25,7 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
-import androidx.compose.material.icons.filled.CopyAll
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Poll
 import androidx.compose.material.icons.filled.QueryStats
@@ -53,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalClipboard
@@ -271,7 +272,7 @@ fun StatDetailScreen(
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         if (state.isStatDetailLoading) {
@@ -293,15 +294,23 @@ fun StatDetailScreen(
                             )
 
                             Spacer(Modifier.width(10.dp))
-                            Row(verticalAlignment = Alignment.Bottom) {
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier.padding(bottom = 2.dp)
+                            ) {
                                 Text(
                                     "id",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                                )
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+
+                                    )
                                 Icon(
                                     modifier = Modifier
-                                        .size(20.dp)
+                                        .graphicsLayer {
+                                            rotationX = 180f
+                                        }
+                                        .padding(top = 4.dp)
+                                        .size(15.dp)
                                         .clickable {
                                             clipboard.nativeClipboard.setPrimaryClip(
                                                 ClipData.newPlainText(
@@ -312,7 +321,7 @@ fun StatDetailScreen(
                                                 )
                                             )
                                         },
-                                    imageVector = Icons.Default.CopyAll,
+                                    imageVector = Icons.Default.ContentCopy,
                                     contentDescription = stringResource(R.string.copy_id),
                                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                                 )
@@ -326,7 +335,7 @@ fun StatDetailScreen(
         LazyVerticalGrid(
             modifier = modifier
                 .padding(padding)
-                .padding(horizontal = Spacing.scaffoldWindowInsets)
+                .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp)
                 .fillMaxWidth(),
             contentPadding = PaddingValues(8.dp),
             columns = GridCells.Fixed(columns),
@@ -761,7 +770,8 @@ private fun StatDetailHeader(
         } else if (state.selectedStatDetail != null) {
             if (state.selectedStatDetail.clan != null) {
                 CustomCard(
-                    contentPadding = 10.dp,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    contentPadding = PaddingValues(vertical = 10.dp, horizontal = 20.dp),
                     onClick = {
                         onClanSelection(state.selectedStatDetail.clan.clanId)
                     }
