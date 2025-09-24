@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -60,6 +61,7 @@ fun LazyLegendsCards(
     LazyColumn(
         modifier = modifier,
         state = lazyColumnState,
+        contentPadding = PaddingValues(bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -138,7 +140,8 @@ fun LazyLegendsCards(
         } else {
             items(state.legends, key = { legend -> legend.legendId }) { legend ->
                 LegendCard(
-                    modifier = Modifier.animateItem(),
+                    modifier = Modifier
+                        .animateItem(),
                     legend = legend,
                     onLegendAction = onLegendAction,
                     onWeaponAction = onWeaponAction
