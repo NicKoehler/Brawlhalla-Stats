@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -64,6 +67,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,7 +119,6 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.Spacing
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -285,25 +288,35 @@ fun StatDetailScreen(
                                     .shimmerEffect()
                             )
                         } else if (playerStat != null) {
-                            Text(
-                                playerStat.name,
-                                fontSize = 30.sp,
-                                lineHeight = 30.sp,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
+                            BasicText(
+                                text = playerStat.name,
+                                style = TextStyle.Default.copy(
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontSize = 30.sp,
+                                    lineHeight = 30.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                ),
+                                softWrap = false,
+                                modifier = Modifier.widthIn(max = 250.dp),
+                                autoSize = TextAutoSize.StepBased(
+                                    minFontSize = 12.sp,
+                                    maxFontSize = 30.sp,
+                                    stepSize = 1.sp
+                                )
                             )
-
                             Spacer(Modifier.width(10.dp))
                             Row(
                                 verticalAlignment = Alignment.Bottom,
-                                modifier = Modifier.padding(bottom = 2.dp)
+                                modifier = Modifier
+                                    .padding(bottom = 2.dp)
                             ) {
                                 Text(
                                     "id",
                                     style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-
-                                    )
+                                    softWrap = false,
+                                )
                                 Icon(
                                     modifier = Modifier
                                         .graphicsLayer {
