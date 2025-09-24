@@ -58,7 +58,7 @@ class StatDetailViewModel(
                 selectedStatDetail = null,
                 isStatDetailLoading = true,
                 isStatDetailFavorite = false,
-                selectedStatType = StatType.General
+                selectedStatType = StatType.Stats
             )
         }
         viewModelScope.launch {
@@ -124,7 +124,7 @@ class StatDetailViewModel(
                     state.copy(
                         isRankingDetailLoading = false,
                         rankingEnabled = false,
-                        selectedStatType = StatType.General
+                        selectedStatType = StatType.Stats
                     )
                 }
                 _uiEvents.send(UiEvent.Error(error))
@@ -133,7 +133,7 @@ class StatDetailViewModel(
     }
 
     private fun selectStatType(stat: StatType) {
-        if (stat == StatType.Ranking && _state.value.selectedStatDetail != null) {
+        if (stat == StatType.Rankings && _state.value.selectedStatDetail != null) {
             selectRankingDetail(_state.value.selectedStatDetail!!.brawlhallaId)
         }
 

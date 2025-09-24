@@ -43,7 +43,7 @@ fun CustomLevelProgressBar(
             AnimatedLinearProgressBar(
                 percentage,
                 key,
-                height = 15.dp,
+                height = 20.dp,
                 modifier = Modifier.fillMaxWidth()
             )
             if (nextLevel == null) {

@@ -359,9 +359,9 @@ private fun LazyGridScope.stats(
     playerRanking: RankingDetailUi?,
 ) {
     when (state.selectedStatType) {
-        StatType.General -> {
+        StatType.Stats -> {
             when (state.selectedStatFilterType) {
-                StatFilterType.Stat -> generalStat(playerStat)
+                StatFilterType.General -> generalStat(playerStat)
                 StatFilterType.Legends -> generalLegendStat(
                     state.statLegendSortType,
                     playerStat,
@@ -372,7 +372,7 @@ private fun LazyGridScope.stats(
             }
         }
 
-        StatType.Ranking -> {
+        StatType.Rankings -> {
             when (state.selectedRankingFilterType) {
                 RankingFilterType.Stat -> rankingStat(playerRanking)
                 RankingFilterType.Legends -> rankingLegends(
@@ -785,7 +785,7 @@ private fun StatDetailHeader(
                 state.selectedStatDetail.name,
                 state.selectedStatDetail.level,
                 state.selectedStatDetail.nextLevel,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Text("XP ${state.selectedStatDetail.xp.formatted}")
@@ -816,16 +816,16 @@ private fun StatDetailHeader(
                 ) {
                     Icon(
                         when (statType) {
-                            StatType.General -> Icons.Default.QueryStats
-                            StatType.Ranking -> Icons.Default.Poll
+                            StatType.Stats -> Icons.Default.QueryStats
+                            StatType.Rankings -> Icons.Default.Poll
                         },
                         null
                     )
                     Text(
                         stringResource(
                             when (statType) {
-                                StatType.General -> R.string.stats
-                                StatType.Ranking -> R.string.rankings
+                                StatType.Stats -> R.string.stats
+                                StatType.Rankings -> R.string.rankings
                             }
                         )
                     )
@@ -841,7 +841,7 @@ private fun StatDetailHeader(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 when (stateType) {
-                    StatType.General -> {
+                    StatType.Stats -> {
                         StatFilterType.entries.forEachIndexed { index, statType ->
                             ToggleButton(
                                 checked = state.selectedStatFilterType == statType,
@@ -864,7 +864,7 @@ private fun StatDetailHeader(
                                 Text(
                                     stringResource(
                                         when (statType) {
-                                            StatFilterType.Stat -> R.string.stats
+                                            StatFilterType.General -> R.string.general
                                             StatFilterType.Legends -> R.string.legends
                                         }
                                     )
@@ -873,7 +873,7 @@ private fun StatDetailHeader(
                         }
                     }
 
-                    StatType.Ranking -> {
+                    StatType.Rankings -> {
                         RankingFilterType.entries.forEachIndexed { index, statType ->
                             ToggleButton(
                                 checked = state.selectedRankingFilterType == statType,
@@ -898,8 +898,8 @@ private fun StatDetailHeader(
                                     stringResource(
                                         when (statType) {
                                             RankingFilterType.Legends -> R.string.legends
-                                            RankingFilterType.Teams -> R.string.teams
-                                            RankingFilterType.Stat -> R.string.stats
+                                            RankingFilterType.Teams -> R.string.stats_2v2
+                                            RankingFilterType.Stat -> R.string.stats_1v1
                                         }
                                     )
                                 )
@@ -959,7 +959,7 @@ private fun RankingDetailScreenRankingLoadingPreview() {
                 state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                     selectedRankingDetail = rankingDetailSample.toRankingDetailUi(),
-                    selectedStatType = StatType.Ranking
+                    selectedStatType = StatType.Rankings
                 ),
                 {},
                 {},
@@ -980,7 +980,7 @@ private fun RankingDetailScreenRankingPreview() {
                 state = StatDetailState(
                     selectedStatDetail = statDetailSample.toStatDetailUi(),
                     isRankingDetailLoading = true,
-                    selectedStatType = StatType.Ranking
+                    selectedStatType = StatType.Rankings
                 ),
                 {},
                 {},

@@ -65,7 +65,7 @@
     <string name="koGadgets">Kos Gadgets</string>
     <string name="timeHeldWeaponOne">Time Held Weapon One</string>
     <string name="timeHeldWeaponTwo">Time Held Weapon Two</string>
-    <string name="teams">Teams</string>
+    <string name="stats_2v2">2v2</string>
     <string name="tier">Tier</string>
     <string name="winRate">Win Rate</string>
     <string name="goToTeamMate">Go to Team Mate</string>
@@ -97,4 +97,6 @@
     <string name="developer">Developer</string>
     <string name="settings_language_title">Language</string>
     <string name="goToLegend">Go to %s</string>
+    <string name="stats_1v1">1v1</string>
+    <string name="general">General</string>
 </resources>

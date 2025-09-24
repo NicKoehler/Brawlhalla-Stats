@@ -65,7 +65,7 @@
     <string name="koGadgets">Kos con gadget</string>
     <string name="timeHeldWeaponOne">Tempo con arma uno</string>
     <string name="timeHeldWeaponTwo">Tempo con arma due</string>
-    <string name="teams">Squadre</string>
+    <string name="stats_2v2">2v2</string>
     <string name="tier">Tier</string>
     <string name="winRate">Percentuale di vittoria</string>
     <string name="goToTeamMate">Vai al compagno di squadra</string>
@@ -97,5 +97,7 @@
     <string name="developer">Sviluppatore</string>
     <string name="settings_language_title">Lingua</string>
     <string name="goToLegend">Vai a %s</string>
+    <string name="stats_1v1">1v1</string>
+    <string name="general">Generali</string>
 </resources>
 

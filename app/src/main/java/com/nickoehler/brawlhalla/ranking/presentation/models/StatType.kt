@@ -1,17 +1,17 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
 enum class StatType {
-    General,
-    Ranking,
+    Stats,
+    Rankings,
 }
 
 enum class RankingFilterType {
     Stat,
-    Legends,
-    Teams
+    Teams,
+    Legends
 }
 
 enum class StatFilterType {
-    Stat,
+    General,
     Legends,
 }
