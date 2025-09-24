@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 
 
 data class ModalBottomSheetItem<T>(
@@ -58,10 +59,12 @@ fun <T> CustomModalBottomSheet(
         Box(
             Modifier
                 .clip(RoundedCornerShape(25.dp))
-                .padding(10.dp)
+                .padding(Spacing.scaffoldWindowInsets)
                 .fillMaxWidth()
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 items.forEach { item ->
                     Row(
                         Modifier
