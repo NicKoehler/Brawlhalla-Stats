@@ -474,51 +474,39 @@ private fun LazyGridScope.rankingLegends(
 private fun LazyGridScope.rankingStat(
     playerRanking: RankingDetailUi?,
 ) {
-    item {
-        CustomRankingField(
-            R.string.rating,
-            playerRanking?.rating?.formatted,
-            modifier = Modifier.animateItem()
 
-        )
-    }
-    item {
+    items(
+        listOf(
+            Pair(
+                R.string.rating,
+                playerRanking?.rating?.formatted
+            ),
+            Pair(
+                R.string.peakRating,
+                playerRanking?.peakRating?.formatted
+            ),
+            Pair(
+                R.string.games,
+                playerRanking?.games?.formatted
+            ),
+            Pair(
+                R.string.wins,
+                playerRanking?.wins?.formatted
+            ),
+            Pair(
+                R.string.estimatedGlory,
+                playerRanking?.estimatedGlory?.formatted
+            ),
+            Pair(
+                R.string.estimatedEloReset,
+                playerRanking?.estimatedEloReset?.formatted
+            ),
+        ),
+        key = { it.first }
+    ) { (key, value) ->
         CustomRankingField(
-            R.string.peakRating,
-            playerRanking?.peakRating?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.games,
-            playerRanking?.games?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.wins,
-            playerRanking?.wins?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.estimatedGlory,
-            playerRanking?.estimatedGlory?.formatted,
-            modifier = Modifier.animateItem()
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.estimatedEloReset,
-            playerRanking?.estimatedEloReset?.formatted,
+            key = key,
+            value = value,
             modifier = Modifier.animateItem()
         )
     }
@@ -635,103 +623,63 @@ private fun CustomRankedDropDown(
 
 
 private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
-    item {
+
+    items(
+        items = listOf(
+            Pair(
+                R.string.games,
+                playerStat?.games?.formatted
+            ),
+            Pair(
+                R.string.wins,
+                playerStat?.wins?.formatted
+            ),
+            Pair(
+                R.string.koBomb,
+                playerStat?.koBomb?.formatted
+            ),
+            Pair(
+                R.string.damageBomb,
+                playerStat?.damageBomb?.formatted
+            ),
+            Pair(
+                R.string.koMine,
+                playerStat?.koMine?.formatted
+            ),
+            Pair(
+                R.string.damageMine,
+                playerStat?.damageMine?.formatted
+            ),
+            Pair(
+                R.string.koSpikeball,
+                playerStat?.koSpikeball?.formatted
+            ),
+            Pair(
+                R.string.damageSpikeball,
+                playerStat?.damageSpikeball?.formatted
+            ),
+            Pair(
+                R.string.koSidekick,
+                playerStat?.koSidekick?.formatted
+            ),
+            Pair(
+                R.string.damageSidekick,
+                playerStat?.damageSidekick?.formatted
+            ),
+            Pair(
+                R.string.koSnowball,
+                playerStat?.koSnowball?.formatted
+            ),
+            Pair(
+                R.string.hitSnowball,
+                playerStat?.hitSnowball?.formatted
+            ),
+        ),
+        key = { it.first }
+    ) { (key, value) ->
         CustomRankingField(
-            R.string.games,
-            playerStat?.games?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.wins,
-            playerStat?.wins?.formatted,
-            modifier = Modifier.animateItem()
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.koBomb,
-            playerStat?.koBomb?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.damageBomb,
-            playerStat?.damageBomb?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.koMine,
-            playerStat?.koMine?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.damageMine,
-            playerStat?.damageMine?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.koSpikeball,
-            playerStat?.koSpikeball?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.damageSpikeball,
-            playerStat?.damageSpikeball?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.koSidekick,
-            playerStat?.koSidekick?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-    item {
-        CustomRankingField(
-            R.string.damageSidekick,
-            playerStat?.damageSidekick?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.koSnowball,
-            playerStat?.koSnowball?.formatted,
-            modifier = Modifier.animateItem()
-
-        )
-    }
-
-    item {
-        CustomRankingField(
-            R.string.hitSnowball,
-            playerStat?.hitSnowball?.formatted,
+            key = key,
+            value = value,
             modifier = Modifier.animateItem()
         )
     }

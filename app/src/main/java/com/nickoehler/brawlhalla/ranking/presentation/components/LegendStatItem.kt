@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,15 +12,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +44,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.screens.statDetailSample
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun LegendStatItem(
@@ -42,8 +52,18 @@ fun LegendStatItem(
     onStatDetailAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(100L)
+        visible = true
+    }
+
+    val animatedFloat by animateFloatAsState(if (visible) 1f else 0f)
+
     CustomCard(
-        modifier = modifier,
+        modifier = modifier
+            .scale(animatedFloat)
+            .alpha(animatedFloat),
         onClick = onStatDetailAction
     ) {
         Column(
@@ -131,153 +151,98 @@ fun LegendStatItemDetail(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item {
+            items(
+                items = listOf(
+                    Pair(
+                        R.string.games,
+                        legend.games.formatted
+                    ),
+                    Pair(
+                        R.string.wins,
+                        legend.wins.formatted
+                    ),
+                    Pair(
+                        R.string.kos,
+                        legend.kos.formatted
+                    ),
+                    Pair(
+                        R.string.falls,
+                        legend.falls.formatted
+                    ),
+                    Pair(
+                        R.string.suicides,
+                        legend.suicides.formatted
+                    ),
+                    Pair(
+                        R.string.teamKos,
+                        legend.teamKos.formatted
+                    ),
+                    Pair(
+                        R.string.damageDealt,
+                        legend.damageDealt.formatted
+                    ),
+                    Pair(
+                        R.string.damageTaken,
+                        legend.damageTaken.formatted
+                    ),
+                    Pair(
+                        R.string.koWeaponOne,
+                        legend.koWeaponOne.formatted
+                    ),
+                    Pair(
+                        R.string.koWeaponTwo,
+                        legend.koWeaponTwo.formatted
+                    ),
+                    Pair(
+                        R.string.damageWeaponOne,
+                        legend.damageWeaponOne.formatted
+                    ),
+                    Pair(
+                        R.string.damageWeaponTwo,
+                        legend.damageWeaponTwo.formatted
+                    ),
+                    Pair(
+                        R.string.timeHeldWeaponOne,
+                        legend.timeHeldWeaponOne.formatted
+                    ),
+                    Pair(
+                        R.string.timeHeldWeaponTwo,
+                        legend.timeHeldWeaponTwo.formatted
+                    ),
+                    Pair(
+                        R.string.koUnarmed,
+                        legend.koUnarmed.formatted
+                    ),
+                    Pair(
+                        R.string.damageUnarmed,
+                        legend.damageUnarmed.formatted
+                    ),
+                    Pair(
+                        R.string.koThrownItem,
+                        legend.koThrownItem.formatted
+                    ),
+                    Pair(
+                        R.string.damageThrownItem,
+                        legend.damageThrownItem.formatted
+                    ),
+                    Pair(
+                        R.string.koGadgets,
+                        legend.koGadgets.formatted
+                    ),
+                    Pair(
+                        R.string.damageGadgets,
+                        legend.damageGadgets.formatted
+                    ),
+                ),
+                key = { it.first }
+            ) { (key, value) ->
                 CustomRankingField(
-                    R.string.games,
-                    legend.games.formatted,
-                    background
+                    key = key,
+                    value = value,
+                    color = background
                 )
             }
-            item {
-                CustomRankingField(
-                    R.string.wins,
-                    legend.wins.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.kos,
-                    legend.kos.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.falls,
-                    legend.falls.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.suicides,
-                    legend.suicides.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.teamKos,
-                    legend.teamKos.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.damageDealt,
-                    legend.damageDealt.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.damageTaken,
-                    legend.damageTaken.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.koWeaponOne,
-                    legend.koWeaponOne.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.koWeaponTwo,
-                    legend.koWeaponTwo.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.damageWeaponOne,
-                    legend.damageWeaponOne.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.damageWeaponTwo,
-                    legend.damageWeaponTwo.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.timeHeldWeaponOne,
-                    legend.timeHeldWeaponOne.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.timeHeldWeaponTwo,
-                    legend.timeHeldWeaponTwo.formatted,
-                    background
-                )
-            }
-
-            item { CustomRankingField(R.string.koUnarmed, legend.koUnarmed.formatted, background) }
-            item {
-                CustomRankingField(
-                    R.string.damageUnarmed,
-                    legend.damageUnarmed.formatted,
-                    background
-                )
-            }
-
-
-            item {
-                CustomRankingField(
-                    R.string.koThrownItem,
-                    legend.koThrownItem.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.damageThrownItem,
-                    legend.damageThrownItem.formatted,
-                    background
-                )
-            }
-
-            item {
-                CustomRankingField(
-                    R.string.koGadgets,
-                    legend.koGadgets.formatted,
-                    background
-                )
-            }
-            item {
-                CustomRankingField(
-                    R.string.damageGadgets,
-                    legend.damageGadgets.formatted,
-                    background
-                )
-            }
-
         }
-
     }
 }
 
