@@ -6,62 +6,35 @@ ktor = "3.3.0"
 coil = "3.3.0"
 koin = "4.1.1"
 kotlin = "2.2.20"
-coreKtx = "1.17.0"
+nav3Core = "1.0.0-alpha10"
 composeBom = "2025.09.01"
 aboutlibraries = "12.2.4"
 glanceAppwidget = "1.1.1"
 coreSplashscreen = "1.0.1"
-navigationCompose = "2.9.5"
 material3Expressive = "1.5.0-alpha04"
-datastorePreferences = "1.1.7"
-adaptiveLayoutAndroid = "1.1.0"
-kotlinxCoroutinesAndroid = "1.10.2"
-kotlinxSerializationJsonVersion = "1.9.0"
-
-nav3Core = "1.0.0-alpha10"
-lifecycleViewmodelNav3 = "2.10.0-SNAPSHOT"
-kotlinxSerializationCore = "1.9.0"
-material3Adaptive = "1.2.0-beta03"
 adaptiveNavigation3 = "1.0.0-SNAPSHOT"
-lifecycleRuntimeCompose = "2.9.4"
+lifecycleViewmodelNav3 = "2.10.0-SNAPSHOT"
 
 [libraries]
 # AndroidX Core
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "navigationCompose" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.11.0" }
 
 # Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Expressive" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 # Compose Adaptive
-androidx-adaptive-layout-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout-android", version.ref = "adaptiveLayoutAndroid" }
-androidx-adaptive-navigation-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation-android", version.ref = "adaptiveLayoutAndroid" }
 androidx-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3Expressive" }
 
 # Data & Persistence
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
-androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-jetbrains-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }
 
 # Networking (Ktor)
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-
-# Coroutines
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 
 # Image Loading (Coil)
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -70,7 +43,6 @@ coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 
 # Glance (App Widgets)
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
-androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
 
 # Dependency Injection (Koin)
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
@@ -84,15 +56,11 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 
 # Optional add-on libraries
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 
 # Note: The Material3 adaptive layouts library for Navigation 3 is currently
 # only available in snapshot builds. Follow the instructions at androidx.dev to
 # add the snapshot builds repository to your project.
-androidx-compose-material3-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3Expressive" }
-androidx-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "material3Adaptive" }
 androidx-compose-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "adaptiveNavigation3" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

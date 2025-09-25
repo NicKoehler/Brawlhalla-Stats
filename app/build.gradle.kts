@@ -92,26 +92,10 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material3.adaptive)
-    implementation(libs.androidx.adaptive.layout.android)
-    implementation(libs.androidx.adaptive.navigation.android)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.material3.windowsizeclass)
     implementation(libs.androidx.compose.adaptive.navigation3)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(libs.jetbrains.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.material.icons.extended)
-    implementation(libs.androidx.datastore.preferences)
 
     // coil
     implementation(libs.coil.compose)
@@ -126,7 +110,6 @@ dependencies {
 
     // ktor
     implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -135,8 +118,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     // room
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
 
     // licenses
@@ -144,12 +125,10 @@ dependencies {
 
     // widget
     implementation(libs.androidx.glance.appwidget)
-    implementation(libs.androidx.glance.material3)
 
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation(libs.kotlinx.serialization.core)
 
 }
 
