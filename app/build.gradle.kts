@@ -159,3 +159,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
 
 }
+
+aboutLibraries {
+    library {
+        duplicationMode = com.mikepenz.aboutlibraries.plugin.DuplicateMode.MERGE
+        duplicationRule = com.mikepenz.aboutlibraries.plugin.DuplicateRule.SIMPLE
+    }
+}
