@@ -35,6 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -67,13 +69,15 @@ fun FavoritesScreen(
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
 
+    val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
     val dismissPlayersStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
     val dismissClansStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
-    val coroutineScope = rememberCoroutineScope()
 
     val draggablePlayersState = rememberDraggableListState(
         onMove = { fromIndex, toIndex ->
             onFavoriteAction(FavoriteAction.PlayerDragged(fromIndex, toIndex))
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         },
         onMoveCompleted = {
             onFavoriteAction(FavoriteAction.PersistPlayers)
@@ -83,6 +87,7 @@ fun FavoritesScreen(
     val draggableClansState = rememberDraggableListState(
         onMove = { fromIndex, toIndex ->
             onFavoriteAction(FavoriteAction.ClanDragged(fromIndex, toIndex))
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         },
         onMoveCompleted = {
             onFavoriteAction(FavoriteAction.PersistClans)
@@ -181,7 +186,6 @@ fun FavoritesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-
                     when (state.selectedFavoriteType) {
                         FavoriteType.Players ->
                             draggableItems(
@@ -202,6 +206,7 @@ fun FavoritesScreen(
                                         onFavoriteAction(
                                             FavoriteAction.DeletePlayer(player.id)
                                         )
+                                        haptic.performHapticFeedback(HapticFeedbackType.Reject)
                                     },
                                     {
                                         onFavoriteAction(
@@ -239,6 +244,7 @@ fun FavoritesScreen(
                                         onFavoriteAction(
                                             FavoriteAction.DeleteClan(clan.id)
                                         )
+                                        haptic.performHapticFeedback(HapticFeedbackType.Reject)
                                     },
                                     {
                                         onFavoriteAction(
