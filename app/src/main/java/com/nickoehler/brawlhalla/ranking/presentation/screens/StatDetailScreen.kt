@@ -262,6 +262,7 @@ fun StatDetailScreen(
                                     playerStat.name
                                 )
                             )
+                            haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                         }
                     }) {
                         Icon(

@@ -39,10 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -83,6 +85,7 @@ fun ClanDetailScreen(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
+    val haptic = LocalHapticFeedback.current
     var screenWidth by remember { mutableStateOf(0.dp) }
     val itemSize = 400.dp
     val columns by remember {
@@ -168,6 +171,7 @@ fun ClanDetailScreen(
                                         clan.id, clan.name
                                     )
                                 )
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                             }
                         }
                     ) {
