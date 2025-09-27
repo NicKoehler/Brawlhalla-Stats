@@ -25,11 +25,11 @@ data class StatDetailState(
     val rankingEnabled: Boolean = true,
     val modalType: RankingModalType? = null,
 
-    val statLegendSortType: StatLegendSortType = StatLegendSortType.Alpha,
-    val rankedLegendSortType: GeneralRankingSortType = GeneralRankingSortType.Alpha,
-    val teamSortType: GeneralRankingSortType = GeneralRankingSortType.Alpha,
+    val statLegendSortType: StatLegendSortType = StatLegendSortType.Time,
+    val rankedLegendSortType: GeneralRankingSortType = GeneralRankingSortType.Rating,
+    val teamSortType: GeneralRankingSortType = GeneralRankingSortType.Rating,
 
-    val statLegendSortReversed: Boolean = false,
-    val rankedLegendSortReversed: Boolean = false,
-    val teamSortReversed: Boolean = false,
+    val statLegendSortReversed: Boolean = true,
+    val rankedLegendSortReversed: Boolean = true,
+    val teamSortReversed: Boolean = true,
 )
