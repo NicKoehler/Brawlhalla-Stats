@@ -79,7 +79,7 @@ class PlayersWidget : GlanceAppWidget() {
     }
 
     fun LazyListScope.players(players: List<Player>, context: Context) {
-        items(players, { it.id.toLong() }) { player ->
+        items(players, { it.id }) { player ->
             Column {
                 Spacer(GlanceModifier.height(8.dp))
                 Button(

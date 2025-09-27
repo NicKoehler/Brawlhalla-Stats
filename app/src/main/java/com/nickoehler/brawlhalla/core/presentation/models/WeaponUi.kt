@@ -1,7 +1,9 @@
 package com.nickoehler.brawlhalla.core.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.util.getWeaponImageUrlFromWeaponName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class WeaponUi(
     val name: String,
     val imageUrl: String,

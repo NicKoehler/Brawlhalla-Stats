@@ -7,7 +7,7 @@ import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 
 data class LegendDetailUi(
-    val legendId: Int,
+    val legendId: Long,
     val legendNameKey: String,
     val bioName: String,
     val bioAka: String,

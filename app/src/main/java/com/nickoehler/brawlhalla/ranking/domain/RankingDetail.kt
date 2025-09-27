@@ -2,7 +2,7 @@ package com.nickoehler.brawlhalla.ranking.domain
 
 data class RankingDetail(
     val name: String,
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
     val rating: Int,
     val peakRating: Int,
     val tier: Tier,

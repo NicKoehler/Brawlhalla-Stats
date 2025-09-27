@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.legends.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,7 @@ import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProg
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toColor
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toIcon
 import com.nickoehler.brawlhalla.legends.presentation.mappers.toLocalizedString
@@ -37,17 +38,17 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 @Composable
 fun LegendStatItem(
     stat: LegendStat,
+    modifier: Modifier = Modifier,
     statValue: Int? = null,
-    onLegendAction: (LegendAction) -> Unit = {},
+    onLegendAction: (LegendDetailAction) -> Unit = {},
     delayMillis: Int = 0,
-    height: Dp = 40.dp,
-    modifier: Modifier = Modifier
+    height: Dp = 40.dp
 ) {
     CustomCard(
         modifier = modifier.fillMaxWidth(),
-        contentPadding = 15.dp,
+        contentPadding = PaddingValues(15.dp),
         onClick = {
-            if (statValue != null) onLegendAction(LegendAction.SelectStat(stat, statValue))
+            if (statValue != null) onLegendAction(LegendDetailAction.SelectStat(stat, statValue))
         },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
@@ -104,9 +105,9 @@ private fun StatRowPreview() {
             Column {
 
                 LegendStatItem(
-                    LegendStat.STRENGTH,
-                    10,
-                    {}
+                    stat = LegendStat.STRENGTH,
+                    statValue = 10,
+                    onLegendAction = {}
                 )
                 LegendStatItem(LegendStat.STRENGTH)
             }

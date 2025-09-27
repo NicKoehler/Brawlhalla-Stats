@@ -3,17 +3,17 @@ package com.nickoehler.brawlhalla.clans.presentation.model
 import androidx.compose.ui.graphics.Color
 import com.nickoehler.brawlhalla.clans.domain.ClanDetail
 import com.nickoehler.brawlhalla.clans.domain.ClanRankType
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableLong
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableZonedDateTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableZonedDateTime
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
 data class ClanDetailUi(
-    val id: Int,
+    val id: Long,
     val name: String,
     val createDate: DisplayableZonedDateTime,
-    val xp: DisplayableNumber,
+    val xp: DisplayableLong,
     val members: List<ClanMemberUi>
 )
 

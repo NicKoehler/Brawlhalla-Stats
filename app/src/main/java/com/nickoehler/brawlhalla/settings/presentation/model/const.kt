@@ -1,6 +1,12 @@
 package com.nickoehler.brawlhalla.settings.presentation.model
 
-import android.net.Uri
+import androidx.core.net.toUri
 
-val uriGithubAuthor = Uri.parse("https://github.com/NicKoehler")
-val uriGithubProject = Uri.parse("https://github.com/NicKoehler/Brawlhalla-Stats")
+val uriGithubAuthor = "https://github.com/NicKoehler".toUri()
+val uriGithubProject = "https://github.com/NicKoehler/Brawlhalla-Stats".toUri()
+
+val appLanguages = listOf(
+    Language("", ""), // default language
+    Language("en", "English"),
+    Language("it", "Italiano"),
+)

@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,10 +34,10 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
 fun RankingTeamCard(
+    modifier: Modifier = Modifier,
     ranking: RankingUi.RankingTeamUi? = null,
     onRankingAction: (RankingAction) -> Unit = {},
-    defaultExpanded: Boolean = false,
-    modifier: Modifier = Modifier
+    defaultExpanded: Boolean = false
 ) {
     var expanded by remember {
         mutableStateOf(defaultExpanded)
@@ -44,11 +45,11 @@ fun RankingTeamCard(
     CustomCard(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        contentPadding = 10.dp,
+        contentPadding = PaddingValues(10.dp),
         onClick = { expanded = !expanded }
     ) {
         Column {
-            Row (verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 RankCircle(ranking)
                 Spacer(Modifier.size(10.dp))
                 Column(
@@ -64,7 +65,9 @@ fun RankingTeamCard(
                 expanded
             ) {
                 Row(
-                    modifier = Modifier.padding(top = 4.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     if (ranking != null) {

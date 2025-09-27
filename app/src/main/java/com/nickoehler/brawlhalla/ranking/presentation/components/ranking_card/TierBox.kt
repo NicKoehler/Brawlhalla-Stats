@@ -13,12 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.ranking.presentation.models.TierUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toColor
 
 @Composable
-fun TierBox(ranking: DisplayableNumber, tier: TierUi) {
+fun TierBox(ranking: DisplayableInt, tier: TierUi) {
     Box(
         Modifier
             .clip(CircleShape)

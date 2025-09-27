@@ -47,10 +47,6 @@
     <string name="players">Giocatori</string>
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
-    <string name="areYouSureDeletePlayerTitle">Sei sicuro di voler eliminare questo giocatore?</string>
-    <string name="areYouSureDeletePlayerDesc">Conferma per eliminare questo giocatore</string>
-    <string name="areYouSureDeleteClanTitle">Sei sicuro di voler eliminare questo clan?</string>
-    <string name="areYouSureDeleteClanDesc">Conferma per eliminare questo clan</string>
     <string name="damageDealt">Danno inflitto</string>
     <string name="damageTaken">Danno subito</string>
     <string name="kos">Kos</string>
@@ -69,7 +65,7 @@
     <string name="koGadgets">Kos con gadget</string>
     <string name="timeHeldWeaponOne">Tempo con arma uno</string>
     <string name="timeHeldWeaponTwo">Tempo con arma due</string>
-    <string name="teams">Squadre</string>
+    <string name="stats_2v2">2v2</string>
     <string name="tier">Tier</string>
     <string name="winRate">Percentuale di vittoria</string>
     <string name="goToTeamMate">Vai al compagno di squadra</string>
@@ -89,10 +85,19 @@
     <string name="xp">Xp</string>
     <string name="createDate">Data di creazione: %s</string>
     <string name="copy_id">Copia ID</string>
-    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_system">Sistema</string>
     <string name="settings_theme_light">Chiaro</string>
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_theme_title">Tema</string>
     <string name="settings_title">Impostazioni</string>
+    <string name="filters">Filtri</string>
+    <string name="search_cant_search">Non puoi cercare in 2v2</string>
+    <string name="deleted">Cancellato</string>
+    <string name="source_code">Codice sorgente</string>
+    <string name="developer">Sviluppatore</string>
+    <string name="settings_language_title">Lingua</string>
+    <string name="goToLegend">Vai a %s</string>
+    <string name="stats_1v1">1v1</string>
+    <string name="general">Generali</string>
 </resources>
 

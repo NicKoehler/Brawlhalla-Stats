@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -24,67 +27,72 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
-import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailState
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendBioContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailStats
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailToolBar
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LegendDetailScreen(
-    state: LegendsListState,
+    state: LegendDetailState,
     modifier: Modifier = Modifier,
-    onWeaponAction: (WeaponAction) -> Unit = {},
-    onLegendAction: (LegendAction) -> Unit = {},
+    onLegendAction: (LegendDetailAction) -> Unit = {},
+    onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
+    Scaffold(
+        modifier = modifier.safeDrawingPadding(),
     ) {
-
-        val bottomSheetState = rememberModalBottomSheetState()
-        var showBottomSheet by remember { mutableStateOf(false) }
-        val legend = state.selectedLegendUi
-
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                sheetState = bottomSheetState,
-                onDismissRequest = { showBottomSheet = false }
-            ) {
-                LegendBioContent(legend, state.isDetailLoading)
-            }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier
+                .padding(it)
+                .padding(horizontal = Spacing.scaffoldWindowInsets)
         ) {
-            Spacer(modifier)
-            LegendDetailContent(
-                state.isDetailLoading,
-                legend
-            )
-            LegendDetailToolBar(
-                state.isDetailLoading,
-                legend,
-                { showBottomSheet = true },
-                onWeaponAction
-            )
-            LegendDetailStats(
-                state.isDetailLoading,
-                legend,
-                onLegendAction
-            )
+
+            val bottomSheetState = rememberModalBottomSheetState()
+            var showBottomSheet by remember { mutableStateOf(false) }
+            val legend = state.selectedLegendUi
+
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    sheetState = bottomSheetState,
+                    onDismissRequest = { showBottomSheet = false }
+                ) {
+                    LegendBioContent(legend, state.isDetailLoading)
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier)
+                LegendDetailContent(
+                    state.isDetailLoading,
+                    legend
+                )
+                LegendDetailToolBar(
+                    state.isDetailLoading,
+                    legend,
+                    { showBottomSheet = true },
+                    onWeaponAction
+                )
+                LegendDetailStats(
+                    state.isDetailLoading,
+                    legend,
+                    onLegendAction
+                )
+            }
+            Spacer(Modifier)
         }
-        Spacer(Modifier)
     }
 }
 
@@ -101,7 +109,7 @@ private fun LegendDetailScreenPreview() {
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 LegendDetailScreen(
-                    state = LegendsListState(
+                    state = LegendDetailState(
                         selectedLegendUi = legendDetailSample
                             .toLegendDetailUi(),
                     ),
@@ -122,7 +130,7 @@ private fun LegendDetailScreenLoadingPreview() {
                     .fillMaxSize()
             ) {
                 LegendDetailScreen(
-                    state = LegendsListState(isDetailLoading = true),
+                    state = LegendDetailState(isDetailLoading = true),
                 )
             }
         }

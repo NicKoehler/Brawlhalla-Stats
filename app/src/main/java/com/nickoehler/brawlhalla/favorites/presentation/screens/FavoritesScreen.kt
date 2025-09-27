@@ -1,30 +1,46 @@
 package com.nickoehler.brawlhalla.favorites.presentation.screens
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,36 +49,69 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
-import com.nickoehler.brawlhalla.core.presentation.AppBarAction
-import com.nickoehler.brawlhalla.core.presentation.components.CustomTopAppBar
-import com.nickoehler.brawlhalla.favorites.FavoriteAction
-import com.nickoehler.brawlhalla.favorites.presentation.FavoritesState
+import com.nickoehler.brawlhalla.core.presentation.components.draggableItems
+import com.nickoehler.brawlhalla.core.presentation.components.rememberDraggableListState
 import com.nickoehler.brawlhalla.favorites.presentation.components.FavoritesItem
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoritesState
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FavoritesScreen(
     state: FavoritesState,
+    snackBarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onInfoSelection: () -> Unit = {},
     onFavoriteAction: (FavoriteAction) -> Unit = {}
 ) {
+
+    val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+    val dismissPlayersStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
+    val dismissClansStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
+
+    val draggablePlayersState = rememberDraggableListState(
+        onMove = { fromIndex, toIndex ->
+            onFavoriteAction(FavoriteAction.PlayerDragged(fromIndex, toIndex))
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        },
+        onMoveCompleted = {
+            onFavoriteAction(FavoriteAction.PersistPlayers)
+        },
+    )
+
+    val draggableClansState = rememberDraggableListState(
+        onMove = { fromIndex, toIndex ->
+            onFavoriteAction(FavoriteAction.ClanDragged(fromIndex, toIndex))
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        },
+        onMoveCompleted = {
+            onFavoriteAction(FavoriteAction.PersistClans)
+        },
+    )
+    val players = state.players
+    val clans = state.clans
+
     Scaffold(
-        modifier.fillMaxSize(),
+        modifier
+            .fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
         topBar = {
-            CustomTopAppBar(
-                stringResource(R.string.favorites),
-                showSearch = false,
-                showInfo = true,
-                onAppBarAction = { action ->
-                    if (action is AppBarAction.OpenSettings) {
-                        onInfoSelection()
+            TopAppBar(
+                { Text(stringResource(R.string.favorites), fontWeight = FontWeight.Bold) },
+                actions = {
+                    IconButton(onClick = onInfoSelection) {
+                        Icon(Icons.Default.Settings, stringResource(R.string.settings_title))
                     }
                 }
             )
-        }
+        },
     ) {
         if (state.players.isEmpty() && state.clans.isEmpty()) {
             Box(
@@ -78,118 +127,140 @@ fun FavoritesScreen(
                     textAlign = TextAlign.Center
                 )
             }
-        } else {
-            val coroutineScope = rememberCoroutineScope()
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+        }
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FlowRow(
+                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets),
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
+                ToggleButton(
+                    checked = state.selectedFavoriteType == FavoriteType.Players,
+                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
+                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
 
-                val players = state.players
-                val clans = state.clans
-                SingleChoiceSegmentedButtonRow {
-                    SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.Players,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
-                        icon = {
-                            SegmentedButtonDefaults.Icon(
-                                activeContent = {
-                                    Icon(
-                                        Icons.Default.Person,
-                                        null
-                                    )
-                                },
-                                active = state.selectedFavoriteType == FavoriteType.Players
-                            )
-                        },
-                        enabled = state.players.isNotEmpty(),
-                        shape = SegmentedButtonDefaults.itemShape(0, 2),
-                    ) {
-                        Text(stringResource(R.string.players))
-                    }
-
-                    SegmentedButton(
-                        state.selectedFavoriteType == FavoriteType.Clans,
-                        { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
-                        icon = {
-                            SegmentedButtonDefaults.Icon(
-                                activeContent = {
-                                    Icon(
-                                        Icons.Default.People,
-                                        null
-                                    )
-                                },
-                                active = state.selectedFavoriteType == FavoriteType.Clans
-                            )
-                        },
-                        enabled = state.clans.isNotEmpty(),
-                        shape = SegmentedButtonDefaults.itemShape(1, 2)
-                    ) {
-                        Text(stringResource(R.string.clans))
-                    }
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.RadioButton },
+                    enabled = state.players.isNotEmpty(),
+                ) {
+                    Icon(
+                        Icons.Default.Person,
+                        stringResource(R.string.players)
+                    )
+                    Text(stringResource(R.string.players))
                 }
-                AnimatedContent(
-                    state.selectedFavoriteType,
-                    label = "selectedFavoriteType"
-                ) { type ->
-                    LazyColumn(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        item { Spacer(Modifier) }
-                        when (type) {
-                            FavoriteType.Players ->
-                                items(players, { player -> player.id }) { player ->
-                                    FavoritesItem(
-                                        coroutineScope,
-                                        player.name,
-                                        stringResource(R.string.areYouSureDeletePlayerTitle),
-                                        stringResource(R.string.areYouSureDeletePlayerDesc),
-                                        Icons.Default.Person,
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.DeletePlayer(player.id)
-                                            )
-                                        },
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.SelectPlayer(player.id)
-                                            )
-                                        },
-                                        Modifier
-                                            .fillParentMaxWidth()
-                                            .animateItem()
-                                    )
-                                }
 
-                            FavoriteType.Clans ->
-                                items(clans, { clan -> clan.id }) { clan ->
-                                    FavoritesItem(
-                                        coroutineScope,
-                                        clan.name,
-                                        stringResource(R.string.areYouSureDeleteClanTitle),
-                                        stringResource(R.string.areYouSureDeleteClanDesc),
-                                        Icons.Default.People,
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.DeleteClan(clan.id)
-                                            )
-                                        },
-                                        {
-                                            onFavoriteAction(
-                                                FavoriteAction.SelectClan(clan.id)
-                                            )
-                                        },
-                                        Modifier
-                                            .fillParentMaxWidth()
-                                            .animateItem()
-                                    )
-                                }
+                ToggleButton(
+                    checked = state.selectedFavoriteType == FavoriteType.Clans,
+                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
+                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { role = Role.RadioButton },
+                    enabled = state.clans.isNotEmpty(),
+                ) {
+                    Icon(
+                        Icons.Default.People,
+                        stringResource(R.string.clans)
+                    )
+                    Text(stringResource(R.string.clans))
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            if (state.selectedFavoriteType != null) {
+                LazyColumn(
+                    state = when (state.selectedFavoriteType) {
+                        FavoriteType.Players -> draggablePlayersState.listState
+                        FavoriteType.Clans -> draggableClansState.listState
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = Spacing.scaffoldWindowInsets)
+                        .fillMaxHeight(),
+                    contentPadding = PaddingValues(bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    when (state.selectedFavoriteType) {
+                        FavoriteType.Players ->
+                            draggableItems(
+                                draggablePlayersState,
+                                players,
+                                { player -> player.id }) { player, isDragging ->
+                                val dismissState =
+                                    dismissPlayersStateMap.getOrPut(player.id) { rememberSwipeToDismissBoxState() }
+                                FavoritesItem(
+                                    player.id,
+                                    player.name,
+                                    Icons.Default.Person,
+                                    coroutineScope,
+                                    snackBarHostState,
+                                    dismissState,
+                                    draggablePlayersState,
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.DeletePlayer(player.id)
+                                        )
+                                        haptic.performHapticFeedback(HapticFeedbackType.Reject)
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.RestorePlayer(player)
+                                        )
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.PlayerClicked(player.id)
+                                        )
+                                    },
+                                    Modifier
+                                        .animateItem()
+                                        .fillParentMaxWidth()
+                                )
+                            }
 
-                            else -> {}
-                        }
+                        FavoriteType.Clans ->
+                            draggableItems(
+                                draggableClansState,
+                                clans,
+                                { clan -> clan.id }
+                            ) { clan, isDragging ->
+                                val dismissState =
+                                    dismissClansStateMap.getOrPut(clan.id) { rememberSwipeToDismissBoxState() }
+                                FavoritesItem(
+                                    clan.id,
+                                    clan.name,
+                                    Icons.Default.People,
+                                    coroutineScope,
+                                    snackBarHostState,
+                                    dismissState,
+                                    draggableClansState,
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.DeleteClan(clan.id)
+                                        )
+                                        haptic.performHapticFeedback(HapticFeedbackType.Reject)
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.RestoreClan(clan)
+                                        )
+                                    },
+                                    {
+                                        onFavoriteAction(
+                                            FavoriteAction.ClanClicked(clan.id)
+                                        )
+                                    },
+                                    Modifier
+                                        .animateItem()
+                                        .fillParentMaxWidth()
+                                )
+                            }
                     }
                 }
             }
@@ -204,11 +275,13 @@ private fun FavoritesScreenPreview() {
         Surface {
             FavoritesScreen(
                 state = FavoritesState(
-                    players = (1..100).map
-                    { Player(it, name = "Nic") },
-                    clans = (1..3).map
-                    { Clan(it, name = "Nic") }
-                )
+                    players = (1L..100L).map
+                    { Player(it, name = "Nic", 0) },
+                    clans = (1L..3L).map
+                    { Clan(it, name = "Nic", 0) },
+                    selectedFavoriteType = FavoriteType.Players
+                ),
+                SnackbarHostState()
             )
         }
     }

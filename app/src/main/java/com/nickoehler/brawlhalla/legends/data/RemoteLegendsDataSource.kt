@@ -7,9 +7,9 @@ import com.nickoehler.brawlhalla.core.domain.util.map
 import com.nickoehler.brawlhalla.legends.data.dto.LegendDetailDto
 import com.nickoehler.brawlhalla.legends.data.mappers.toLegend
 import com.nickoehler.brawlhalla.legends.data.mappers.toLegendDetail
+import com.nickoehler.brawlhalla.legends.domain.Legend
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
-import com.nickoehler.brawlhalla.legends.domain.Legend
 import com.nickoehler.brawltool.model.LegendDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -27,7 +27,7 @@ class RemoteLegendsDataSource(
         }
     }
 
-    override suspend fun getLegendDetail(legendId: Int): Result<LegendDetail, NetworkError> {
+    override suspend fun getLegendDetail(legendId: Long): Result<LegendDetail, NetworkError> {
         return safeCall<LegendDetailDto> {
             httpClient.get(
                 "/legend/$legendId"

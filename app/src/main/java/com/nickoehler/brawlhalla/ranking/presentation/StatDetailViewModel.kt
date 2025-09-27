@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 
 
 class StatDetailViewModel(
-    private val brawlhallaId: Int,
+    private val brawlhallaId: Long,
     private val rankingsDataSource: RankingsDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
@@ -47,7 +48,7 @@ class StatDetailViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    private fun selectStatDetail(id: Int) {
+    private fun selectStatDetail(id: Long) {
         if (_state.value.selectedStatDetail?.brawlhallaId == id) {
             return
         }
@@ -57,7 +58,7 @@ class StatDetailViewModel(
                 selectedStatDetail = null,
                 isStatDetailLoading = true,
                 isStatDetailFavorite = false,
-                selectedStatType = StatType.General
+                selectedStatType = StatType.Stats
             )
         }
         viewModelScope.launch {
@@ -89,7 +90,7 @@ class StatDetailViewModel(
         }
     }
 
-    private fun selectRankingDetail(id: Int) {
+    private fun selectRankingDetail(id: Long) {
         if (_state.value.selectedRankingDetail?.brawlhallaId == id) {
             return
         }
@@ -123,7 +124,7 @@ class StatDetailViewModel(
                     state.copy(
                         isRankingDetailLoading = false,
                         rankingEnabled = false,
-                        selectedStatType = StatType.General
+                        selectedStatType = StatType.Stats
                     )
                 }
                 _uiEvents.send(UiEvent.Error(error))
@@ -132,7 +133,7 @@ class StatDetailViewModel(
     }
 
     private fun selectStatType(stat: StatType) {
-        if (stat == StatType.Ranking && _state.value.selectedStatDetail != null) {
+        if (stat == StatType.Rankings && _state.value.selectedStatDetail != null) {
             selectRankingDetail(_state.value.selectedStatDetail!!.brawlhallaId)
         }
 
@@ -327,7 +328,7 @@ class StatDetailViewModel(
         }
     }
 
-    private fun togglePlayerFavorites(brawlhallaId: Int, name: String) {
+    private fun togglePlayerFavorites(brawlhallaId: Long, name: String) {
         viewModelScope.launch {
             if (_state.value.isStatDetailFavorite) {
                 database.deletePlayer(brawlhallaId)
@@ -335,8 +336,11 @@ class StatDetailViewModel(
                 _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
             } else {
                 database.savePlayer(
-                    brawlhallaId,
-                    name
+                    Player(
+                        id = brawlhallaId,
+                        name = name,
+                        order = 0
+                    )
                 )
                 _state.update { state -> state.copy(isStatDetailFavorite = true) }
                 _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))

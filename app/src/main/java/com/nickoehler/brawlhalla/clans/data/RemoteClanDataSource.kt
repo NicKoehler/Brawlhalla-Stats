@@ -14,7 +14,7 @@ import io.ktor.client.request.get
 class RemoteClanDataSource(
     private val httpClient: HttpClient,
 ) : ClanDataSource {
-    override suspend fun getClan(clanId: Int): Result<ClanDetail, NetworkError> {
+    override suspend fun getClan(clanId: Long): Result<ClanDetail, NetworkError> {
         return safeCall<ClanDetailDto> {
             httpClient.get("/clan/$clanId")
         }.map { it.toClanDetail() }

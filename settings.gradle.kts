@@ -1,24 +1,23 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
         google()
+        gradlePluginPortal()
         mavenCentral()
+        maven {
+            url = uri("https://androidx.dev/snapshots/builds/14026374/artifacts/repository")
+        }
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://androidx.dev/snapshots/builds/14026374/artifacts/repository")
+        }
+    }
+}
 rootProject.name = "brawlhalla"
 include(":app")
  

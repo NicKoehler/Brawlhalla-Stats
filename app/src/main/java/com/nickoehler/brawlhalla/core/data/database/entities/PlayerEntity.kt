@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "players")
 data class Player(
-    @PrimaryKey val id: Int,
-    val name: String
+    @PrimaryKey val id: Long,
+    val name: String,
+    val order: Int
 )

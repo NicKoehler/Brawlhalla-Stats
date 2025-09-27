@@ -10,8 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
-import com.nickoehler.brawlhalla.favorites.FavoriteAction
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
+import com.nickoehler.brawlhalla.favorites.presentation.model.FavoritesState
 import com.nickoehler.brawlhalla.widgets.ClansWidget
 import com.nickoehler.brawlhalla.widgets.PlayersWidget
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,15 +38,74 @@ class FavoritesViewModel(
         FavoritesState()
     )
 
+    fun onFavoriteAction(action: FavoriteAction) {
+        when (action) {
+            is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
+            is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
+            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
+            is FavoriteAction.RestorePlayer -> restorePlayer(action.player)
+            is FavoriteAction.RestoreClan -> restoreClan(action.clan)
+            is FavoriteAction.PlayerDragged -> playerDragged(action.fromIndex, action.toIndex)
+            is FavoriteAction.ClanDragged -> clanDragged(action.fromIndex, action.toIndex)
+            is FavoriteAction.PersistPlayers -> persistPlayers()
+            is FavoriteAction.PersistClans -> persistClans()
+            else -> Unit
+        }
+    }
+
+    private fun persistPlayers() {
+        viewModelScope.launch {
+            database.updatePlayers(state.value.players)
+        }
+    }
+
+    private fun playerDragged(fromIndex: Int, toIndex: Int) {
+        _state.update { state ->
+            state.copy(
+                players = state.players.toMutableList()
+                    .apply {
+                        add(toIndex, removeAt(fromIndex))
+                    }
+            )
+        }
+    }
+
+    private fun persistClans() {
+        viewModelScope.launch {
+            database.updateClans(state.value.clans)
+        }
+    }
+
+    private fun clanDragged(fromIndex: Int, toIndex: Int) {
+        _state.update { state ->
+            state.copy(
+                clans = state.clans.toMutableList()
+                    .apply {
+                        add(toIndex, removeAt(fromIndex))
+                    }
+            )
+        }
+    }
+
+
+    private fun restorePlayer(player: Player) {
+        viewModelScope.launch {
+            database.savePlayer(player)
+        }
+    }
+
+    private fun restoreClan(clan: Clan) {
+        viewModelScope.launch {
+            database.saveClan(clan)
+        }
+    }
+
     private fun loadData() {
         viewModelScope.launch {
-            combine(database.getAllPlayers(), database.getAllClans()) { players, clans ->
+            combine(database.getAllPlayers(), database.getAllClans())
+            { players, clans ->
                 updateWidgetState(players, clans)
-
-                _state.value.copy(
-                    players = players.sortedBy { it.name.lowercase() },
-                    clans = clans.sortedBy { it.name },
-                    selectedFavoriteType =
+                val favoriteType = if (_state.value.selectedFavoriteType == null) {
                     if (players.isNotEmpty()) {
                         FavoriteType.Players
                     } else if (clans.isNotEmpty()) {
@@ -53,9 +113,15 @@ class FavoritesViewModel(
                     } else {
                         null
                     }
+                } else {
+                    _state.value.selectedFavoriteType
+                }
+                _state.value.copy(
+                    players = players,
+                    clans = clans,
+                    selectedFavoriteType = favoriteType
                 )
             }.collect { state ->
-
                 _state.update {
                     state
                 }
@@ -86,31 +152,22 @@ class FavoritesViewModel(
         }
     }
 
-
     private fun selectFavorite(fav: FavoriteType) {
         _state.update { state ->
             state.copy(selectedFavoriteType = fav)
         }
     }
 
-    private fun deletePlayer(brawlhallaId: Int) {
+    private fun deletePlayer(brawlhallaId: Long) {
         viewModelScope.launch {
             database.deletePlayer(brawlhallaId)
         }
     }
 
-    private fun deleteClan(clanId: Int) {
+    private fun deleteClan(clanId: Long) {
         viewModelScope.launch {
             database.deleteClan(clanId)
         }
     }
 
-    fun onFavoriteAction(action: FavoriteAction) {
-        when (action) {
-            is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
-            is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
-            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
-            else -> {}
-        }
-    }
 }

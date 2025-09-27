@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class StatDetailDto(
 
     @SerialName("brawlhalla_id")
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
     @SerialName("name")
     val name: String,
     @SerialName("xp")

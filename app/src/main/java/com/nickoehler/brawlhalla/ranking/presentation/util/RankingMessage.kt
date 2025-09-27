@@ -8,5 +8,7 @@ fun RankingMessage.toString(context: Context): String {
     return when (this) {
         is RankingMessage.Removed -> this.name + " " + context.getString(R.string.prefRemovedFavorites)
         is RankingMessage.Saved -> this.name + " " + context.getString(R.string.prefAddedFavorites)
+        is RankingMessage.NoResult -> context.getString(R.string.no_players_found)
+
     }
 }

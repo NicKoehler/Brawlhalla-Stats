@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.di
 
+import AppLocaleManager
 import com.nickoehler.brawlhalla.clans.data.RemoteClanDataSource
 import com.nickoehler.brawlhalla.clans.domain.ClanDataSource
 import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
@@ -13,6 +14,7 @@ import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.legends.data.RemoteLegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
+import com.nickoehler.brawlhalla.legends.presentation.LegendDetailViewModel
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.ranking.data.RemoteRankingDataSource
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
@@ -34,8 +36,10 @@ val appModule = module {
     singleOf(::RemoteLegendsDataSource) { bind<LegendsDataSource>() }
     singleOf(::RemoteRankingDataSource) { bind<RankingsDataSource>() }
     singleOf(::RemoteClanDataSource) { bind<ClanDataSource>() }
+    singleOf(::AppLocaleManager)
     viewModelOf(::ThemeViewModel)
     viewModelOf(::LegendsViewModel)
+    viewModelOf(::LegendDetailViewModel)
     viewModelOf(::StatDetailViewModel)
     viewModelOf(::RankingViewModel)
     viewModelOf(::ClanViewModel)

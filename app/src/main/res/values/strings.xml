@@ -47,10 +47,6 @@
     <string name="players">Players</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="areYouSureDeletePlayerTitle">Are you sure want to delete this player?</string>
-    <string name="areYouSureDeletePlayerDesc">Confirm to delete this player</string>
-    <string name="areYouSureDeleteClanTitle">Are you sure want to delete this clan?</string>
-    <string name="areYouSureDeleteClanDesc">Confirm to delete this clan</string>
     <string name="damageDealt">Damage Dealt</string>
     <string name="damageTaken">Damage Taken</string>
     <string name="kos">Kos</string>
@@ -69,7 +65,7 @@
     <string name="koGadgets">Kos Gadgets</string>
     <string name="timeHeldWeaponOne">Time Held Weapon One</string>
     <string name="timeHeldWeaponTwo">Time Held Weapon Two</string>
-    <string name="teams">Teams</string>
+    <string name="stats_2v2">2v2</string>
     <string name="tier">Tier</string>
     <string name="winRate">Win Rate</string>
     <string name="goToTeamMate">Go to Team Mate</string>
@@ -89,9 +85,18 @@
     <string name="xp">Xp</string>
     <string name="createDate">Create Date: %s</string>
     <string name="copy_id">Copy ID</string>
-    <string name="settings_theme_system">System</string>
+    <string name="settings_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_title">Settings</string>
+    <string name="filters">Filters</string>
+    <string name="search_cant_search">Can\'t search on 2v2</string>
+    <string name="deleted">Deleted</string>
+    <string name="source_code">Source code</string>
+    <string name="developer">Developer</string>
+    <string name="settings_language_title">Language</string>
+    <string name="goToLegend">Go to %s</string>
+    <string name="stats_1v1">1v1</string>
+    <string name="general">General</string>
 </resources>

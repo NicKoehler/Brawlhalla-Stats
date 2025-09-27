@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Leaderboard
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavKey
 import com.nickoehler.brawlhalla.R
 import kotlinx.serialization.Serializable
 
@@ -38,10 +39,10 @@ enum class Screens(
 }
 
 
-sealed interface Route {
+sealed interface Route : NavKey {
 
     @Serializable
-    data object Info : Route
+    data object Settings : Route
 
     @Serializable
     data object Licenses : Route
@@ -53,16 +54,16 @@ sealed interface Route {
     data object Legends : Route
 
     @Serializable
-    data class Legend(val id: Int) : Route
+    data class Legend(val id: Long) : Route
 
     @Serializable
-    data class Clan(val clanId: Int) : Route
+    data class Clan(val clanId: Long) : Route
 
     @Serializable
     data object Rankings : Route
 
     @Serializable
-    data class Stat(val playerId: Int) : Route
+    data class Stat(val playerId: Long) : Route
 }
 
 

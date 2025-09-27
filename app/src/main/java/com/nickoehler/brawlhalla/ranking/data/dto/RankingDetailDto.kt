@@ -10,7 +10,7 @@ data class RankingDetailDto(
     val name: String,
 
     @SerialName("brawlhalla_id")
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
 
     @SerialName("rating")
     val rating: Int,

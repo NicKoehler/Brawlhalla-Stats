@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class ClanDetailDto(
 
     @SerialName("clan_id")
-    val id: Int,
+    val id: Long,
 
     @SerialName("clan_name")
     val name: String,
@@ -16,7 +16,7 @@ data class ClanDetailDto(
     val createDate: Long,
 
     @SerialName("clan_xp")
-    val xp: Int,
+    val xp: Long,
 
     @SerialName("clan")
     val members: List<ClanMemberDto>

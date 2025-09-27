@@ -1,9 +1,8 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
-import com.nickoehler.brawlhalla.core.presentation.models.DisplayableNumber
+import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableTime
-import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableTime
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
@@ -11,24 +10,24 @@ import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
 data class StatDetailUi(
 
-    val brawlhallaId: Int,
+    val brawlhallaId: Long,
     val name: String,
-    val xp: DisplayableNumber,
+    val xp: DisplayableInt,
     val level: Int,
     val nextLevel: Int?,
     val xpPercentage: DisplayableDouble,
-    val games: DisplayableNumber,
-    val wins: DisplayableNumber,
-    val damageBomb: DisplayableNumber,
-    val damageMine: DisplayableNumber,
-    val damageSpikeball: DisplayableNumber,
-    val damageSidekick: DisplayableNumber,
-    val hitSnowball: DisplayableNumber,
-    val koBomb: DisplayableNumber,
-    val koMine: DisplayableNumber,
-    val koSpikeball: DisplayableNumber,
-    val koSidekick: DisplayableNumber,
-    val koSnowball: DisplayableNumber,
+    val games: DisplayableInt,
+    val wins: DisplayableInt,
+    val damageBomb: DisplayableInt,
+    val damageMine: DisplayableInt,
+    val damageSpikeball: DisplayableInt,
+    val damageSidekick: DisplayableInt,
+    val hitSnowball: DisplayableInt,
+    val koBomb: DisplayableInt,
+    val koMine: DisplayableInt,
+    val koSpikeball: DisplayableInt,
+    val koSidekick: DisplayableInt,
+    val koSnowball: DisplayableInt,
     val legends: List<StatLegendUi>,
     val clan: StatClanUi?,
     val matchTime: DisplayableTime
@@ -42,7 +41,7 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
         xp.toDisplayableNumber(),
         level,
         if (level == 100) null else level + 1,
-        if (xpPercentage == 0.0 && level == 100) 1.0.toDisplayableDouble() else xpPercentage.toDisplayableDouble(),
+        if (xpPercentage == 0.0 && level == 100) 1.0.toDisplayableNumber() else xpPercentage.toDisplayableNumber(),
         games.toDisplayableNumber(),
         wins.toDisplayableNumber(),
         damageBomb.toDisplayableNumber(),

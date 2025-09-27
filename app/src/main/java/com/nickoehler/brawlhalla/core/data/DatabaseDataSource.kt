@@ -13,15 +13,15 @@ class DatabaseDataSource(
     private val playerDao = database.playerDao()
     private val clanDao = database.clanDao()
 
-    override suspend fun savePlayer(brawlhallaId: Int, name: String) {
-        playerDao.insertPlayer(Player(brawlhallaId, name))
+    override suspend fun savePlayer(player: Player) {
+        playerDao.insertPlayer(player)
     }
 
-    override suspend fun deletePlayer(brawlhallaId: Int) {
+    override suspend fun deletePlayer(brawlhallaId: Long) {
         playerDao.deletePlayer(brawlhallaId)
     }
 
-    override fun getPlayer(brawlhallaId: Int): Flow<Player?> {
+    override fun getPlayer(brawlhallaId: Long): Flow<Player?> {
         return playerDao.getPlayer(brawlhallaId)
     }
 
@@ -29,19 +29,30 @@ class DatabaseDataSource(
         return playerDao.getAllPlayers()
     }
 
-    override suspend fun saveClan(clanId: Int, name: String) {
-        clanDao.insertClan(Clan(clanId, name))
+    override suspend fun saveClan(clan: Clan) {
+        clanDao.insertClan(clan)
     }
 
-    override suspend fun deleteClan(clanId: Int) {
+    override suspend fun deleteClan(clanId: Long) {
         clanDao.deleteClan(clanId)
     }
 
-    override fun getClan(clanId: Int): Flow<Clan?> {
+    override fun getClan(clanId: Long): Flow<Clan?> {
         return clanDao.getClan(clanId)
     }
 
     override fun getAllClans(): Flow<List<Clan>> {
         return clanDao.getAllClans()
     }
+
+    override suspend fun updatePlayers(players: List<Player>) {
+        playerDao.updatePlayers(players.withIndex().map { (i, player) -> player.copy(order = i) })
+    }
+
+    override suspend fun updateClans(clans: List<Clan>) {
+        clanDao.updateClans(clans.withIndex().map { (i, clan) -> clan.copy(order = i) })
+
+    }
+
+
 }

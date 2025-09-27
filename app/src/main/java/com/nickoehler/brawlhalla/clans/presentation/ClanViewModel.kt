@@ -6,6 +6,7 @@ import com.nickoehler.brawlhalla.clans.domain.ClanDataSource
 import com.nickoehler.brawlhalla.clans.presentation.model.ClanMemberUi
 import com.nickoehler.brawlhalla.clans.presentation.model.ClanSortType
 import com.nickoehler.brawlhalla.clans.presentation.model.toClanDetailUi
+import com.nickoehler.brawlhalla.core.data.database.entities.Clan
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 
 
 class ClanViewModel(
-    private val clanId: Int,
+    private val clanId: Long,
     private val clanDataSource: ClanDataSource,
     private val database: LocalDataSource,
 ) : ViewModel() {
@@ -36,7 +37,7 @@ class ClanViewModel(
     private val _uiEvents = Channel<UiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    private fun selectClan(clanId: Int) {
+    private fun selectClan(clanId: Long) {
 
         if (_state.value.selectedClan?.id == clanId) {
             return
@@ -129,7 +130,7 @@ class ClanViewModel(
     }
 
 
-    private fun toggleClanFavorites(clanId: Int, name: String) {
+    private fun toggleClanFavorites(clanId: Long, name: String) {
 
         viewModelScope.launch {
 
@@ -139,8 +140,11 @@ class ClanViewModel(
                 _uiEvents.send(UiEvent.Message(RankingMessage.Removed(name)))
             } else {
                 database.saveClan(
-                    clanId,
-                    name
+                    Clan(
+                        id = clanId,
+                        name = name,
+                        order = 0
+                    )
                 )
                 _state.update { state -> state.copy(isClanDetailFavorite = true) }
                 _uiEvents.send(UiEvent.Message(RankingMessage.Saved(name)))

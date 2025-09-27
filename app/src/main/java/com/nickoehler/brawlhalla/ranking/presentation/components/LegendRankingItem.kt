@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.presentation.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +11,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +42,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.screens.rankingDetailSample
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun LegendRankingItem(
@@ -38,9 +50,21 @@ fun LegendRankingItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(100L)
+        visible = true
+    }
+
+    val animatedFloat by animateFloatAsState(if (visible) 1f else 0f)
+
+
     CustomCard(
         onClick = onClick,
-        modifier = modifier,
+        modifier =  modifier
+            .scale(animatedFloat)
+            .alpha(animatedFloat),
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
@@ -84,6 +108,7 @@ fun LegendRankingItem(
 fun LegendRankingItemDetail(
     legend: RankingLegendUi,
     columns: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val background = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -107,22 +132,46 @@ fun LegendRankingItemDetail(
             RankWinRateRow(legend.winRate)
         }
 
+        Button(onClick = onClick) {
+            Text(
+                stringResource(R.string.goToLegend, legend.legendNameKey)
+            )
+        }
+
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
             columns = GridCells.Fixed(columns),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item { CustomRankingField(R.string.rating, legend.rating.formatted, background) }
-            item {
+
+            items(
+                items = listOf(
+                    Pair(
+                        R.string.rating,
+                        legend.rating.formatted
+                    ),
+                    Pair(
+                        R.string.peakRating,
+                        legend.peakRating.formatted
+                    ),
+                    Pair(
+                        R.string.games,
+                        legend.games.formatted
+                    ),
+                    Pair(
+                        R.string.wins,
+                        legend.wins.formatted
+                    ),
+                ),
+                key = { it.first }
+            ) { (key, value) ->
                 CustomRankingField(
-                    R.string.peakRating,
-                    legend.peakRating.formatted,
-                    background
+                    key = key,
+                    value = value,
+                    color = background
                 )
             }
-            item { CustomRankingField(R.string.games, legend.games.formatted, background) }
-            item { CustomRankingField(R.string.wins, legend.wins.formatted, background) }
         }
     }
 }
@@ -134,7 +183,8 @@ private fun LegendRankingItemDetailPreview() {
         Surface {
             LegendRankingItemDetail(
                 rankingDetailSample.legends[0].toRankingLegendUi(),
-                2
+                2,
+                {}
             )
         }
     }
