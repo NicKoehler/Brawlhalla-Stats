@@ -52,12 +52,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -98,6 +100,7 @@ fun RankingListScreen(
     onRankingAction: (RankingAction) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val gridState = rememberLazyStaggeredGridState()
     val toolbarHeight = 80.dp
@@ -176,6 +179,7 @@ fun RankingListScreen(
                 isFilterOpen = state.isFilterOpen,
                 onFilterToggle = {
                     onRankingAction(RankingAction.OnFilterToggle)
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                 },
                 onSearch = {
                     onRankingAction(RankingAction.Search(state.searchQuery))

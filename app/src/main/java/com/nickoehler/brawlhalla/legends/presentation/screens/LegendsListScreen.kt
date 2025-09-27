@@ -25,11 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -66,6 +68,7 @@ fun LegendListScreen(
     onWeaponAction: (WeaponAction) -> Unit,
 ) {
     val toolbarHeight = 80.dp
+    val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.roundToPx().toFloat() }
     var toolbarOffsetHeightPx by remember { mutableFloatStateOf(0f) }
@@ -132,6 +135,7 @@ fun LegendListScreen(
                     coroutineScope.launch {
                         lazyColumnState.animateScrollToItem(0)
                     }
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                 },
                 onQueryChange = {
                     onLegendAction(LegendAction.QueryChange(it))
