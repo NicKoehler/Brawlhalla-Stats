@@ -12,7 +12,7 @@ composeBom = "2025.09.01"
 aboutlibraries = "12.2.4"
 glanceAppwidget = "1.1.1"
 coreSplashscreen = "1.0.1"
-material3Expressive = "1.5.0-alpha04"
+material3Expressive = "1.5.0-SNAPSHOT"
 adaptiveNavigation3 = "1.0.0-SNAPSHOT"
 lifecycleViewmodelNav3 = "2.10.0-SNAPSHOT"
 
