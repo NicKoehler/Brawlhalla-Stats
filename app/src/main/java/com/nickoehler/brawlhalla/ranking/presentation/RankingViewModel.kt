@@ -207,7 +207,7 @@ class RankingViewModel(
     }
 
     private fun loadMore() {
-        if (currentPage <= MAX_PAGE) {
+        if (currentPage <= MAX_PAGE && !state.value.isLoadingMore) {
             currentPage++
             loadRankings()
         }
