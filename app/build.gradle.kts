@@ -21,8 +21,8 @@ android {
         applicationId = "com.nickoehler.brawlhalla"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.1.0"
+        versionCode = 7
+        versionName = "0.1.1"
     }
 
     @Suppress("UnstableApiUsage")
@@ -117,7 +117,9 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     // room
+    ksp(libs.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.room.runtime.android)
 
     // licenses
     implementation(libs.aboutlibraries.compose.m3)
