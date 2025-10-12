@@ -21,8 +21,8 @@ android {
         applicationId = "com.nickoehler.brawlhalla"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.1.1"
+        versionCode = 8
+        versionName = "0.1.2"
     }
 
     @Suppress("UnstableApiUsage")

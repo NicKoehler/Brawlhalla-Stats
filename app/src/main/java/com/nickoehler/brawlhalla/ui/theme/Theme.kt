@@ -3,7 +3,9 @@ package com.nickoehler.brawlhalla.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -27,6 +29,7 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BrawlhallaTheme(
     theme: Theme = Theme.System,
@@ -86,6 +89,7 @@ fun BrawlhallaTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        motionScheme = MotionScheme.expressive(),
         content = content
     )
 }
