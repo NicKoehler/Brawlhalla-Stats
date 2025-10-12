@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -28,7 +28,7 @@ fun LicensesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val libraries by rememberLibraries(R.raw.aboutlibraries)
+    val libraries by produceLibraries(R.raw.aboutlibraries)
     Scaffold(
         modifier = modifier,
         topBar = {
