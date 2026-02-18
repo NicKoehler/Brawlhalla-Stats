@@ -1,6 +1,6 @@
 [versions]
 agp = "9.0.1"
-ksp = "2.3.5"
+ksp = "2.3.6"
 room = "2.8.4"
 ktor = "3.4.0"
 coil = "3.3.0"
