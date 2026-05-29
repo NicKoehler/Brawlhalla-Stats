@@ -19,7 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
@@ -36,15 +36,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.navigation3.ui.SceneStrategy
-import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.nickoehler.brawlhalla.clans.presentation.ClanAction
 import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
@@ -85,7 +80,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
 
-            val backStack = rememberNavBackStack<Route>(Route.Favorites)
+            val backStack = rememberNavBackStack(Route.Favorites)
             val configuration = LocalConfiguration.current
             val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
             val layoutType by remember {
@@ -164,16 +159,15 @@ class MainActivity : ComponentActivity() {
                     val playerId = intent.extras?.getLong("OPEN_STAT")
                     val clanId = intent.extras?.getLong("OPEN_CLAN")
 
-                    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
+                    val windowAdaptiveInfo = currentWindowAdaptiveInfoV2()
                     val directive = remember(windowAdaptiveInfo) {
                         calculatePaneScaffoldDirective(windowAdaptiveInfo)
                             .copy(horizontalPartitionSpacerSize = 0.dp)
                     }
+                    val listDetailStrategy =
+                        rememberListDetailSceneStrategy<NavKey>(directive = directive)
 
                     val legendsViewModel = koinViewModel<LegendsViewModel>()
-
-                    val listDetailStrategy: SceneStrategy<NavKey> =
-                        rememberListDetailSceneStrategy(directive = directive)
 
                     LaunchedEffect(playerId) {
                         if (playerId != null && playerId != 0L) {
@@ -191,11 +185,6 @@ class MainActivity : ComponentActivity() {
                     NavDisplay(
                         backStack = backStack,
                         onBack = { backStack.removeLastOrNull() },
-                        entryDecorators = listOf(
-                            rememberSavedStateNavEntryDecorator(),
-                            rememberViewModelStoreNavEntryDecorator(),
-                            rememberSceneSetupNavEntryDecorator()
-                        ),
                         transitionSpec = {
                             fadeIn() + slideInHorizontally(initialOffsetX = { it }) togetherWith
                                     fadeOut() + slideOutHorizontally(targetOffsetX = { -it })
@@ -208,7 +197,7 @@ class MainActivity : ComponentActivity() {
                             fadeIn() + slideInHorizontally(initialOffsetX = { -it }) togetherWith
                                     fadeOut() + slideOutHorizontally(targetOffsetX = { it })
                         },
-                        sceneStrategy = listDetailStrategy,
+                        sceneStrategies = listOf(listDetailStrategy),
                         entryProvider = entryProvider {
                             entry<Route.Clan> {
                                 val clanViewModel =
@@ -404,7 +393,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                        }
+                        },
                     )
                 }
             }

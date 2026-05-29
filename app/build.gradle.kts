@@ -3,7 +3,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -15,14 +14,14 @@ properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.nickoehler.brawlhalla"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.nickoehler.brawlhalla"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 8
-        versionName = "0.1.2"
+        targetSdk = 37
+        versionCode = 9
+        versionName = "0.1.3"
     }
 
     @Suppress("UnstableApiUsage")
