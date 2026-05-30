@@ -1,8 +1,8 @@
 package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
-import com.nickoehler.brawlhalla.core.presentation.util.getFullImageUrlFromLegendNameKey
-import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
+import com.nickoehler.brawlhalla.core.presentation.util.getFullImageUrlFromLegendId
+import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendId
 import com.nickoehler.brawlhalla.core.presentation.util.getWeaponImageUrlFromWeaponName
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
@@ -46,8 +46,8 @@ fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
         dexterity = dexterity,
         defense = defense,
         speed = speed,
-        imageMini = getMiniImageUrlFromLegendNameKey(legendName),
-        imageFull = getFullImageUrlFromLegendNameKey(legendName),
+        imageMini = getMiniImageUrlFromLegendId(legendId),
+        imageFull = getFullImageUrlFromLegendId(legendId),
     )
 }
 

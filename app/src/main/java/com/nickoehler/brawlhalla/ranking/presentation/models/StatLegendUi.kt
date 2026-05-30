@@ -5,7 +5,7 @@ import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableTime
-import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
+import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendId
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
 import java.util.Locale
 
@@ -74,6 +74,6 @@ fun StatLegend.toStatLegendUi(): StatLegendUi {
         level.toDisplayableNumber(),
         nextLevel = if (level == 100) null else (level + 1).toDisplayableNumber(),
         if (level == 100) 1.0.toDisplayableNumber() else xpPercentage.toDisplayableNumber(),
-        getMiniImageUrlFromLegendNameKey(legendNameKey)
+        getMiniImageUrlFromLegendId(legendId)
     )
 }

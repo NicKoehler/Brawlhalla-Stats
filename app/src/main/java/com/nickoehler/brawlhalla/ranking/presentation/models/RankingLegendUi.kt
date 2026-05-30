@@ -3,7 +3,7 @@ package com.nickoehler.brawlhalla.ranking.presentation.models
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
-import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
+import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendId
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
 import java.util.Locale
 
@@ -34,6 +34,6 @@ fun RankingLegend.toRankingLegendUi(): RankingLegendUi {
         wins.toDisplayableNumber(),
         games.toDisplayableNumber(),
         if (games > 0) (wins.toDouble() / games * 100).toDisplayableNumber() else null,
-        getMiniImageUrlFromLegendNameKey(legendNameKey)
+        getMiniImageUrlFromLegendId(legendId)
     )
 }
