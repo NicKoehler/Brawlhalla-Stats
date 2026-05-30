@@ -68,7 +68,7 @@ fun LegendDetailContent(
                 textAlign = TextAlign.Center
             )
             AsyncImage(
-                legend.image,
+                legend.imageFull,
                 contentDescription = legend.bioName,
                 modifier = Modifier
                     .fillMaxWidth()

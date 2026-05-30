@@ -2,6 +2,7 @@ package com.nickoehler.brawlhalla.legends.presentation.models
 
 import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.core.presentation.util.getFullImageUrlFromLegendNameKey
+import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendNameKey
 import com.nickoehler.brawlhalla.core.presentation.util.getWeaponImageUrlFromWeaponName
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
@@ -23,7 +24,8 @@ data class LegendDetailUi(
     val dexterity: Int,
     val defense: Int,
     val speed: Int,
-    val image: String,
+    val imageMini: String,
+    val imageFull: String,
 )
 
 fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
@@ -40,11 +42,12 @@ fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
         botName = botName,
         weaponOne = WeaponUi(weaponOne, getWeaponImageUrlFromWeaponName(weaponOne)),
         weaponTwo = WeaponUi(weaponTwo, getWeaponImageUrlFromWeaponName(weaponTwo)),
-        strength = strength.toInt(),
-        dexterity = dexterity.toInt(),
-        defense = defense.toInt(),
-        speed = speed.toInt(),
-        image = getFullImageUrlFromLegendNameKey(legendName),
+        strength = strength,
+        dexterity = dexterity,
+        defense = defense,
+        speed = speed,
+        imageMini = getMiniImageUrlFromLegendNameKey(legendName),
+        imageFull = getFullImageUrlFromLegendNameKey(legendName),
     )
 }
 

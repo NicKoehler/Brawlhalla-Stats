@@ -61,7 +61,7 @@ fun LegendCard(
             .scale(animatedFloat)
             .alpha(animatedFloat),
     ) {
-        LegendImage(legend?.bioName, legend?.image)
+        LegendImage(legend?.bioName, legend?.imageMini)
         Spacer(Modifier.size(20.dp))
         Column(
             Modifier.weight(1f),
@@ -140,7 +140,6 @@ private fun LegendCardPreview() {
 
 
 internal val legendSample = LegendDetail(
-
     10,
     "HATTORI",
     "Hattori",

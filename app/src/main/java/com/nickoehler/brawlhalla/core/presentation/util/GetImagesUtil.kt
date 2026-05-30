@@ -5,7 +5,7 @@ import android.net.Uri
 fun getMiniImageUrlFromLegendNameKey(legendNameKey: String): String {
     return "https://raw.githubusercontent.com/nickoehler/bh-images/refs/heads/main/legends/mini/${
         Uri.encode(
-            legendNameKey
+            legendNameKey.lowercase().replace("ö", "o")
         )
     }.png"
 
@@ -14,7 +14,7 @@ fun getMiniImageUrlFromLegendNameKey(legendNameKey: String): String {
 fun getFullImageUrlFromLegendNameKey(legendNameKey: String): String {
     return "https://raw.githubusercontent.com/nickoehler/bh-images/refs/heads/main/legends/full/${
         Uri.encode(
-            legendNameKey
+            legendNameKey.lowercase().replace("ö", "o")
         )
     }.png"
 }
