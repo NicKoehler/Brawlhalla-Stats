@@ -49,7 +49,7 @@ import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.components.LazyLegendsCards
 import com.nickoehler.brawlhalla.legends.presentation.components.legendSample
-import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.Spacing
 import kotlinx.coroutines.flow.Flow
@@ -169,7 +169,7 @@ private fun LegendListScreenPreview() {
             LegendListScreen(
                 LegendsListState(
                     legends = (0L..100L).map {
-                        legendSample.copy(legendId = it).toLegendUi()
+                        legendSample.copy(legendId = it).toLegendDetailUi()
                     },
                 ),
                 events = emptyFlow(),

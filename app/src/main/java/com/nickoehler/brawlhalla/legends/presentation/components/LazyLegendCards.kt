@@ -41,7 +41,7 @@ import com.nickoehler.brawlhalla.core.presentation.models.toWeaponUi
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsListState
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
-import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -160,7 +160,7 @@ private fun LazyLegendsCardsPreview() {
             LazyLegendsCards(
                 LegendsListState(
                     isFilterOpen = true,
-                    legends = listOf(legendSample.toLegendUi()),
+                    legends = listOf(legendSample.toLegendDetailUi()),
                     weapons = listOf("sword".toWeaponUi()),
                 ),
                 searchBarHeight = 80.dp

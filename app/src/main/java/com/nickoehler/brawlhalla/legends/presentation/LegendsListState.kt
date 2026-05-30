@@ -5,13 +5,12 @@ import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
 import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
-import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
 
 @Immutable
 data class LegendsListState(
     val isListLoading: Boolean = false,
     val isDetailLoading: Boolean = false,
-    val legends: List<LegendUi> = emptyList(),
+    val legends: List<LegendDetailUi> = emptyList(),
     val weapons: List<WeaponUi> = emptyList(),
     val selectedLegendUi: LegendDetailUi? = null,
     val isFilterOpen: Boolean = false,

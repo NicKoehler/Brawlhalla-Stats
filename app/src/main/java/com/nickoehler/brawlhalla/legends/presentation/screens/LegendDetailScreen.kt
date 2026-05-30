@@ -140,7 +140,7 @@ private fun LegendDetailScreenLoadingPreview() {
 
 internal val legendDetailSample: LegendDetail = LegendDetail(
     legendId = 3,
-    legendNameKey = "bodvar",
+    legendName = "bodvar",
     bioName = "B\u00f6dvar",
     bioAka = "The Unconquered Viking, The Great Bear",
     bioQuote = "\u201cI speak, you noble vikings, of a warrior who surpassed you all. I tell of a great bear-man who overcame giants and armies, and of how he came to leave our world and challenge the Gods.\u201d",
@@ -151,8 +151,8 @@ internal val legendDetailSample: LegendDetail = LegendDetail(
     botName = "B\u00f6tvar",
     weaponOne = "Hammer",
     weaponTwo = "Sword",
-    strength = "6",
-    dexterity = "6",
-    defense = "5",
-    speed = "5"
+    strength = 6,
+    dexterity = 6,
+    defense = 5,
+    speed = 5
 )

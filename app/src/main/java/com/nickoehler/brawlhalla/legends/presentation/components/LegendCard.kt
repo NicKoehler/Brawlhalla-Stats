@@ -33,17 +33,17 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.LegendImage
 import com.nickoehler.brawlhalla.core.presentation.components.WeaponButton
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
-import com.nickoehler.brawlhalla.legends.domain.Legend
+import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
-import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
-import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
+import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun LegendCard(
     modifier: Modifier = Modifier,
-    legend: LegendUi? = null,
+    legend: LegendDetailUi? = null,
     onLegendAction: (LegendAction) -> Unit = {},
     onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
@@ -131,7 +131,7 @@ private fun LegendCardPreview() {
 
             Column {
 
-                LegendCard(legend = legendSample.toLegendUi())
+                LegendCard(legend = legendSample.toLegendDetailUi())
                 LegendCard()
             }
         }
@@ -139,15 +139,22 @@ private fun LegendCardPreview() {
 }
 
 
-internal val legendSample = Legend(
-    3,
-    "bodvar",
-    "Bodvar",
-    "The Unconquered Viking, The Great Bear",
-    "Hammer",
+internal val legendSample = LegendDetail(
+
+    10,
+    "HATTORI",
+    "Hattori",
+    "Demon Bride",
+    "\"The night is freezing\nI sense the spear-bearer nearing.\nIt gets colder still.\"",
+    "\"-Verse 761 of Sokan’s One Thousand Verses on the Demon Hattori\"",
+    "\"A half-demon ninja who sold her soul to the devil? Well that’s one, frankly rather negative, way of looking at it.\"",
+    "\"-Hattori \"",
+    "Young Hattori was so gifted with the sword that the Emperor offered a prize of one thousand horses to anyone who could defeat her. For years, new warriors came to court every day only to be defeated. But on the day the Demon Kagima arrived to challenge her, Hattori sensed his malevolent power and fled.  Enraged, the Demon kidnapped Hattori’s three sisters and carried them away to his island kingdom.\nHorrified by the consequences of her actions, Hattori built a boat out of reeds and pursued the Demon. She was lost at sea until a stork lord showed her the passages between the twilight and the night to the Demon’s realm. There Hattori found a bizarre world of talking stones and eight-armed ferrymen. In the City of the Onyx Castle, she met Kagima’s own brother, who offered to give Hattori his strength to defeat his brother, in return for her hand in marriage.\nTrue to his word, the Demon exchanged his own blood with Hattori’s, and Hattori slew Kagima and freed her sisters. She became Queen of the Island Kingdom, but the demon blood burned in her. It drove Hattori to wander the twilight passages until she discovered Valhalla. Through the eternal tournament, Hattori slakes the lust for battle that threatens to consume her.",
+    "Bottori",
     "Sword",
-    "6",
-    "6",
-    "5",
-    "5",
+    "Spear",
+    4,
+    6,
+    4,
+    8
 )

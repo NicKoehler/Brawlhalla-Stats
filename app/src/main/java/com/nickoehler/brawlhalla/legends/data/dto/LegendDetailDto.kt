@@ -9,8 +9,8 @@ data class LegendDetailDto(
     @SerialName("legend_id")
     val legendId: Long,
 
-    @SerialName("legend_name_key")
-    val legendNameKey: String,
+    @SerialName("legend_name")
+    val legendName: String,
 
     @SerialName("bio_name")
     val bioName: String,
@@ -43,14 +43,14 @@ data class LegendDetailDto(
     val weaponTwo: String,
 
     @SerialName("strength")
-    val strength: String,
+    val strength: Int,
 
     @SerialName("dexterity")
-    val dexterity: String,
+    val dexterity: Int,
 
     @SerialName("defense")
-    val defense: String,
+    val defense: Int,
 
     @SerialName("speed")
-    val speed: String
+    val speed: Int
 )

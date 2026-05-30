@@ -6,7 +6,6 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
@@ -19,17 +18,7 @@ object HttpClientFactory {
         return HttpClient(engine) {
             if (BuildConfig.DEBUG) {
                 install(Logging) {
-                    level = LogLevel.INFO
-                    logger = object : Logger {
-                        override fun log(message: String) {
-                            println(
-                                message.replace(
-                                    BuildConfig.API_KEY,
-                                    "*".repeat(BuildConfig.API_KEY.length)
-                                )
-                            )
-                        }
-                    }
+                    level = LogLevel.ALL
                 }
             }
 
@@ -46,8 +35,7 @@ object HttpClientFactory {
                 )
                 url {
                     protocol = URLProtocol.HTTPS
-                    host = BuildConfig.API_HOST
-                    parameters.append("api_key", BuildConfig.API_KEY)
+                    host = "api.brawlhalla.com"
                 }
             }
         }

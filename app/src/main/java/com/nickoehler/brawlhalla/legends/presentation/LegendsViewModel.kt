@@ -10,10 +10,9 @@ import com.nickoehler.brawlhalla.core.presentation.models.WeaponUi
 import com.nickoehler.brawlhalla.legends.domain.LegendStat
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.presentation.models.FilterOptions
-import com.nickoehler.brawlhalla.legends.presentation.models.LegendUi
+import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.getStat
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
-import com.nickoehler.brawlhalla.legends.presentation.models.toLegendUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,7 +26,7 @@ class LegendsViewModel(
     private val legendsDataSource: LegendsDataSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(LegendsListState())
-    private var allLegends: List<LegendUi> = emptyList()
+    private var allLegends: List<LegendDetailUi> = emptyList()
     private var allWeapons: List<WeaponUi> = emptyList()
     val state = _state.onStart { if (allLegends.isEmpty()) loadLegends() }
         .stateIn(
@@ -66,7 +65,7 @@ class LegendsViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isListLoading = true) }
             legendsDataSource.getLegends().onSuccess { legends ->
-                allLegends = legends.map { it.toLegendUi() }
+                allLegends = legends.map { it.toLegendDetailUi() }
                 allWeapons = getAllWeapons()
 
                 _state.update { state ->
@@ -84,22 +83,26 @@ class LegendsViewModel(
     }
 
     private fun selectLegend(legendId: Long) {
-        viewModelScope.launch {
-            if (_state.value.selectedLegendUi?.legendId != legendId) {
-                _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }
-                legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
-                    _state.update { state ->
-                        state.copy(
-                            isDetailLoading = false,
-                            selectedLegendUi = legend.toLegendDetailUi()
-                        )
-                    }
-                }.onError { error ->
-                    _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
-                    _uiEvents.send(UiEvent.Error(error))
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            if (_state.value.selectedLegendUi?.legendId != legendId) {
+//                _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }
+//                legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
+//                    _state.update { state ->
+//                        state.copy(
+//                            isDetailLoading = false,
+//                            selectedLegendUi = legend.toLegendDetailUi()
+//                        )
+//                    }
+//                }.onError { error ->
+//                    _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
+//                    _uiEvents.send(UiEvent.Error(error))
+//                }
+//            }
+//        }
+    }
+
+    fun getLegendById(legendId: Long): LegendDetailUi {
+        return allLegends.first { it.legendId == legendId }
     }
 
     private fun searchQuery(query: String) {
@@ -115,11 +118,11 @@ class LegendsViewModel(
         }
     }
 
-    private fun filterLegend(query: String, legend: LegendUi): Boolean {
+    private fun filterLegend(query: String, legend: LegendDetailUi): Boolean {
         if (query.isEmpty()) {
             return false
         }
-        return legend.legendNameKey.lowercase().contains(query.lowercase())
+        return legend.legendName.lowercase().contains(query.lowercase())
     }
 
     private fun toggleFilters() {
@@ -173,7 +176,7 @@ class LegendsViewModel(
     }
 
     private fun getFilteredWeapons(
-        filteredLegends: List<LegendUi>,
+        filteredLegends: List<LegendDetailUi>,
         updatedWeaponsState: List<WeaponUi>,
         selected: List<String>
     ): List<WeaponUi> {
@@ -204,7 +207,7 @@ class LegendsViewModel(
         }
     }
 
-    private fun getFilteredLegends(selectedWeaponsNames: List<String>): List<LegendUi> {
+    private fun getFilteredLegends(selectedWeaponsNames: List<String>): List<LegendDetailUi> {
         return when (selectedWeaponsNames.size) {
             1 -> allLegends.filter { legend ->
                 selectedWeaponsNames.any { selectedWeapon ->
@@ -258,7 +261,7 @@ class LegendsViewModel(
     private fun filterLegendsByStat(
         stat: LegendStat,
         value: Int
-    ): List<LegendUi> {
+    ): List<LegendDetailUi> {
         val legends = allLegends.filter { legend ->
             legend.getStat(stat) == value
         }

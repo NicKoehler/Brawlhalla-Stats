@@ -8,7 +8,7 @@ import com.nickoehler.brawlhalla.legends.domain.LegendStat
 
 data class LegendDetailUi(
     val legendId: Long,
-    val legendNameKey: String,
+    val legendName: String,
     val bioName: String,
     val bioAka: String,
     val bioQuote: String,
@@ -29,7 +29,7 @@ data class LegendDetailUi(
 fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
     return LegendDetailUi(
         legendId = legendId,
-        legendNameKey = legendNameKey,
+        legendName = legendName,
         bioName = bioName,
         bioAka = bioAka,
         bioQuote = bioQuote,
@@ -44,7 +44,7 @@ fun LegendDetail.toLegendDetailUi(): LegendDetailUi {
         dexterity = dexterity.toInt(),
         defense = defense.toInt(),
         speed = speed.toInt(),
-        image = getFullImageUrlFromLegendNameKey(legendNameKey),
+        image = getFullImageUrlFromLegendNameKey(legendName),
     )
 }
 

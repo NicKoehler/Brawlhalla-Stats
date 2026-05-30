@@ -269,10 +269,16 @@ class MainActivity : ComponentActivity() {
                             }
 
                             entry<Route.Legend>(
-                                metadata = ListDetailSceneStrategy.detailPane()
+                                metadata = ListDetailSceneStrategy.detailPane(),
                             ) {
                                 val viewModel =
-                                    koinViewModel<LegendDetailViewModel> { parametersOf(it.id) }
+                                    koinViewModel<LegendDetailViewModel>(
+                                        key = it.id.toString(), parameters = {
+                                            parametersOf(
+                                                legendsViewModel.getLegendById(it.id)
+                                            )
+                                        }
+                                    )
                                 val state by viewModel.state.collectAsStateWithLifecycle()
                                 LegendDetailScreen(
                                     state = state,

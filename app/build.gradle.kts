@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
@@ -48,14 +47,9 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
-            buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         }
 
         release {
-            buildConfigField("String", "API_HOST", "\"api.brawlhalla.com\"")
-            buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
-
             signingConfig = signingConfigs.getByName("release")
 
             isMinifyEnabled = true
@@ -74,12 +68,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-        }
     }
 
     buildFeatures {
