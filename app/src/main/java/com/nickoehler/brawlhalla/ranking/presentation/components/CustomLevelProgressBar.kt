@@ -24,7 +24,7 @@ import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 fun CustomLevelProgressBar(
     percentage: Double,
     key: String,
-    currentLevel: Int,
+    currentLevel: Int?,
     nextLevel: Int?,
     modifier: Modifier = Modifier
 ) {

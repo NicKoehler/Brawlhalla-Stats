@@ -16,9 +16,11 @@ suspend inline fun <reified T> safeCall(
         execute()
     } catch (_: UnresolvedAddressException) {
         return Result.Error(NetworkError.NO_INTERNET)
-    } catch (_: JsonConvertException) {
+    } catch (e: JsonConvertException) {
+        e.printStackTrace()
         return Result.Error(NetworkError.SERIALIZATION)
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        e.printStackTrace()
         currentCoroutineContext().ensureActive()
         return Result.Error(NetworkError.UNKNOWN)
     }

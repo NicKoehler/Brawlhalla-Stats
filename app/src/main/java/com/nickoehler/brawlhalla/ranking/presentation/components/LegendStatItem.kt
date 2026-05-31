@@ -73,7 +73,7 @@ fun LegendStatItem(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 LegendImage(
-                    legend.legendNameKey,
+                    "", //legend.legendNameKey,
                     legend.image,
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -86,26 +86,29 @@ fun LegendStatItem(
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(
-                        legend.level.formatted,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                    if (legend.level != null) {
+                        Text(
+                            legend.level.formatted,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
             }
 
             Text(
-                legend.legendNameKey,
+                "", //legend.legendNameKey,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
             )
-
-            AnimatedLinearProgressBar(
-                legend.xpPercentage.value,
-                legend.legendNameKey,
-                modifier = Modifier.width(134.dp)
-            )
+            if (legend.xpPercentage != null) {
+                AnimatedLinearProgressBar(
+                    legend.xpPercentage.value,
+                    "", //legend.legendNameKey,
+                    modifier = Modifier.width(134.dp)
+                )
+            }
         }
     }
 }
@@ -125,24 +128,27 @@ fun LegendStatItemDetail(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            legend.legendNameKey,
+            "", //legend.legendNameKey,
             fontSize = 30.sp,
             lineHeight = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
+        if (legend.xpPercentage != null && legend.level != null) {
+            CustomLevelProgressBar(
+                percentage = legend.xpPercentage.value,
+                key = legend.legendId.toString(),
+                currentLevel = legend.level.value,
+                nextLevel = legend.nextLevel?.value
+            )
+        }
 
-        CustomLevelProgressBar(
-            percentage = legend.xpPercentage.value,
-            key = legend.legendNameKey,
-            currentLevel = legend.level.value,
-            nextLevel = legend.nextLevel?.value
-        )
-
-        Text(legend.matchTime.formatted)
+        if (legend.matchTime != null) {
+            Text(legend.matchTime.formatted)
+        }
         Button(onClick = onClick) {
             Text(
-                stringResource(R.string.goToLegend, legend.legendNameKey)
+                stringResource(R.string.goToLegend, legend.legendId)
             )
         }
         LazyVerticalGrid(
@@ -155,83 +161,80 @@ fun LegendStatItemDetail(
                 items = listOf(
                     Pair(
                         R.string.games,
-                        legend.games.formatted
+                        legend.games?.formatted
                     ),
                     Pair(
                         R.string.wins,
-                        legend.wins.formatted
+                        legend.wins?.formatted
                     ),
                     Pair(
                         R.string.kos,
-                        legend.kos.formatted
+                        legend.kos?.formatted
                     ),
                     Pair(
                         R.string.falls,
-                        legend.falls.formatted
+                        legend.falls?.formatted
                     ),
                     Pair(
                         R.string.suicides,
-                        legend.suicides.formatted
+                        legend.suicides?.formatted
                     ),
                     Pair(
                         R.string.teamKos,
-                        legend.teamKos.formatted
+                        legend.teamKos?.formatted
                     ),
                     Pair(
                         R.string.damageDealt,
-                        legend.damageDealt.formatted
+                        legend.damageDealt?.formatted
                     ),
                     Pair(
                         R.string.damageTaken,
-                        legend.damageTaken.formatted
+                        legend.damageTaken?.formatted
                     ),
                     Pair(
                         R.string.koWeaponOne,
-                        legend.koWeaponOne.formatted
+                        legend.koWeaponOne?.formatted
                     ),
                     Pair(
                         R.string.koWeaponTwo,
-                        legend.koWeaponTwo.formatted
+                        legend.koWeaponTwo?.formatted
                     ),
                     Pair(
                         R.string.damageWeaponOne,
-                        legend.damageWeaponOne.formatted
+                        legend.damageWeaponOne?.formatted
                     ),
                     Pair(
                         R.string.damageWeaponTwo,
-                        legend.damageWeaponTwo.formatted
+                        legend.damageWeaponTwo?.formatted
                     ),
                     Pair(
                         R.string.timeHeldWeaponOne,
-                        legend.timeHeldWeaponOne.formatted
+                        legend.timeHeldWeaponOne?.formatted
                     ),
                     Pair(
                         R.string.timeHeldWeaponTwo,
-                        legend.timeHeldWeaponTwo.formatted
+                        legend.timeHeldWeaponTwo?.formatted
                     ),
                     Pair(
                         R.string.koUnarmed,
-                        legend.koUnarmed.formatted
+                        legend.koUnarmed?.formatted
                     ),
                     Pair(
                         R.string.damageUnarmed,
-                        legend.damageUnarmed.formatted
+                        legend.damageUnarmed?.formatted
                     ),
-                    Pair(
-                        R.string.koThrownItem,
-                        legend.koThrownItem.formatted
-                    ),
+
                     Pair(
                         R.string.damageThrownItem,
-                        legend.damageThrownItem.formatted
+                        legend.damageThrownItem?.formatted
                     ),
                     Pair(
                         R.string.koGadgets,
-                        legend.koGadgets.formatted
+                        legend.koGadgets?.formatted
                     ),
                     Pair(
                         R.string.damageGadgets,
-                        legend.damageGadgets.formatted
+                        legend.damageGadgets?.formatted
                     ),
                 ),
                 key = { it.first }

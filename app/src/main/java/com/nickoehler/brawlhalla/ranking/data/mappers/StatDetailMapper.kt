@@ -1,9 +1,9 @@
 package com.nickoehler.brawlhalla.ranking.data.mappers
 
-import com.nickoehler.brawlhalla.ranking.data.dto.StatDetailDto
+import com.nickoehler.brawlhalla.ranking.data.dto.PlayerStatsDto
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 
-fun StatDetailDto.toStatDetail(): StatDetail {
+fun PlayerStatsDto.toStatDetail(): StatDetail {
     return StatDetail(
         brawlhallaId,
         name,
@@ -14,18 +14,14 @@ fun StatDetailDto.toStatDetail(): StatDetail {
         wins,
         damageBomb,
         damageMine,
-        damageSpikeball,
+        damageSpikeBall,
         damageSidekick,
         hitSnowball,
         koBomb,
         koMine,
-        koSpikeball,
+        koSpikeBall,
         koSidekick,
         koSnowball,
         legends.map { it.toStatLegend() },
-        clan = if (clan != null)
-            this.clan.toStatClan()
-        else
-            null
     )
 }

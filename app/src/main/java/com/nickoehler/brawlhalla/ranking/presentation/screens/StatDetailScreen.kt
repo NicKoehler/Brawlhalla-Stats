@@ -665,11 +665,11 @@ private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
             ),
             Pair(
                 R.string.koSpikeball,
-                playerStat?.koSpikeball?.formatted
+                playerStat?.koSpikeBall?.formatted
             ),
             Pair(
                 R.string.damageSpikeball,
-                playerStat?.damageSpikeball?.formatted
+                playerStat?.damageSpikeBall?.formatted
             ),
             Pair(
                 R.string.koSidekick,
@@ -742,14 +742,15 @@ private fun StatDetailHeader(
             }
 
             CustomLevelProgressBar(
-                state.selectedStatDetail.xpPercentage.value,
+                state.selectedStatDetail.xpPercentage?.value ?: 0.0,
                 state.selectedStatDetail.name,
                 state.selectedStatDetail.level,
                 state.selectedStatDetail.nextLevel,
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
-
-            Text("XP ${state.selectedStatDetail.xp.formatted}")
+            if (state.selectedStatDetail.xp != null) {
+                Text("XP ${state.selectedStatDetail.xp.formatted}")
+            }
         }
 
         FlowRow(
@@ -963,18 +964,17 @@ internal val statDetailSample = StatDetail(
     wins = 23924,
     damageBomb = 208300,
     damageMine = 173721,
-    damageSpikeball = 128864,
+    damageSpikeBall = 128864,
     damageSidekick = 84351,
     hitSnowball = 852,
     koBomb = 1851,
     koMine = 1288,
-    koSpikeball = 1212,
+    koSpikeBall = 1212,
     koSidekick = 27,
     koSnowball = 266,
     legends = listOf(
         StatLegend(
             5,
-            "orion",
             1456241,
             1224326,
             7811,
@@ -1002,7 +1002,6 @@ internal val statDetailSample = StatDetail(
         ),
         StatLegend(
             29,
-            "wu shang",
             405857,
             319666,
             2251,
@@ -1030,7 +1029,6 @@ internal val statDetailSample = StatDetail(
         ),
         StatLegend(
             7,
-            "gnash",
             306796,
             210941,
             1765,
@@ -1059,7 +1057,6 @@ internal val statDetailSample = StatDetail(
         // Add the rest of the StatLegend objects here...
         StatLegend(
             32,
-            "cross",
             316676,
             232804,
             1827,

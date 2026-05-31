@@ -4,9 +4,9 @@ import com.nickoehler.brawlhalla.core.data.networking.safeCall
 import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.core.domain.util.Result
 import com.nickoehler.brawlhalla.core.domain.util.map
+import com.nickoehler.brawlhalla.ranking.data.dto.PlayerStatsDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingDetailDto
 import com.nickoehler.brawlhalla.ranking.data.dto.RankingResponseDto
-import com.nickoehler.brawlhalla.ranking.data.dto.StatDetailDto
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRanking
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRankingDetail
 import com.nickoehler.brawlhalla.ranking.data.mappers.toStatDetail
@@ -49,10 +49,12 @@ class RemoteRankingDataSource(
     }
 
     override suspend fun getStat(brawlhallaId: Long): Result<StatDetail, NetworkError> {
-        return safeCall<StatDetailDto> {
+        return safeCall<PlayerStatsDto> {
             httpClient.get(
-                "/player/$brawlhallaId/stats"
-            )
+                "/v1/player/stats"
+            ) {
+                parameter("brawlhalla_id", brawlhallaId)
+            }
         }.map { response ->
             response.toStatDetail()
         }

@@ -6,7 +6,6 @@ import com.nickoehler.brawlhalla.ranking.domain.StatLegend
 fun StatLegendDto.toStatLegend(): StatLegend {
     return StatLegend(
         legendId,
-        legendNameKey,
         damageDealt,
         damageTaken,
         kos,
