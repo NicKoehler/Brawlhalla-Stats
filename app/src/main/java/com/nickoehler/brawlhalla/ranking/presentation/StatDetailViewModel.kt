@@ -111,11 +111,6 @@ class StatDetailViewModel(
                                 state.statLegendSortReversed,
                                 rankingDetail.legends
                             ),
-                            teams = sortTeams(
-                                state.teamSortType,
-                                state.teamSortReversed,
-                                rankingDetail.teams
-                            )
                         )
                     )
                 }
@@ -193,11 +188,10 @@ class StatDetailViewModel(
         val currentState = state.value
         val currentRankingDetail = currentState.selectedRankingDetail
         val reversed = !currentState.teamSortReversed
-        val teams = currentRankingDetail?.teams.orEmpty()
         _state.update { state ->
             state.copy(
                 teamSortReversed = reversed,
-                selectedRankingDetail = currentRankingDetail?.copy(teams = teams.reversed())
+                selectedRankingDetail = currentRankingDetail
             )
         }
     }
@@ -239,18 +233,19 @@ class StatDetailViewModel(
                 }
 
                 is RankingSortType.Team -> {
-                    val currentTeams = currentRankingDetail?.teams.orEmpty()
-                    val reversed = state.teamSortReversed
-                    state.copy(
-                        teamSortType = sortType.team,
-                        selectedRankingDetail = currentRankingDetail?.copy(
-                            teams = sortTeams(
-                                sortType.team,
-                                reversed,
-                                currentTeams
-                            )
-                        )
-                    )
+//                    val currentTeams = currentRankingDetail?.teams.orEmpty()
+//                    val reversed = state.teamSortReversed
+//                    state.copy(
+//                        teamSortType = sortType.team,
+//                        selectedRankingDetail = currentRankingDetail?.copy(
+//                            teams = sortTeams(
+//                                sortType.team,
+//                                reversed,
+//                                currentTeams
+//                            )
+//                        )
+//                    )
+                    state
                 }
             }
 
@@ -280,7 +275,7 @@ class StatDetailViewModel(
         elements: List<RankingLegendUi>
     ): List<RankingLegendUi> {
         val list = when (sortType) {
-            GeneralRankingSortType.Alpha -> elements.sortedBy { it.legendNameKey }
+            GeneralRankingSortType.Alpha -> elements
             GeneralRankingSortType.BestRating -> elements.sortedBy { it.peakRating.value }
             GeneralRankingSortType.Rating -> elements.sortedBy { it.rating.value }
             GeneralRankingSortType.WinRate -> elements.sortedBy { it.winRate?.value }

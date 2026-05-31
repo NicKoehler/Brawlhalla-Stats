@@ -6,7 +6,6 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
 fun RankingLegendDto.toRankingLegend(): RankingLegend {
     return RankingLegend(
         legendId,
-        legendNameKey,
         rating,
         peakRating,
         tier.toTier(),

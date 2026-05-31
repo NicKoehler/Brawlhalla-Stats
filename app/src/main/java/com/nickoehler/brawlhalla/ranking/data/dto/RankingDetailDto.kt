@@ -18,9 +18,6 @@ data class RankingDetailDto(
     @SerialName("peak_rating")
     val peakRating: Int,
 
-    @SerialName("tier")
-    val tier: String,
-
     @SerialName("wins")
     val wins: Int,
 
@@ -30,15 +27,6 @@ data class RankingDetailDto(
     @SerialName("region")
     val region: String,
 
-    @SerialName("global_rank")
-    val globalRank: Int,
-
-    @SerialName("region_rank")
-    val regionRank: Int,
-
     @SerialName("legends")
     val legends: List<RankingLegendDto>,
-
-    @SerialName("2v2")
-    val teams: List<RankingDetailTeamDto>
 )

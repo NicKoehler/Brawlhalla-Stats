@@ -5,11 +5,9 @@ import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.util.getMiniImageUrlFromLegendId
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
-import java.util.Locale
 
 data class RankingLegendUi(
     val legendId: Long,
-    val legendNameKey: String,
     val rating: DisplayableInt,
     val peakRating: DisplayableInt,
     val tier: TierUi,
@@ -23,11 +21,6 @@ data class RankingLegendUi(
 fun RankingLegend.toRankingLegendUi(): RankingLegendUi {
     return RankingLegendUi(
         legendId,
-        legendNameKey.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.ROOT
-            ) else it.toString()
-        },
         rating.toDisplayableNumber(),
         peakRating.toDisplayableNumber(),
         tier.toTierUi(),

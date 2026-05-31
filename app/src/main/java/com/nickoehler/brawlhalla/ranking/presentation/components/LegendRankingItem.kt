@@ -27,12 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.LegendImage
@@ -62,7 +59,7 @@ fun LegendRankingItem(
 
     CustomCard(
         onClick = onClick,
-        modifier =  modifier
+        modifier = modifier
             .scale(animatedFloat)
             .alpha(animatedFloat),
         horizontalArrangement = Arrangement.Center
@@ -77,7 +74,6 @@ fun LegendRankingItem(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 LegendImage(
-                    legend.legendNameKey,
                     legend.image,
                     modifier = Modifier
                         .fillMaxSize()
@@ -90,11 +86,6 @@ fun LegendRankingItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    legend.legendNameKey,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                )
                 if (legend.winRate != null) {
                     RankWinRateRow(legend.winRate)
                 }
@@ -118,14 +109,6 @@ fun LegendRankingItemDetail(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
-        Text(
-            legend.legendNameKey,
-            fontSize = 30.sp,
-            lineHeight = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
         TierBox(legend.rating, legend.tier)
 
         if (legend.winRate != null) {
@@ -134,7 +117,7 @@ fun LegendRankingItemDetail(
 
         Button(onClick = onClick) {
             Text(
-                stringResource(R.string.goToLegend, legend.legendNameKey)
+                stringResource(R.string.goToLegend)
             )
         }
 

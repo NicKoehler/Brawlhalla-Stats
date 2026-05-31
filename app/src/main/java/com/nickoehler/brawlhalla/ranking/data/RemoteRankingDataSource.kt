@@ -35,11 +35,12 @@ class RemoteRankingDataSource(
                 "/v1/leaderboard/ranked"
             ) {
                 if (name != null) {
-                    parameter("name", name)
+                    parameter("search", name)
                 }
                 parameter("game_mode", gameMode.toUrlString())
                 parameter("region", region.toUrlString())
                 parameter("page", page.toString())
+                parameter("max_results", 50)
             }
         }.map { response ->
             response.rankings.map {
@@ -63,8 +64,11 @@ class RemoteRankingDataSource(
     override suspend fun getRanked(brawlhallaId: Long): Result<RankingDetail, NetworkError> {
         return safeCall<RankingDetailDto> {
             httpClient.get(
-                "/player/$brawlhallaId/ranked"
-            )
+                "/v1/player/stats"
+            ) {
+                parameter("brawlhalla_id", brawlhallaId)
+                parameter("mode", "ranked_1v1")
+            }
         }.map { response ->
             response.toRankingDetail()
         }

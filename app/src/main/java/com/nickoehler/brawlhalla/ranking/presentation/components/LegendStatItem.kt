@@ -73,7 +73,6 @@ fun LegendStatItem(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 LegendImage(
-                    "", //legend.legendNameKey,
                     legend.image,
                     modifier = Modifier
                         .aspectRatio(1f)

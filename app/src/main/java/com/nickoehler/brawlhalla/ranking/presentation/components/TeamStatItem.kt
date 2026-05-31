@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +24,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
@@ -34,9 +31,6 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankWinRateRow
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.TierBox
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.screens.rankingDetailSample
-import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -164,30 +158,30 @@ fun TeamItemDetail(
     }
 }
 
-@PreviewLightDark
-@Composable
-private fun TeamItemPreview() {
-    BrawlhallaTheme {
-        Surface {
-            TeamItem(
-                rankingDetailSample.teams[0].toRankingUi(),
-                onClick = {},
-                modifier = Modifier.aspectRatio(1f)
-            )
-        }
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun TeamItemDetailPreview() {
-    BrawlhallaTheme {
-        Surface {
-            TeamItemDetail(
-                rankingDetailSample.teams[0].toRankingUi(),
-                2,
-                onClick = {},
-            )
-        }
-    }
-}
+//@PreviewLightDark
+//@Composable
+//private fun TeamItemPreview() {
+//    BrawlhallaTheme {
+//        Surface {
+//            TeamItem(
+//                rankingDetailSample.teams[0].toRankingUi(),
+//                onClick = {},
+//                modifier = Modifier.aspectRatio(1f)
+//            )
+//        }
+//    }
+//}
+//
+//@PreviewLightDark
+//@Composable
+//private fun TeamItemDetailPreview() {
+//    BrawlhallaTheme {
+//        Surface {
+//            TeamItemDetail(
+//                rankingDetailSample.teams[0].toRankingUi(),
+//                2,
+//                onClick = {},
+//            )
+//        }
+//    }
+//}

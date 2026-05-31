@@ -1099,17 +1099,13 @@ internal val rankingDetailSample =
         brawlhallaId = 2316541,
         rating = 0,
         peakRating = 0,
-        tier = "none".toTier(),
         wins = 0,
         games = 0,
         region = "none".toRegion(),
-        globalRank = 0,
-        regionRank = 0,
         legends =
             listOf(
                 RankingLegend(
                     3,
-                    "bodvar",
                     758,
                     0,
                     "Tin 2".toTier(),
@@ -1118,7 +1114,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     4,
-                    "cassidy",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1127,7 +1122,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     5,
-                    "orion",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1136,7 +1130,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     19,
-                    "brynn",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1145,7 +1138,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     22,
-                    "ulgrim",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1154,7 +1146,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     25,
-                    "diana",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1163,7 +1154,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     18,
-                    "ember",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1172,7 +1162,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     16,
-                    "teros",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1181,7 +1170,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     14,
-                    "ada",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1190,7 +1178,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     29,
-                    "wu shang",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1199,7 +1186,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     28,
-                    "kor",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1208,7 +1194,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     35,
-                    "mordex",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1217,7 +1202,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     38,
-                    "caspian",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1226,7 +1210,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     31,
-                    "ragnir",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1235,7 +1218,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     46,
-                    "rayman",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1244,7 +1226,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     26,
-                    "jhala",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1253,7 +1234,6 @@ internal val rankingDetailSample =
                 ),
                 RankingLegend(
                     36,
-                    "yumiko",
                     750,
                     0,
                     "Tin 1".toTier(),
@@ -1261,7 +1241,6 @@ internal val rankingDetailSample =
                     0
                 )
             ),
-        teams = emptyList(),
         estimatedGlory = 1023,
         estimatedEloReset = 1800
     )

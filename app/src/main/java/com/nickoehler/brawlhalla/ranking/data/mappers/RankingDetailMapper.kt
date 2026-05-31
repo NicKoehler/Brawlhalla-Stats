@@ -8,25 +8,19 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 fun RankingDetailDto.toRankingDetail(): RankingDetail {
     val getEstimatedGlory = EstimatedGloryUseCase()
     val getEstimatedEloReset = EstimatedEloResetUseCase()
-    val ratings: List<Int> =
-        listOf(peakRating) + teams.map { it.peakRating } + legends.map { it.peakRating }
     return RankingDetail(
         name,
         brawlhallaId,
         rating,
         peakRating,
-        tier.toTier(),
         wins,
         games,
         region.toRegion(),
-        globalRank,
-        regionRank,
         legends.map { it.toRankingLegend() },
-        emptyList(),// teams.map { it.toRankingTeam() }.distinct(),
         estimatedGlory = getEstimatedGlory(
             games = legends.sumOf { it.games },
             wins = legends.sumOf { it.wins },
-            peakRating = ratings.maxOf { it }
+            peakRating = peakRating
         ),
         estimatedEloReset = getEstimatedEloReset(
             currentRating = rating

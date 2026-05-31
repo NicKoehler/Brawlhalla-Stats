@@ -97,7 +97,7 @@
     <string name="source_code">Codice sorgente</string>
     <string name="developer">Sviluppatore</string>
     <string name="settings_language_title">Lingua</string>
-    <string name="goToLegend">Vai a %s</string>
+    <string name="goToLegend">Vai alla leggenda</string>
     <string name="stats_1v1">1v1</string>
     <string name="general">Generali</string>
 </resources>

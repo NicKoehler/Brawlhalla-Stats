@@ -8,9 +8,6 @@ data class RankingLegendDto(
     @SerialName("legend_id")
     val legendId: Long,
 
-    @SerialName("legend_name_key")
-    val legendNameKey: String,
-
     @SerialName("rating")
     val rating: Int,
 

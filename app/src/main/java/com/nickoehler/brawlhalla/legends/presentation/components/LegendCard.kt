@@ -61,7 +61,7 @@ fun LegendCard(
             .scale(animatedFloat)
             .alpha(animatedFloat),
     ) {
-        LegendImage(legend?.bioName, legend?.imageMini)
+        LegendImage(legend?.imageMini)
         Spacer(Modifier.size(20.dp))
         Column(
             Modifier.weight(1f),

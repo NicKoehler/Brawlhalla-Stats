@@ -14,14 +14,13 @@ import coil3.compose.AsyncImage
 
 @Composable
 fun LegendImage(
-    legendName: String?,
     legendImage: String?,
     modifier: Modifier = Modifier
 ) {
-    if (legendName != null && legendImage != null) {
+    if (legendImage != null) {
         AsyncImage(
             legendImage,
-            contentDescription = legendName,
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .size(80.dp)
