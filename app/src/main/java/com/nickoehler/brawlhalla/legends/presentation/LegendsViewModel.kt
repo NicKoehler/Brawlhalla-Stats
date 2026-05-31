@@ -72,7 +72,12 @@ class LegendsViewModel(
                     state.copy(
                         isListLoading = false,
                         legends = allLegends,
-                        weapons = allWeapons
+                        weapons = allWeapons,
+                        legendDetailUi = if (state.selectedLegendId != null) {
+                            allLegends.find { it.legendId == state.selectedLegendId }
+                        } else {
+                            null
+                        }
                     )
                 }
             }.onError { error ->
@@ -83,26 +88,11 @@ class LegendsViewModel(
     }
 
     private fun selectLegend(legendId: Long) {
-//        viewModelScope.launch {
-//            if (_state.value.selectedLegendUi?.legendId != legendId) {
-//                _state.update { it.copy(isDetailLoading = true, selectedLegendUi = null) }
-//                legendsDataSource.getLegendDetail(legendId).onSuccess { legend ->
-//                    _state.update { state ->
-//                        state.copy(
-//                            isDetailLoading = false,
-//                            selectedLegendUi = legend.toLegendDetailUi()
-//                        )
-//                    }
-//                }.onError { error ->
-//                    _state.update { it.copy(isDetailLoading = false, selectedLegendUi = null) }
-//                    _uiEvents.send(UiEvent.Error(error))
-//                }
-//            }
-//        }
-    }
-
-    fun getLegendById(legendId: Long): LegendDetailUi {
-        return allLegends.first { it.legendId == legendId }
+        _state.update { state ->
+            state.copy(
+                selectedLegendId = legendId,
+                legendDetailUi = allLegends.find { it.legendId == legendId })
+        }
     }
 
     private fun searchQuery(query: String) {

@@ -14,7 +14,6 @@ import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.legends.data.RemoteLegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
-import com.nickoehler.brawlhalla.legends.presentation.LegendDetailViewModel
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.ranking.data.RemoteRankingDataSource
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
@@ -39,7 +38,6 @@ val appModule = module {
     singleOf(::AppLocaleManager)
     viewModelOf(::ThemeViewModel)
     viewModelOf(::LegendsViewModel)
-    viewModelOf(::LegendDetailViewModel)
     viewModelOf(::StatDetailViewModel)
     viewModelOf(::RankingViewModel)
     viewModelOf(::ClanViewModel)

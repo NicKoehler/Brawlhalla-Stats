@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.nickoehler.brawlhalla.R
 
 enum class StatLegendSortType {
-    Alpha,
     Level,
     Time,
     Games,
@@ -37,7 +36,6 @@ sealed interface RankingSortType {
 
 fun StatLegendSortType.toStringResource(): Int {
     return when (this) {
-        StatLegendSortType.Alpha -> R.string.alphabetical
         StatLegendSortType.Level -> R.string.level
         StatLegendSortType.Time -> R.string.matchTime
         StatLegendSortType.Games -> R.string.games
@@ -47,7 +45,6 @@ fun StatLegendSortType.toStringResource(): Int {
 
 fun StatLegendSortType.toIcon(): ImageVector {
     return when (this) {
-        StatLegendSortType.Alpha -> Icons.Default.SortByAlpha
         StatLegendSortType.Level -> Icons.Default.ArrowCircleUp
         StatLegendSortType.Time -> Icons.Default.Timer
         StatLegendSortType.Games -> Icons.Default.Games

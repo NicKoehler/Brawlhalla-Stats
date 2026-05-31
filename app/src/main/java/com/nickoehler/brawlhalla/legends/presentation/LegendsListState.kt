@@ -9,10 +9,11 @@ import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 @Immutable
 data class LegendsListState(
     val isListLoading: Boolean = false,
+    val selectedLegendId: Long? = null,
     val isDetailLoading: Boolean = false,
     val legends: List<LegendDetailUi> = emptyList(),
     val weapons: List<WeaponUi> = emptyList(),
-    val selectedLegendUi: LegendDetailUi? = null,
+    val legendDetailUi: LegendDetailUi? = null,
     val isFilterOpen: Boolean = false,
     val selectedStatType: LegendStat = LegendStat.STRENGTH,
     val selectedStatValue: Int = 3,

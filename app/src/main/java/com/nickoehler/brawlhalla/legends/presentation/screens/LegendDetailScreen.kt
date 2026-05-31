@@ -28,11 +28,11 @@ import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.legends.domain.LegendDetail
 import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendDetailState
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendBioContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailContent
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailStats
 import com.nickoehler.brawlhalla.legends.presentation.components.LegendDetailToolBar
+import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.Spacing
@@ -40,7 +40,7 @@ import com.nickoehler.brawlhalla.ui.theme.Spacing
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LegendDetailScreen(
-    state: LegendDetailState,
+    legendDetailUi: LegendDetailUi?,
     modifier: Modifier = Modifier,
     onLegendAction: (LegendDetailAction) -> Unit = {},
     onWeaponAction: (WeaponAction) -> Unit = {}
@@ -57,14 +57,13 @@ fun LegendDetailScreen(
 
             val bottomSheetState = rememberModalBottomSheetState()
             var showBottomSheet by remember { mutableStateOf(false) }
-            val legend = state.selectedLegendUi
 
             if (showBottomSheet) {
                 ModalBottomSheet(
                     sheetState = bottomSheetState,
                     onDismissRequest = { showBottomSheet = false }
                 ) {
-                    LegendBioContent(legend, state.isDetailLoading)
+                    LegendBioContent(legendDetailUi)
                 }
             }
             Column(
@@ -76,18 +75,15 @@ fun LegendDetailScreen(
             ) {
                 Spacer(modifier)
                 LegendDetailContent(
-                    state.isDetailLoading,
-                    legend
+                    legendDetailUi
                 )
                 LegendDetailToolBar(
-                    state.isDetailLoading,
-                    legend,
+                    legendDetailUi,
                     { showBottomSheet = true },
                     onWeaponAction
                 )
                 LegendDetailStats(
-                    state.isDetailLoading,
-                    legend,
+                    legendDetailUi,
                     onLegendAction
                 )
             }
@@ -109,28 +105,8 @@ private fun LegendDetailScreenPreview() {
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 LegendDetailScreen(
-                    state = LegendDetailState(
-                        selectedLegendUi = legendDetailSample
-                            .toLegendDetailUi(),
-                    ),
-                )
-            }
-        }
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun LegendDetailScreenLoadingPreview() {
-    BrawlhallaTheme {
-        Surface {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                LegendDetailScreen(
-                    state = LegendDetailState(isDetailLoading = true),
+                    legendDetailUi = legendDetailSample
+                        .toLegendDetailUi(),
                 )
             }
         }

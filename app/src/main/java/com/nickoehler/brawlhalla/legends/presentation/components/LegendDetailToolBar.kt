@@ -18,7 +18,6 @@ import com.nickoehler.brawlhalla.legends.presentation.models.LegendDetailUi
 
 @Composable
 fun LegendDetailToolBar(
-    isLoading: Boolean,
     legend: LegendDetailUi?,
     onShow: () -> Unit,
     onWeaponAction: (WeaponAction) -> Unit
@@ -28,18 +27,18 @@ fun LegendDetailToolBar(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isLoading || legend != null) {
+        if (legend != null) {
 
             IconButton(onClick = onShow) {
                 Icon(Icons.Default.Info, "lore")
             }
             Spacer(modifier = Modifier.weight(1f))
             WeaponButton(
-                weapon = legend?.weaponOne,
+                weapon = legend.weaponOne,
                 onClick = onWeaponAction
             )
             WeaponButton(
-                weapon = legend?.weaponTwo,
+                weapon = legend.weaponTwo,
                 onClick = onWeaponAction
             )
         }

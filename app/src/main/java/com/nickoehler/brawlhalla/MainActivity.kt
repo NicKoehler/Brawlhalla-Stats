@@ -50,7 +50,6 @@ import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
-import com.nickoehler.brawlhalla.legends.presentation.LegendDetailViewModel
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
 import com.nickoehler.brawlhalla.legends.presentation.screens.LegendDetailScreen
 import com.nickoehler.brawlhalla.legends.presentation.screens.LegendListScreen
@@ -101,6 +100,7 @@ class MainActivity : ComponentActivity() {
             val theme by themeViewModel.theme.collectAsStateWithLifecycle()
             val navigatorScaffoldState = rememberNavigationSuiteScaffoldState()
             val snackBarHostState = remember { SnackbarHostState() }
+
 
             LaunchedEffect(backStack.last(), isPortrait) {
                 if (!isPortrait || Screens.entries.map { it.route }.contains(backStack.last())) {
@@ -168,6 +168,8 @@ class MainActivity : ComponentActivity() {
                         rememberListDetailSceneStrategy<NavKey>(directive = directive)
 
                     val legendsViewModel = koinViewModel<LegendsViewModel>()
+
+                    val legendState by legendsViewModel.state.collectAsStateWithLifecycle()
 
                     LaunchedEffect(playerId) {
                         if (playerId != null && playerId != 0L) {
@@ -271,17 +273,8 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Legend>(
                                 metadata = ListDetailSceneStrategy.detailPane(),
                             ) {
-                                val viewModel =
-                                    koinViewModel<LegendDetailViewModel>(
-                                        key = it.id.toString(), parameters = {
-                                            parametersOf(
-                                                legendsViewModel.getLegendById(it.id)
-                                            )
-                                        }
-                                    )
-                                val state by viewModel.state.collectAsStateWithLifecycle()
                                 LegendDetailScreen(
-                                    state = state,
+                                    legendDetailUi = legendState.legendDetailUi,
                                     onLegendAction = { action ->
                                         if (action is LegendDetailAction.SelectStat) {
                                             legendsViewModel.onLegendAction(
@@ -309,10 +302,8 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Legends>(
                                 metadata = navTransition + ListDetailSceneStrategy.listPane(),
                             ) {
-                                val state by legendsViewModel.state.collectAsStateWithLifecycle()
-
                                 LegendListScreen(
-                                    state = state,
+                                    state = legendState,
                                     events = legendsViewModel.uiEvents,
                                     onLegendAction = { action ->
                                         legendsViewModel.onLegendAction(action)
@@ -337,7 +328,6 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Rankings>(
                                 metadata = navTransition + ListDetailSceneStrategy.listPane()
                             ) {
-
                                 val viewModel = koinViewModel<RankingViewModel>()
                                 val rankingState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -376,6 +366,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val statDetailViewModel =
                                     koinViewModel<StatDetailViewModel>(
+                                        key = it.playerId.toString(),
                                         parameters = { parametersOf(it.playerId) }
                                     )
                                 val state by statDetailViewModel.state.collectAsStateWithLifecycle()
@@ -393,6 +384,11 @@ class MainActivity : ComponentActivity() {
                                     onLegendSelection = { legendId ->
                                         backStack.add(Route.Legends)
                                         backStack.add(Route.Legend(legendId))
+                                        legendsViewModel.onLegendAction(
+                                            LegendAction.SelectLegend(
+                                                legendId
+                                            )
+                                        )
                                     },
                                     onClanSelection = { clanId ->
                                         backStack.add(Route.Clan(clanId))

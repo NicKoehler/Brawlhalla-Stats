@@ -258,7 +258,6 @@ class StatDetailViewModel(
         currentStatLegends: List<StatLegendUi>
     ): List<StatLegendUi> {
         val list = when (sortType) {
-            StatLegendSortType.Alpha -> currentStatLegends//currentStatLegends.sortedBy { it.legendNameKey }
             StatLegendSortType.Level -> currentStatLegends.sortedBy { it.level?.value }
             StatLegendSortType.Time -> currentStatLegends.sortedBy { it.matchTime?.value }
             StatLegendSortType.Games -> currentStatLegends.sortedBy { it.games?.value }

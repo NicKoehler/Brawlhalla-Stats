@@ -18,11 +18,10 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun LegendDetailStats(
-    isLoading: Boolean,
     legend: LegendDetailUi?,
     onLegendAction: (LegendDetailAction) -> Unit
 ) {
-    if (isLoading || legend != null) {
+    if (legend != null) {
         LegendStat.entries.forEachIndexed { index, stat ->
 
             var visible by remember { mutableStateOf(false) }
@@ -34,7 +33,7 @@ fun LegendDetailStats(
 
             LegendStatItem(
                 stat = stat,
-                statValue = legend?.getStat(stat),
+                statValue = legend.getStat(stat),
                 onLegendAction = onLegendAction,
                 delayMillis = 100 * index,
                 modifier = Modifier
