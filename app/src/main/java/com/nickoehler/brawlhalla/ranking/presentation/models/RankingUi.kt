@@ -24,9 +24,9 @@ fun Ranking.toRankingUi() =
         players,
         rating.toDisplayableNumber(),
         tier.toTierUi(),
-        losses.toDisplayableNumber(),
         wins.toDisplayableNumber(),
-        (wins / (wins + losses) * 100.0).toDisplayableNumber(),
+        losses.toDisplayableNumber(),
+        (losses.toDouble() / (wins + losses).toDouble() * 100.0).toDisplayableNumber(),
         region.toRegionUi(),
         bestRating.toDisplayableNumber(),
     )
