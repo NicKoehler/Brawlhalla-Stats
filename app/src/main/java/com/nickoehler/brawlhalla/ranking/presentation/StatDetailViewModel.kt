@@ -281,7 +281,7 @@ class StatDetailViewModel(
     ): List<RankingLegendUi> {
         val list = when (sortType) {
             GeneralRankingSortType.Alpha -> elements.sortedBy { it.legendNameKey }
-            GeneralRankingSortType.PeakRating -> elements.sortedBy { it.peakRating.value }
+            GeneralRankingSortType.BestRating -> elements.sortedBy { it.peakRating.value }
             GeneralRankingSortType.Rating -> elements.sortedBy { it.rating.value }
             GeneralRankingSortType.WinRate -> elements.sortedBy { it.winRate?.value }
             GeneralRankingSortType.Games -> elements.sortedBy { it.games.value }
@@ -293,14 +293,14 @@ class StatDetailViewModel(
     private fun sortTeams(
         sortType: GeneralRankingSortType,
         reversed: Boolean,
-        elements: List<RankingUi.RankingTeamUi>
-    ): List<RankingUi.RankingTeamUi> {
+        elements: List<RankingUi>
+    ): List<RankingUi> {
         val list = when (sortType) {
-            GeneralRankingSortType.Alpha -> elements.sortedBy { it.teamName }
-            GeneralRankingSortType.PeakRating -> elements.sortedBy { it.peakRating.value }
+            GeneralRankingSortType.Alpha -> elements.sortedBy { it.players.first().username }
+            GeneralRankingSortType.BestRating -> elements.sortedBy { it.bestRating.value }
             GeneralRankingSortType.Rating -> elements.sortedBy { it.rating.value }
             GeneralRankingSortType.WinRate -> elements.sortedBy { it.winRate.value }
-            GeneralRankingSortType.Games -> elements.sortedBy { it.games.value }
+            GeneralRankingSortType.Games -> elements.sortedBy { it.wins.value + it.losses.value }
             GeneralRankingSortType.Wins -> elements.sortedBy { it.wins.value }
         }
         return if (reversed) list.reversed() else list

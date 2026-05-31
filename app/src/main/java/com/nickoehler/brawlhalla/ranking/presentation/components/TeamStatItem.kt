@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,14 +34,14 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankWinRateRow
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.TierBox
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingTeamUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.screens.rankingDetailSample
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun TeamItem(
-    team: RankingUi.RankingTeamUi,
+    team: RankingUi,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -73,7 +71,7 @@ fun TeamItem(
             ) {
                 Text(team.region.flag)
                 Text(
-                    team.teamName,
+                    team.players.joinToString(" + ") { it.username },
                     maxLines = 1,
                     textAlign = TextAlign.Center,
                     overflow = TextOverflow.Ellipsis,
@@ -89,7 +87,7 @@ fun TeamItem(
 
 @Composable
 fun TeamItemDetail(
-    team: RankingUi.RankingTeamUi,
+    team: RankingUi,
     columns: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -109,7 +107,7 @@ fun TeamItemDetail(
         ) {
             Text(team.region.flag)
             Text(
-                team.teamName,
+                team.players.joinToString(" + ") { it.username },
                 maxLines = 1,
                 fontSize = 30.sp,
                 lineHeight = 30.sp,
@@ -122,13 +120,13 @@ fun TeamItemDetail(
 
         RankWinRateRow(team.winRate)
 
-        if (team.brawlhallaIdOne != team.brawlhallaIdTwo) {
-            Button(onClick = onClick) {
-                Text(
-                    stringResource(R.string.goToTeamMate)
-                )
-            }
-        }
+//        if (team.brawlhallaIdOne != team.brawlhallaIdTwo) {
+//            Button(onClick = onClick) {
+//                Text(
+//                    stringResource(R.string.goToTeamMate)
+//                )
+//            }
+//        }
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(8.dp),
@@ -144,11 +142,11 @@ fun TeamItemDetail(
                     ),
                     Pair(
                         R.string.peakRating,
-                        team.peakRating.formatted
+                        team.bestRating.formatted
                     ),
                     Pair(
-                        R.string.games,
-                        team.games.formatted
+                        R.string.losses,
+                        team.wins.formatted
                     ),
                     Pair(
                         R.string.wins,
@@ -172,7 +170,7 @@ private fun TeamItemPreview() {
     BrawlhallaTheme {
         Surface {
             TeamItem(
-                rankingDetailSample.teams[0].toRankingTeamUi(),
+                rankingDetailSample.teams[0].toRankingUi(),
                 onClick = {},
                 modifier = Modifier.aspectRatio(1f)
             )
@@ -186,7 +184,7 @@ private fun TeamItemDetailPreview() {
     BrawlhallaTheme {
         Surface {
             TeamItemDetail(
-                rankingDetailSample.teams[0].toRankingTeamUi(),
+                rankingDetailSample.teams[0].toRankingUi(),
                 2,
                 onClick = {},
             )

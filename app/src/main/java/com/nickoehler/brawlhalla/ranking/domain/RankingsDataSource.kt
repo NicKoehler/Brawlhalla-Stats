@@ -5,8 +5,8 @@ import com.nickoehler.brawlhalla.core.domain.util.Result
 
 interface RankingsDataSource {
     suspend fun getRankings(
-        bracket: Bracket,
-        regions: Region,
+        gameMode: GameMode,
+        region: Region,
         page: Int,
         name: String? = null
     ): Result<List<Ranking>, NetworkError>

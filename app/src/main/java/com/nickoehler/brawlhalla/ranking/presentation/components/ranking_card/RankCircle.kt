@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
@@ -34,10 +34,7 @@ fun RankCircle(ranking: RankingUi?) {
     ) {
         if (ranking != null) {
             Text(
-                when (ranking) {
-                    is RankingUi.RankingSoloUi -> ranking.rank.formatted
-                    is RankingUi.RankingTeamUi -> ranking.rank.formatted
-                },
+                ranking.rank.formatted,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -58,7 +55,7 @@ private fun RankCirclePreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                RankCircle(rankingSoloSample.toRankingSoloUi())
+                RankCircle(rankingSoloSample.toRankingUi())
             }
         }
     }

@@ -4,6 +4,7 @@
     <string name="error_too_many_requests">Too many requests</string>
     <string name="error_no_internet">No internet connection</string>
     <string name="error_server_error">Server error</string>
+    <string name="error_bad_request">Bad request</string>
     <string name="error_serialization">Serialization error</string>
     <string name="error_unknown">Unknown error</string>
     <string name="search">Search</string>
@@ -20,12 +21,12 @@
     <string name="rankings">Rankings</string>
     <string name="player">Player</string>
     <string name="region">Region</string>
-    <string name="seasonal">Seasonal</string>
     <string name="region_all">All</string>
     <string name="region_unknown">Unknown</string>
     <string name="search_name_or_id">Search a name or ID</string>
     <string name="level">Level</string>
     <string name="wins">Wins</string>
+    <string name="losses">Losses</string>
     <string name="games">Games</string>
     <string name="damageBomb">Damage Bomb</string>
     <string name="damageMine">Damage Mine</string>

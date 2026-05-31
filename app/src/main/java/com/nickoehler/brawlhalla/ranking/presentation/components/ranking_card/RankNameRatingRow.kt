@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
@@ -30,13 +30,8 @@ fun RankNameRatingRow(ranking: RankingUi? = null) {
 
         if (ranking != null) {
             TierBox(
-                when (ranking) {
-                    is RankingUi.RankingSoloUi -> ranking.rating
-                    is RankingUi.RankingTeamUi -> ranking.rating
-                }, when (ranking) {
-                    is RankingUi.RankingSoloUi -> ranking.tier
-                    is RankingUi.RankingTeamUi -> ranking.tier
-                }
+                ranking.rating,
+                ranking.tier
             )
         } else {
             Box(
@@ -55,7 +50,7 @@ private fun RankNameRatingRowPreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                RankNameRatingRow(ranking = rankingSoloSample.toRankingSoloUi())
+                RankNameRatingRow(ranking = rankingSoloSample.toRankingUi())
                 RankNameRatingRow()
             }
         }

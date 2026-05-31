@@ -1,7 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.domain
 
-enum class Bracket {
+enum class GameMode {
     ONE_VS_ONE,
     TWO_VS_TWO,
-    ROTATING
+    THREE_VS_THREE
 }

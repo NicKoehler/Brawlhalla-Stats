@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
-import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.GameMode
 import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
@@ -43,7 +43,7 @@ class RankingViewModel(
         when (action) {
             is RankingAction.LoadMore -> loadMore()
             is RankingAction.SelectRegion -> selectRegion(action.region)
-            is RankingAction.SelectBracket -> selectBracket(action.bracket)
+            is RankingAction.SelectBracket -> selectBracket(action.gameMode)
             is RankingAction.QueryChange -> updateSearchQuery(action.query)
             is RankingAction.OnFilterToggle -> onFilterToggle()
             is RankingAction.Search -> search(_state.value.searchQuery, action.force)
@@ -64,7 +64,7 @@ class RankingViewModel(
                 )
             }
             rankingsDataSource.getRankings(
-                _state.value.selectedBracket,
+                _state.value.selectedGameMode,
                 _state.value.selectedRegion,
                 currentPage,
             ).onSuccess { players ->
@@ -93,7 +93,7 @@ class RankingViewModel(
     }
 
     private fun search(currentQuery: String, force: Boolean = false) {
-        val currentBracket = _state.value.selectedBracket
+        val currentBracket = _state.value.selectedGameMode
         val currentRegion = _state.value.selectedRegion
 
         val searchPlayers = {
@@ -154,12 +154,12 @@ class RankingViewModel(
 
     }
 
-    private fun selectBracket(bracket: Bracket) {
-        if (bracket == _state.value.selectedBracket) {
+    private fun selectBracket(gameMode: GameMode) {
+        if (gameMode == _state.value.selectedGameMode) {
             return
         }
         _state.update { state ->
-            state.copy(selectedBracket = bracket)
+            state.copy(selectedGameMode = gameMode)
         }
         if (_state.value.searchedQuery.isNotBlank()) {
             search(_state.value.searchedQuery)

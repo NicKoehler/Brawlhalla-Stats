@@ -19,8 +19,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingTeamUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 
 @Composable
@@ -28,10 +27,7 @@ fun RankName(ranking: RankingUi? = null) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (ranking != null) {
             Text(
-                when (ranking) {
-                    is RankingUi.RankingSoloUi -> "${ranking.region.flag} · ${ranking.name}"
-                    is RankingUi.RankingTeamUi -> "${ranking.region.flag} · ${ranking.teamName}"
-                },
+                "${ranking.region.flag} · ${ranking.players.joinToString(" + ") { it.username }}",
                 maxLines = 1,
                 fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Ellipsis
@@ -56,12 +52,7 @@ private fun RankNamePreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                RankName(rankingSoloSample.toRankingSoloUi())
-                RankName(
-                    rankingSoloSample.toRankingSoloUi()
-                        .copy(name = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                )
-                RankName(rankingTeamSample.toRankingTeamUi())
+                RankName(rankingSoloSample.toRankingUi())
                 RankName()
             }
         }

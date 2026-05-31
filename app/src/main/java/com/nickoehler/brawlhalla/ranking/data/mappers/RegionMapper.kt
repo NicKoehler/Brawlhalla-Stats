@@ -4,16 +4,16 @@ import com.nickoehler.brawlhalla.ranking.domain.Region
 
 fun Region.toUrlString(): String {
     return when (this) {
-        Region.ALL -> "all"
-        Region.US_E -> "us-e"
-        Region.EU -> "eu"
-        Region.SEA -> "sea"
-        Region.BRZ -> "brz"
-        Region.AUS -> "aus"
-        Region.US_W -> "us-w"
-        Region.JPN -> "jpn"
-        Region.SA -> "sa"
-        Region.ME -> "me"
+        Region.ALL -> "ALL"
+        Region.US_E -> "US_E"
+        Region.EU -> "EU"
+        Region.SEA -> "SEA"
+        Region.BRZ -> "BRZ"
+        Region.AUS -> "AUS"
+        Region.US_W -> "US_W"
+        Region.JPN -> "JPN"
+        Region.SA -> "SA"
+        Region.ME -> "ME"
         Region.UNKNOWN -> "?"
     }
 }

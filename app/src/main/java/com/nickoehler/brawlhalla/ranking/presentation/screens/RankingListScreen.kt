@@ -73,15 +73,14 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActi
 import com.nickoehler.brawlhalla.core.presentation.components.SimpleSearchBar
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
-import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.GameMode
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
 import com.nickoehler.brawlhalla.ranking.presentation.RankingState
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankingCard
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.rankingSoloSample
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRegionUi
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
@@ -190,7 +189,7 @@ fun RankingListScreen(
                 placeholder = {
                     Text(
                         stringResource(
-                            if (state.selectedBracket != Bracket.TWO_VS_TWO) {
+                            if (state.selectedGameMode != GameMode.TWO_VS_TWO) {
                                 R.string.search_name_or_id
                             } else {
                                 R.string.search_cant_search
@@ -198,7 +197,7 @@ fun RankingListScreen(
                         )
                     )
                 },
-                enabled = state.selectedBracket != Bracket.TWO_VS_TWO,
+                enabled = state.selectedGameMode != GameMode.TWO_VS_TWO,
                 modifier = Modifier
                     .padding(horizontal = Spacing.scaffoldWindowInsets)
             )
@@ -257,13 +256,13 @@ fun RankingListScreen(
                                 .heightIn(min = 40.dp, max = 100.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
-                            items(Bracket.entries.sortedBy { it != state.selectedBracket }
-                                .filter { if (state.searchedQuery.isNotBlank()) it != Bracket.TWO_VS_TWO else true }
+                            items(GameMode.entries.sortedBy { it != state.selectedGameMode }
+                                .filter { if (state.searchedQuery.isNotBlank()) it != GameMode.TWO_VS_TWO else true }
                                 .map {
                                     it.toBracketUi()
                                 }, { it.value }) {
                                 FilterChip(
-                                    state.selectedBracket == it.value,
+                                    state.selectedGameMode == it.value,
                                     enabled = !state.isListLoading,
                                     onClick = {
                                         onRankingAction(
@@ -311,16 +310,13 @@ fun RankingListScreen(
                         modifier = Modifier
                             .animateItem()
                             .fillMaxWidth(),
-                        selectedBracket = state.selectedBracket.toBracketUi()
+                        selectedGameMode = state.selectedGameMode.toBracketUi()
                     )
                 }
             } else if (state.searchedQuery.isNotBlank()) {
                 if (state.searchResults.isNotEmpty()) {
                     items(state.searchResults, { ranking ->
-                        when (ranking) {
-                            is RankingUi.RankingSoloUi -> ranking.rank.value
-                            is RankingUi.RankingTeamUi -> ranking.rank.value
-                        }
+                        ranking.rank.value
                     }) { ranking ->
                         RankingCard(
                             ranking = ranking,
@@ -338,10 +334,7 @@ fun RankingListScreen(
             } else if (state.players.isNotEmpty()) {
                 items(
                     state.players, { ranking ->
-                        when (ranking) {
-                            is RankingUi.RankingSoloUi -> ranking.rank.value
-                            is RankingUi.RankingTeamUi -> ranking.rank.value
-                        }
+                        ranking.rank.value
                     }) { ranking ->
                     RankingCard(
                         ranking = ranking,
@@ -385,7 +378,7 @@ private fun SearchScreenPreview() {
             RankingListScreen(
                 state = RankingState(
                     players = (1..50).map {
-                        rankingSoloSample.toRankingSoloUi().copy(rank = it.toDisplayableNumber())
+                        rankingSoloSample.toRankingUi().copy(rank = it.toDisplayableNumber())
                     }
                 ),
                 events = emptyFlow()

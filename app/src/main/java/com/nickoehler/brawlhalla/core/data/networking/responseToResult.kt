@@ -18,6 +18,8 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
 
         in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
 
+        400 -> Result.Error(NetworkError.BAD_REQUEST)
+
         404 -> Result.Error(NetworkError.NOT_FOUND)
 
         408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)

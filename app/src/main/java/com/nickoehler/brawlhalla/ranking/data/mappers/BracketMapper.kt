@@ -1,11 +1,11 @@
 package com.nickoehler.brawlhalla.ranking.data.mappers
 
-import com.nickoehler.brawlhalla.ranking.domain.Bracket
+import com.nickoehler.brawlhalla.ranking.domain.GameMode
 
-fun Bracket.toUrlString(): String {
+fun GameMode.toUrlString(): String {
     return when (this) {
-        Bracket.ONE_VS_ONE -> "1v1"
-        Bracket.TWO_VS_TWO -> "2v2"
-        Bracket.ROTATING -> "rotating"
+        GameMode.ONE_VS_ONE -> "1v1"
+        GameMode.TWO_VS_TWO -> "2v2"
+        GameMode.THREE_VS_THREE -> "3v3"
     }
 }

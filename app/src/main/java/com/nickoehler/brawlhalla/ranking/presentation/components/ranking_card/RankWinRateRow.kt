@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.core.presentation.components.AnimatedLinearProgressBar
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
-import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingSoloUi
+import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import com.nickoehler.brawlhalla.ui.theme.LoseColor
 import com.nickoehler.brawlhalla.ui.theme.WinColor
@@ -70,7 +70,7 @@ private fun RankWinRateRowPreview() {
     BrawlhallaTheme {
         Surface {
             Column {
-                RankWinRateRow(rankingSoloSample.toRankingSoloUi().winRate)
+                RankWinRateRow(rankingSoloSample.toRankingUi().winRate)
                 RankWinRateRow()
             }
         }

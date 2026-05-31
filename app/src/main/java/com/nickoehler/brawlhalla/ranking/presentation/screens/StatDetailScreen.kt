@@ -84,14 +84,11 @@ import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
-import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
-import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.domain.StatClan
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
-import com.nickoehler.brawlhalla.ranking.domain.Tier
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailState
 import com.nickoehler.brawlhalla.ranking.presentation.components.CustomLevelProgressBar
@@ -100,7 +97,6 @@ import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingIt
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItemDetail
-import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.models.GeneralRankingSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
@@ -111,7 +107,6 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
-import com.nickoehler.brawlhalla.ranking.presentation.models.getTeamMateId
 import com.nickoehler.brawlhalla.ranking.presentation.models.toIcon
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -205,14 +200,14 @@ fun StatDetailScreen(
                         team = state.modalType.team,
                         columns = columns,
                         onClick = {
-                            if (state.selectedStatDetail != null) {
-                                onPlayerSelection(
-                                    state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
-                                )
-                                onStatDetailAction(
-                                    StatDetailAction.SelectRankingModalType(null)
-                                )
-                            }
+//                            if (state.selectedStatDetail != null) {
+//                                onPlayerSelection(
+//                                    state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
+//                                )
+//                                onStatDetailAction(
+//                                    StatDetailAction.SelectRankingModalType(null)
+//                                )
+//                            }
                         }
                     )
                 }
@@ -433,21 +428,21 @@ private fun LazyGridScope.rankingTeams(
                 }
             )
         }
-        items(
-            playerRanking.teams,
-            { team -> "${team.brawlhallaIdOne}-${team.brawlhallaIdTwo}" }
-        ) { team ->
-            TeamItem(
-                team,
-                modifier = Modifier.animateItem()
-            ) {
-                onStatDetailAction(
-                    StatDetailAction.SelectRankingModalType(
-                        RankingModalType.Team(team)
-                    )
-                )
-            }
-        }
+//        items(
+//            playerRanking.teams,
+//            { team -> "${team.brawlhallaIdOne}-${team.brawlhallaIdTwo}" }
+//        ) { team ->
+//            TeamItem(
+//                team,
+//                modifier = Modifier.animateItem()
+//            ) {
+//                onStatDetailAction(
+//                    StatDetailAction.SelectRankingModalType(
+//                        RankingModalType.Team(team)
+//                    )
+//                )
+//            }
+//        }
     }
 }
 
@@ -1269,18 +1264,7 @@ internal val rankingDetailSample =
                     0
                 )
             ),
-
-        teams = listOf(
-            Ranking.RankingTeam(
-                1, "Gesu+Maria", 1, 2,
-                rating = 2000,
-                tier = Tier.DIAMOND,
-                games = 234,
-                wins = 234,
-                region = Region.EU,
-                peakRating = 2000,
-            )
-        ),
+        teams = emptyList(),
         estimatedGlory = 1023,
         estimatedEloReset = 1800
     )

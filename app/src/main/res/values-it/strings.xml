@@ -4,6 +4,7 @@
     <string name="error_too_many_requests">Troppe richieste</string>
     <string name="error_no_internet">Nessuna connessione a internet</string>
     <string name="error_server_error">Errore del server</string>
+    <string name="error_bad_request">Richiesta non valida</string>
     <string name="error_serialization">Errore di serializzazione</string>
     <string name="error_unknown">Errore sconosciuto</string>
     <string name="search">Cerca</string>
@@ -20,12 +21,12 @@
     <string name="rankings">Classifiche</string>
     <string name="player">Giocatore</string>
     <string name="region">Regione</string>
-    <string name="seasonal">Stagionale</string>
     <string name="region_all">Tutte</string>
     <string name="region_unknown">Sconosciuto</string>
     <string name="search_name_or_id">Cerca un nome o ID</string>
     <string name="level">Livello</string>
     <string name="wins">Vittorie</string>
+    <string name="losses">Perdite</string>
     <string name="games">Partite</string>
     <string name="damageBomb">Danno con bomba</string>
     <string name="damageMine">Danno con mina</string>

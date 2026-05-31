@@ -22,7 +22,7 @@ enum class StatLegendSortType {
 
 enum class GeneralRankingSortType {
     Alpha,
-    PeakRating,
+    BestRating,
     Rating,
     WinRate,
     Games,
@@ -58,7 +58,7 @@ fun StatLegendSortType.toIcon(): ImageVector {
 fun GeneralRankingSortType.toStringResource(): Int {
     return when (this) {
         GeneralRankingSortType.Alpha -> R.string.alphabetical
-        GeneralRankingSortType.PeakRating -> R.string.peakRating
+        GeneralRankingSortType.BestRating -> R.string.peakRating
         GeneralRankingSortType.Rating -> R.string.rating
         GeneralRankingSortType.WinRate -> R.string.winRate
         GeneralRankingSortType.Games -> R.string.games
@@ -69,7 +69,7 @@ fun GeneralRankingSortType.toStringResource(): Int {
 fun GeneralRankingSortType.toIcon(): ImageVector {
     return when (this) {
         GeneralRankingSortType.Alpha -> Icons.Default.SortByAlpha
-        GeneralRankingSortType.PeakRating -> Icons.Default.Flag
+        GeneralRankingSortType.BestRating -> Icons.Default.Flag
         GeneralRankingSortType.Rating -> Icons.Default.StackedLineChart
         GeneralRankingSortType.WinRate -> Icons.Default.Percent
         GeneralRankingSortType.Games -> Icons.Default.Games
