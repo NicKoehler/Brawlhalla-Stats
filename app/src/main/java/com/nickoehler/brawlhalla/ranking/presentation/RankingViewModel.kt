@@ -6,7 +6,6 @@ import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.ranking.domain.GameMode
-import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
@@ -62,7 +61,6 @@ class RankingViewModel(
                     isListLoading = currentPage == 1,
                     isLoadingMore = currentPage != 1,
                     error = null
-
                 )
             }
             rankingsDataSource.getRankings(
@@ -90,7 +88,6 @@ class RankingViewModel(
                         error = error,
                     )
                 }
-                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }
@@ -106,6 +103,7 @@ class RankingViewModel(
                         searchedQuery = currentQuery,
                         searchResults = emptyList(),
                         isListLoading = true,
+                        error = null
                     )
                 }
                 rankingsDataSource.getRankings(
@@ -121,17 +119,14 @@ class RankingViewModel(
                             searchQuery = ""
                         )
                     }
-                    if (rankings.isEmpty()) {
-                        _uiEvents.send(UiEvent.Message(RankingMessage.NoResult))
-                    }
-                }.onError {
+                }.onError { error ->
                     _state.update { state ->
                         state.copy(
                             isListLoading = false,
-                            searchQuery = ""
+                            searchQuery = "",
+                            error = error
                         )
                     }
-                    _uiEvents.send(UiEvent.Error(it))
                 }
             }
         }

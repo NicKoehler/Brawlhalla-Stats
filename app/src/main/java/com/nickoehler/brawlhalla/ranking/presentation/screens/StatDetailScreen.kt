@@ -81,7 +81,6 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
-import com.nickoehler.brawlhalla.core.presentation.util.toString
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
@@ -149,15 +148,6 @@ fun StatDetailScreen(
 
     ObserveAsEvents(events) { event ->
         when (event) {
-            is UiEvent.Error -> {
-                Toast.makeText(
-                    context,
-                    event.error.toString(context),
-                    Toast.LENGTH_LONG
-                ).show()
-                onBack()
-            }
-
             is UiEvent.Message -> {
                 Toast.makeText(
                     context,

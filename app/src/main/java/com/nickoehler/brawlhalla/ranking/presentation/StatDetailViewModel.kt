@@ -58,7 +58,8 @@ class StatDetailViewModel(
                 selectedStatDetail = null,
                 isStatDetailLoading = true,
                 isStatDetailFavorite = false,
-                selectedStatType = StatType.Stats
+                selectedStatType = StatType.Stats,
+                error = null
             )
         }
         viewModelScope.launch {
@@ -83,9 +84,9 @@ class StatDetailViewModel(
                 _state.update { state ->
                     state.copy(
                         isStatDetailLoading = false,
+                        error = error
                     )
                 }
-                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }
@@ -96,7 +97,7 @@ class StatDetailViewModel(
         }
 
         _state.update { state ->
-            state.copy(isRankingDetailLoading = true, selectedRankingDetail = null)
+            state.copy(isRankingDetailLoading = true, selectedRankingDetail = null, error = null)
         }
 
         viewModelScope.launch {
@@ -119,10 +120,10 @@ class StatDetailViewModel(
                     state.copy(
                         isRankingDetailLoading = false,
                         rankingEnabled = false,
-                        selectedStatType = StatType.Stats
+                        selectedStatType = StatType.Stats,
+                        error = error
                     )
                 }
-                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }

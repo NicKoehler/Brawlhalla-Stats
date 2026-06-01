@@ -43,7 +43,7 @@ class ClanViewModel(
             return
         }
 
-        _state.update { state -> state.copy(isClanDetailLoading = true) }
+        _state.update { state -> state.copy(isClanDetailLoading = true, error = null) }
 
         viewModelScope.launch {
             clanDataSource.getClan(clanId).onSuccess { clanDetail ->
@@ -65,10 +65,10 @@ class ClanViewModel(
             }.onError { error ->
                 _state.update { state ->
                     state.copy(
-                        isClanDetailLoading = false
+                        isClanDetailLoading = false,
+                        error = error
                     )
                 }
-                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }

@@ -96,14 +96,6 @@ fun ClanDetailScreen(
 
     ObserveAsEvents(events) { event ->
         when (event) {
-            is UiEvent.Error -> {
-                Toast.makeText(
-                    context,
-                    event.error.toString(context),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
             is UiEvent.Message -> {
                 Toast.makeText(
                     context,
@@ -111,7 +103,6 @@ fun ClanDetailScreen(
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
             else -> {}
         }
     }

@@ -85,7 +85,6 @@ class LegendsViewModel(
                 }
             }.onError { error ->
                 _state.update { it.copy(isListLoading = false, error = error) }
-                _uiEvents.send(UiEvent.Error(error))
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.compose.runtime.Immutable
+import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.ranking.presentation.models.GeneralRankingSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
@@ -32,4 +33,5 @@ data class StatDetailState(
     val statLegendSortReversed: Boolean = true,
     val rankedLegendSortReversed: Boolean = true,
     val teamSortReversed: Boolean = true,
+    val error: NetworkError? = null,
 )
