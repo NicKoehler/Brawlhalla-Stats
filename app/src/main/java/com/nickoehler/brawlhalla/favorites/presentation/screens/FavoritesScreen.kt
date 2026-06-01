@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
@@ -136,14 +137,21 @@ fun FavoritesScreen(
         ) {
             FlowRow(
                 modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets),
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                horizontalArrangement = if (players.isEmpty() && clans.isEmpty()) {
+                    Arrangement.spacedBy(8.dp)
+                } else {
+                    Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+                },
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 ToggleButton(
-                    checked = state.selectedFavoriteType == FavoriteType.Players,
+                    checked = state.selectedFavoriteType == FavoriteType.Players && players.isNotEmpty(),
                     onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
-                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
-
+                    shapes = if (players.isEmpty() && clans.isEmpty()) {
+                        ToggleButtonDefaults.shapes()
+                    } else {
+                        ButtonGroupDefaults.connectedLeadingButtonShapes()
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .semantics { role = Role.RadioButton },
@@ -157,9 +165,13 @@ fun FavoritesScreen(
                 }
 
                 ToggleButton(
-                    checked = state.selectedFavoriteType == FavoriteType.Clans,
+                    checked = state.selectedFavoriteType == FavoriteType.Clans && clans.isNotEmpty(),
                     onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
-                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                    shapes = if (players.isEmpty() && clans.isEmpty()) {
+                        ToggleButtonDefaults.shapes()
+                    } else {
+                        ButtonGroupDefaults.connectedTrailingButtonShapes()
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .semantics { role = Role.RadioButton },
