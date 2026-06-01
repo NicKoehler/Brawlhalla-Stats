@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.compose.runtime.Immutable
+import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.ranking.domain.GameMode
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
@@ -17,5 +18,6 @@ data class RankingState(
     val isFilterOpen: Boolean = false,
     val searchQuery: String = "",
     val searchedQuery: String = "",
-    val searchResults: List<RankingUi> = emptyList()
+    val searchResults: List<RankingUi> = emptyList(),
+    val error: NetworkError? = null
 )

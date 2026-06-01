@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.ranking.presentation.screens
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
@@ -70,6 +71,7 @@ import androidx.compose.ui.zIndex
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActionButton
+import com.nickoehler.brawlhalla.core.presentation.components.ShowError
 import com.nickoehler.brawlhalla.core.presentation.components.SimpleSearchBar
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
@@ -203,167 +205,177 @@ fun RankingListScreen(
             )
         }
 
-        LazyColumn(
-            state = lazyColumnState,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .padding(horizontal = Spacing.scaffoldWindowInsets)
-        ) {
-
-            item {
-                Spacer(Modifier.height(height))
-                AnimatedVisibility(
-                    state.isFilterOpen,
-                    label = "openFilters",
-                    enter = fadeIn() + slideInVertically { -it } + expandVertically(),
-                    exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
+        AnimatedContent(state.error) { error ->
+            when (error) {
+                null -> LazyColumn(
+                    state = lazyColumnState,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    contentPadding = PaddingValues(bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.scaffoldWindowInsets)
                 ) {
-                    Column {
-                        LazyHorizontalStaggeredGrid(
-                            state = gridState,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 40.dp, max = 65.dp),
-                            rows = StaggeredGridCells.FixedSize(30.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalItemSpacing = 4.dp,
-                        ) {
-                            items(Region.entries.filter { it != Region.UNKNOWN }
-                                .sortedBy { it != state.selectedRegion }.map {
-                                    it.toRegionUi()
-                                }, { it.value }) {
-                                FilterChip(
-                                    state.selectedRegion == it.value,
-                                    enabled = !state.isListLoading,
-                                    onClick = {
-                                        onRankingAction(
-                                            RankingAction.SelectRegion(it.value)
-                                        )
-                                        coroutineScope.launch {
-                                            gridState.animateScrollToItem(index = 0)
-                                        }
-                                    },
-                                    label = { Text(it.toString(context)) },
-                                    modifier = Modifier.animateItem()
-                                )
-                            }
-                        }
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 40.dp, max = 100.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
-                            items(GameMode.entries.sortedBy { it != state.selectedGameMode }
-                                .filter { if (state.searchedQuery.isNotBlank()) it != GameMode.TWO_VS_TWO else true }
-                                .map {
-                                    it.toBracketUi()
-                                }, { it.value }) {
-                                FilterChip(
-                                    state.selectedGameMode == it.value,
-                                    enabled = !state.isListLoading,
-                                    onClick = {
-                                        onRankingAction(
-                                            RankingAction.SelectBracket(
-                                                it.value
-                                            )
-                                        )
-                                    },
-                                    label = { Text(it.toString(context)) },
-                                    modifier = Modifier.animateItem()
-                                )
-                            }
-                        }
-                    }
-                }
-                if (state.searchedQuery.isNotBlank()) {
-                    Row(Modifier.fillMaxWidth()) {
-                        AssistChip(
-                            enabled = !state.isListLoading,
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Cancel,
-                                    stringResource(R.string.cancel)
-                                )
-                            },
-                            onClick = { onRankingAction(RankingAction.ResetSearch) },
-                            label = {
-                                Text(state.searchedQuery)
-                            }
-                        )
-                    }
-                }
-                AnimatedVisibility(
-                    visible = state.isListLoading,
-                    enter = slideInVertically { -it } + expandVertically(),
-                    exit = slideOutVertically { -it } + shrinkVertically()
-                ) {
-                    LoadingIndicator()
-                }
-            }
-
-            if (state.isListLoading) {
-                items(10) {
-                    RankingCard(
-                        modifier = Modifier
-                            .animateItem()
-                            .fillMaxWidth(),
-                        selectedGameMode = state.selectedGameMode.toBracketUi()
-                    )
-                }
-            } else if (state.searchedQuery.isNotBlank()) {
-                if (state.searchResults.isNotEmpty()) {
-                    items(state.searchResults, { ranking ->
-                        ranking.rank.value
-                    }) { ranking ->
-                        RankingCard(
-                            ranking = ranking,
-                            modifier = Modifier
-                                .animateItem()
-                                .fillMaxWidth(),
-                            onRankingAction = onRankingAction
-                        )
-                    }
-                } else {
                     item {
-                        Text(stringResource(R.string.no_players_found))
+                        Spacer(Modifier.height(height))
+                        AnimatedVisibility(
+                            state.isFilterOpen,
+                            label = "openFilters",
+                            enter = fadeIn() + slideInVertically { -it } + expandVertically(),
+                            exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
+                        ) {
+                            Column {
+                                LazyHorizontalStaggeredGrid(
+                                    state = gridState,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(min = 40.dp, max = 65.dp),
+                                    rows = StaggeredGridCells.FixedSize(30.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    horizontalItemSpacing = 4.dp,
+                                ) {
+                                    items(Region.entries.filter { it != Region.UNKNOWN }
+                                        .sortedBy { it != state.selectedRegion }.map {
+                                            it.toRegionUi()
+                                        }, { it.value }) {
+                                        FilterChip(
+                                            state.selectedRegion == it.value,
+                                            enabled = !state.isListLoading,
+                                            onClick = {
+                                                onRankingAction(
+                                                    RankingAction.SelectRegion(it.value)
+                                                )
+                                                coroutineScope.launch {
+                                                    gridState.animateScrollToItem(index = 0)
+                                                }
+                                            },
+                                            label = { Text(it.toString(context)) },
+                                            modifier = Modifier.animateItem()
+                                        )
+                                    }
+                                }
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(min = 40.dp, max = 100.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    items(GameMode.entries.sortedBy { it != state.selectedGameMode }
+                                        .filter { if (state.searchedQuery.isNotBlank()) it != GameMode.TWO_VS_TWO else true }
+                                        .map {
+                                            it.toBracketUi()
+                                        }, { it.value }) {
+                                        FilterChip(
+                                            state.selectedGameMode == it.value,
+                                            enabled = !state.isListLoading,
+                                            onClick = {
+                                                onRankingAction(
+                                                    RankingAction.SelectBracket(
+                                                        it.value
+                                                    )
+                                                )
+                                            },
+                                            label = { Text(it.toString(context)) },
+                                            modifier = Modifier.animateItem()
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (state.searchedQuery.isNotBlank()) {
+                            Row(Modifier.fillMaxWidth()) {
+                                AssistChip(
+                                    enabled = !state.isListLoading,
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Cancel,
+                                            stringResource(R.string.cancel)
+                                        )
+                                    },
+                                    onClick = { onRankingAction(RankingAction.ResetSearch) },
+                                    label = {
+                                        Text(state.searchedQuery)
+                                    }
+                                )
+                            }
+                        }
+                        AnimatedVisibility(
+                            visible = state.isListLoading,
+                            enter = slideInVertically { -it } + expandVertically(),
+                            exit = slideOutVertically { -it } + shrinkVertically()
+                        ) {
+                            LoadingIndicator()
+                        }
                     }
-                }
-            } else if (state.players.isNotEmpty()) {
-                items(
-                    state.players, { ranking ->
-                        ranking.rank.value
-                    }) { ranking ->
-                    RankingCard(
-                        ranking = ranking,
-                        modifier = Modifier
-                            .animateItem()
-                            .fillMaxWidth(),
-                        onRankingAction = onRankingAction
-                    )
-                }
-                item {
-                    if (state.isLoadingMore) {
-                        RankingCard(
-                            modifier = Modifier
-                                .animateItem()
-                                .fillMaxWidth(),
-                        )
-                    }
-                }
 
-                item {
-                    if (state.shouldLoadMore) {
-                        LaunchedEffect(Unit) {
-                            onRankingAction(RankingAction.LoadMore)
+                    if (state.isListLoading) {
+                        items(10) {
+                            RankingCard(
+                                modifier = Modifier
+                                    .animateItem()
+                                    .fillMaxWidth(),
+                                selectedGameMode = state.selectedGameMode.toBracketUi()
+                            )
+                        }
+                    } else if (state.searchedQuery.isNotBlank()) {
+                        if (state.searchResults.isNotEmpty()) {
+                            items(state.searchResults, { ranking ->
+                                ranking.rank.value
+                            }) { ranking ->
+                                RankingCard(
+                                    ranking = ranking,
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .fillMaxWidth(),
+                                    onRankingAction = onRankingAction
+                                )
+                            }
+                        } else {
+                            item {
+                                Text(stringResource(R.string.no_players_found))
+                            }
+                        }
+                    } else if (state.players.isNotEmpty()) {
+                        items(
+                            state.players, { ranking ->
+                                ranking.rank.value
+                            }) { ranking ->
+                            RankingCard(
+                                ranking = ranking,
+                                modifier = Modifier
+                                    .animateItem()
+                                    .fillMaxWidth(),
+                                onRankingAction = onRankingAction
+                            )
+                        }
+                        item {
+                            if (state.isLoadingMore) {
+                                RankingCard(
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .fillMaxWidth(),
+                                )
+                            }
+                        }
+
+                        item {
+                            if (state.shouldLoadMore) {
+                                LaunchedEffect(Unit) {
+                                    onRankingAction(RankingAction.LoadMore)
+                                }
+                            }
+                        }
+                    } else {
+                        item {
+                            Text(stringResource(R.string.no_players_found))
                         }
                     }
                 }
-            } else {
-                item {
-                    Text(stringResource(R.string.no_players_found))
+
+                else -> {
+                    ShowError(error = error, onClick = {
+                        onRankingAction(RankingAction.ResetSearch)
+                    })
                 }
             }
         }

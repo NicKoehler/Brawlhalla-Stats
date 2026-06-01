@@ -60,7 +60,9 @@ class RankingViewModel(
             _state.update {
                 it.copy(
                     isListLoading = currentPage == 1,
-                    isLoadingMore = currentPage != 1
+                    isLoadingMore = currentPage != 1,
+                    error = null
+
                 )
             }
             rankingsDataSource.getRankings(
@@ -84,7 +86,8 @@ class RankingViewModel(
                 _state.update { state ->
                     state.copy(
                         isListLoading = false,
-                        isLoadingMore = false
+                        isLoadingMore = false,
+                        error = error,
                     )
                 }
                 _uiEvents.send(UiEvent.Error(error))
