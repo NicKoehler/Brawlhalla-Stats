@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -59,7 +60,7 @@ fun LazyLegendsCards(
     val height by animateDpAsState(if (state.isFilterOpen) searchBarHeight else searchBarHeight - 16.dp)
 
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         state = lazyColumnState,
         contentPadding = PaddingValues(bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

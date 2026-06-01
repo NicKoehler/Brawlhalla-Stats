@@ -1,5 +1,6 @@
 package com.nickoehler.brawlhalla.legends.presentation.screens
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,7 @@ import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.core.presentation.components.CustomFloatingActionButton
+import com.nickoehler.brawlhalla.core.presentation.components.ShowError
 import com.nickoehler.brawlhalla.core.presentation.components.SimpleSearchBar
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
@@ -110,9 +112,9 @@ fun LegendListScreen(
             .safeDrawingPadding()
             .nestedScroll(nestedScrollConnection),
     ) { padding ->
-
         Box(
             modifier = Modifier
+                .padding(padding)
                 .semantics { isTraversalGroup = true }
                 .zIndex(1f)
                 .offset {
@@ -123,40 +125,53 @@ fun LegendListScreen(
                 },
             contentAlignment = Alignment.Center
         ) {
-            SimpleSearchBar(
-                query = state.searchQuery,
-                focusManager = focusManager,
-                focusRequester = focusRequester,
-                lazyColumnState = lazyColumnState,
-                isFilterOpen = state.isFilterOpen,
-                isFilterEnabled = state.searchQuery.isBlank(),
-                onFilterToggle = {
-                    onLegendAction(LegendAction.OnFilterToggle)
-                    coroutineScope.launch {
-                        lazyColumnState.animateScrollToItem(0)
+            AnimatedContent(state.error) { error ->
+                when (error) {
+                    null -> {
+                        SimpleSearchBar(
+                            query = state.searchQuery,
+                            focusManager = focusManager,
+                            focusRequester = focusRequester,
+                            lazyColumnState = lazyColumnState,
+                            isFilterOpen = state.isFilterOpen,
+                            isFilterEnabled = state.searchQuery.isBlank(),
+                            onFilterToggle = {
+                                onLegendAction(LegendAction.OnFilterToggle)
+                                coroutineScope.launch {
+                                    lazyColumnState.animateScrollToItem(0)
+                                }
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                            },
+                            onQueryChange = {
+                                onLegendAction(LegendAction.QueryChange(it))
+                            },
+                            placeholder = {
+                                Text(
+                                    stringResource(R.string.search)
+                                )
+                            },
+                            modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
+                        )
+                        LazyLegendsCards(
+                            state = state,
+                            modifier = Modifier
+                                .padding(horizontal = Spacing.scaffoldWindowInsets),
+                            lazyColumnState = lazyColumnState,
+                            onLegendAction = onLegendAction,
+                            onWeaponAction = onWeaponAction,
+                            searchBarHeight = searchBarHeight
+                        )
                     }
-                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                },
-                onQueryChange = {
-                    onLegendAction(LegendAction.QueryChange(it))
-                },
-                placeholder = {
-                    Text(
-                        stringResource(R.string.search)
-                    )
-                },
-                modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
-            )
+
+                    else -> {
+                        ShowError(error, onClick = {
+                            onLegendAction(LegendAction.Reload)
+                        })
+                    }
+                }
+            }
         }
-        LazyLegendsCards(
-            state = state,
-            modifier = Modifier
-                .padding(horizontal = Spacing.scaffoldWindowInsets),
-            lazyColumnState = lazyColumnState,
-            onLegendAction = onLegendAction,
-            onWeaponAction = onWeaponAction,
-            searchBarHeight = searchBarHeight
-        )
+
     }
 }
 

@@ -100,5 +100,7 @@
     <string name="goToLegend">Vai alla leggenda</string>
     <string name="stats_1v1">1v1</string>
     <string name="general">Generali</string>
+    <string name="reload">Ricarica</string>
+    <string name="something_went_wrong">Qualcosa è andato storto</string>
 </resources>
 

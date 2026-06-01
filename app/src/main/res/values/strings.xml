@@ -100,4 +100,6 @@
     <string name="goToLegend">Go to the legend</string>
     <string name="stats_1v1">1v1</string>
     <string name="general">General</string>
+    <string name="reload">Reload</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

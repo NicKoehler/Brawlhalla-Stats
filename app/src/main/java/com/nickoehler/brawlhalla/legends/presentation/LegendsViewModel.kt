@@ -28,7 +28,7 @@ class LegendsViewModel(
     private val _state = MutableStateFlow(LegendsListState())
     private var allLegends: List<LegendDetailUi> = emptyList()
     private var allWeapons: List<WeaponUi> = emptyList()
-    val state = _state.onStart { if (allLegends.isEmpty()) loadLegends() }
+    val state = _state.onStart { loadLegends() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000L),
@@ -58,12 +58,15 @@ class LegendsViewModel(
             }
 
             is LegendAction.QueryChange -> searchQuery(action.query)
+
+            is LegendAction.Reload -> loadLegends()
         }
     }
 
     private fun loadLegends() {
+        if (allLegends.isNotEmpty()) return
         viewModelScope.launch {
-            _state.update { it.copy(isListLoading = true) }
+            _state.update { it.copy(isListLoading = true, error = null) }
             legendsDataSource.getLegends().onSuccess { legends ->
                 allLegends = legends.map { it.toLegendDetailUi() }
                 allWeapons = getAllWeapons()
@@ -81,7 +84,7 @@ class LegendsViewModel(
                     )
                 }
             }.onError { error ->
-                _state.update { it.copy(isListLoading = false) }
+                _state.update { it.copy(isListLoading = false, error = error) }
                 _uiEvents.send(UiEvent.Error(error))
             }
         }
