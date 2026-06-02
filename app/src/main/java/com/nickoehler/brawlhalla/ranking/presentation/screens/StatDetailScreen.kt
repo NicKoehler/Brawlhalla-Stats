@@ -79,13 +79,14 @@ import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
+import com.nickoehler.brawlhalla.core.presentation.components.ShowError
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
 import com.nickoehler.brawlhalla.ranking.data.mappers.toRegion
 import com.nickoehler.brawlhalla.ranking.data.mappers.toTier
+import com.nickoehler.brawlhalla.ranking.domain.PlayerGuild
 import com.nickoehler.brawlhalla.ranking.domain.RankingDetail
 import com.nickoehler.brawlhalla.ranking.domain.RankingLegend
-import com.nickoehler.brawlhalla.ranking.domain.StatClan
 import com.nickoehler.brawlhalla.ranking.domain.StatDetail
 import com.nickoehler.brawlhalla.ranking.domain.StatLegend
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailAction
@@ -106,6 +107,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.getTeamMateId
 import com.nickoehler.brawlhalla.ranking.presentation.models.toIcon
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
@@ -190,14 +192,14 @@ fun StatDetailScreen(
                         team = state.modalType.team,
                         columns = columns,
                         onClick = {
-//                            if (state.selectedStatDetail != null) {
-//                                onPlayerSelection(
-//                                    state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
-//                                )
-//                                onStatDetailAction(
-//                                    StatDetailAction.SelectRankingModalType(null)
-//                                )
-//                            }
+                            if (state.selectedStatDetail != null) {
+                                onPlayerSelection(
+                                    state.modalType.team.getTeamMateId(state.selectedStatDetail.brawlhallaId)
+                                )
+                                onStatDetailAction(
+                                    StatDetailAction.SelectRankingModalType(null)
+                                )
+                            }
                         }
                     )
                 }
@@ -238,7 +240,6 @@ fun StatDetailScreen(
                     }
                 },
                 actions = {
-
                     IconButton({
                         if (playerStat != null) {
                             onStatDetailAction(
@@ -335,22 +336,36 @@ fun StatDetailScreen(
             )
         }
     ) { padding ->
-        LazyVerticalGrid(
-            modifier = modifier
-                .padding(padding)
-                .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp)
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(8.dp),
-            columns = GridCells.Fixed(columns),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
 
-            item(span = { GridItemSpan(columns) }) {
-                StatDetailHeader(state, onClanSelection, onStatDetailAction)
+        AnimatedContent(state.error) { error ->
+            when (error) {
+                null -> {
+                    LazyVerticalGrid(
+                        modifier = modifier
+                            .padding(padding)
+                            .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(8.dp),
+                        columns = GridCells.Fixed(columns),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+
+                        item(span = { GridItemSpan(columns) }) {
+                            StatDetailHeader(state, onClanSelection, onStatDetailAction)
+                        }
+                        stats(state, columns, playerStat, onStatDetailAction, playerRanking)
+                    }
+                }
+
+                else -> {
+                    ShowError(error, { onStatDetailAction(StatDetailAction.Reload) })
+                }
             }
-            stats(state, columns, playerStat, onStatDetailAction, playerRanking)
+
         }
+
+
     }
 }
 
@@ -719,15 +734,15 @@ private fun StatDetailHeader(
                     .shimmerEffect()
             )
         } else if (state.selectedStatDetail != null) {
-            if (state.selectedStatDetail.clan != null) {
+            if (state.selectedStatDetail.guild != null) {
                 CustomCard(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     contentPadding = PaddingValues(vertical = 10.dp, horizontal = 20.dp),
                     onClick = {
-                        onClanSelection(state.selectedStatDetail.clan.clanId)
+                        onClanSelection(state.selectedStatDetail.guild.guildId)
                     }
                 ) {
-                    Text(state.selectedStatDetail.clan.clanName)
+                    Text(state.selectedStatDetail.guild.guildName)
                 }
             }
 
@@ -1073,14 +1088,16 @@ internal val statDetailSample = StatDetail(
             0.9182594550630337
         ),
     ),
-    clan = StatClan(
-        clanName = "PiediniYumiko",
-        clanId = 1754020,
-        clanXp = 141563,
-        personalXp = 4425,
+    guild = PlayerGuild(
+        guildName = "PiediniYumiko",
+        guildId = 1754020,
+        personalXp = 141563,
+        rank = "Leader",
+        joinDate = 89239439,
+        personalPoints = 923923,
+        personalXpThisWeek = 298
     )
 )
-
 
 internal val rankingDetailSample =
     RankingDetail(

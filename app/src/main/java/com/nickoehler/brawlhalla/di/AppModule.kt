@@ -1,9 +1,6 @@
 package com.nickoehler.brawlhalla.di
 
 import AppLocaleManager
-import com.nickoehler.brawlhalla.clans.data.RemoteClanDataSource
-import com.nickoehler.brawlhalla.clans.domain.ClanDataSource
-import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.core.data.DatabaseDataSource
 import com.nickoehler.brawlhalla.core.data.database.provideDataBase
 import com.nickoehler.brawlhalla.core.data.datastore.Settings
@@ -12,6 +9,9 @@ import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.LocalPreferences
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
+import com.nickoehler.brawlhalla.guilds.data.RemoteGuildDataSource
+import com.nickoehler.brawlhalla.guilds.domain.ClanDataSource
+import com.nickoehler.brawlhalla.guilds.presentation.ClanViewModel
 import com.nickoehler.brawlhalla.legends.data.RemoteLegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
@@ -34,7 +34,7 @@ val appModule = module {
     singleOf(::DatabaseDataSource) { bind<LocalDataSource>() }
     singleOf(::RemoteLegendsDataSource) { bind<LegendsDataSource>() }
     singleOf(::RemoteRankingDataSource) { bind<RankingsDataSource>() }
-    singleOf(::RemoteClanDataSource) { bind<ClanDataSource>() }
+    singleOf(::RemoteGuildDataSource) { bind<ClanDataSource>() }
     singleOf(::AppLocaleManager)
     viewModelOf(::ThemeViewModel)
     viewModelOf(::LegendsViewModel)

@@ -17,4 +17,5 @@ sealed interface StatDetailAction {
     data object StatLegendSortTypeReversed : StatDetailAction
     data object RankingLegendSortTypeReversed : StatDetailAction
     data object TeamSortTypeReversed : StatDetailAction
+    data object Reload : StatDetailAction
 }

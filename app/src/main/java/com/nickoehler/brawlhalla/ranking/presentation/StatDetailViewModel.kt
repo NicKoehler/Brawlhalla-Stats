@@ -7,6 +7,7 @@ import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
+import com.nickoehler.brawlhalla.ranking.data.mappers.toTeamDetailUi
 import com.nickoehler.brawlhalla.ranking.domain.RankingMessage
 import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.models.GeneralRankingSortType
@@ -14,11 +15,11 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.RankingFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingModalType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingSortType
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.TeamDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toStatDetailUi
 import kotlinx.coroutines.channels.Channel
@@ -49,7 +50,7 @@ class StatDetailViewModel(
     val uiEvents = _uiEvents.receiveAsFlow()
 
     private fun selectStatDetail(id: Long) {
-        if (_state.value.selectedStatDetail?.brawlhallaId == id) {
+        if (_state.value.selectedStatDetail?.brawlhallaId == id && _state.value.error == null) {
             return
         }
         _state.update { state ->
@@ -59,6 +60,8 @@ class StatDetailViewModel(
                 isStatDetailLoading = true,
                 isStatDetailFavorite = false,
                 selectedStatType = StatType.Stats,
+                selectedStatFilterType = StatFilterType.General,
+                selectedRankingFilterType = RankingFilterType.Stat,
                 error = null
             )
         }
@@ -140,7 +143,6 @@ class StatDetailViewModel(
 
     fun onStatDetailAction(action: StatDetailAction) {
         when (action) {
-
             is StatDetailAction.SelectPlayer -> selectStatDetail(action.brawlhallaId)
             is StatDetailAction.SelectStatType -> selectStatType(action.stat)
             is StatDetailAction.SelectRankingModalType -> selectRankingModalType(action.modalType)
@@ -156,6 +158,7 @@ class StatDetailViewModel(
             StatDetailAction.RankingLegendSortTypeReversed -> rankingLegendSortTypeReversed()
             StatDetailAction.StatLegendSortTypeReversed -> statLegendSortTypeReversed()
             StatDetailAction.TeamSortTypeReversed -> teamSortTypeReversed()
+            StatDetailAction.Reload -> selectStatDetail(brawlhallaId)
         }
     }
 
@@ -200,6 +203,7 @@ class StatDetailViewModel(
     private fun sortBy(sortType: RankingSortType) {
         val currentStatDetail = state.value.selectedStatDetail
         val currentRankingDetail = state.value.selectedRankingDetail
+        val currentTeams = state.value.teams
 
         _state.update { state ->
             when (sortType) {
@@ -234,18 +238,15 @@ class StatDetailViewModel(
                 }
 
                 is RankingSortType.Team -> {
-//                    val currentTeams = currentRankingDetail?.teams.orEmpty()
-//                    val reversed = state.teamSortReversed
-//                    state.copy(
-//                        teamSortType = sortType.team,
-//                        selectedRankingDetail = currentRankingDetail?.copy(
-//                            teams = sortTeams(
-//                                sortType.team,
-//                                reversed,
-//                                currentTeams
-//                            )
-//                        )
-//                    )
+                    val reversed = state.teamSortReversed
+                    state.copy(
+                        teamSortType = sortType.team,
+                        teams = sortTeams(
+                            sortType.team,
+                            reversed,
+                            currentTeams
+                        )
+                    )
                     state
                 }
             }
@@ -288,14 +289,14 @@ class StatDetailViewModel(
     private fun sortTeams(
         sortType: GeneralRankingSortType,
         reversed: Boolean,
-        elements: List<RankingUi>
-    ): List<RankingUi> {
+        elements: List<TeamDetailUi>
+    ): List<TeamDetailUi> {
         val list = when (sortType) {
-            GeneralRankingSortType.Alpha -> elements.sortedBy { it.players.first().username }
-            GeneralRankingSortType.BestRating -> elements.sortedBy { it.bestRating.value }
+            GeneralRankingSortType.Alpha -> elements.sortedBy { it.usernameOne }
+            GeneralRankingSortType.BestRating -> elements.sortedBy { it.peakRating.value }
             GeneralRankingSortType.Rating -> elements.sortedBy { it.rating.value }
             GeneralRankingSortType.WinRate -> elements.sortedBy { it.winRate.value }
-            GeneralRankingSortType.Games -> elements.sortedBy { it.wins.value + it.losses.value }
+            GeneralRankingSortType.Games -> elements.sortedBy { it.wins.value + it.games.value }
             GeneralRankingSortType.Wins -> elements.sortedBy { it.wins.value }
         }
         return if (reversed) list.reversed() else list
@@ -312,9 +313,37 @@ class StatDetailViewModel(
     private fun selectRankingFilterType(type: RankingFilterType) {
         _state.update { state ->
             state.copy(
-                selectedRankingFilterType = type
+                selectedRankingFilterType = type,
             )
         }
+
+        if (type == RankingFilterType.Teams) {
+
+            if (state.value.teams.isNotEmpty()) {
+                return
+            }
+
+            _state.update { state -> state.copy(isTeamDetailLoading = true) }
+
+            viewModelScope.launch {
+                rankingsDataSource.getTeams(brawlhallaId).onSuccess { teams ->
+                    _state.update { state ->
+                        state.copy(
+                            teams = teams.map { it.toTeamDetailUi() },
+                            isTeamDetailLoading = false
+                        )
+                    }
+                }.onError { error ->
+                    _state.update { state ->
+                        state.copy(
+                            isTeamDetailLoading = false,
+                            error = error
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private fun selectRankingModalType(modalType: RankingModalType?) {

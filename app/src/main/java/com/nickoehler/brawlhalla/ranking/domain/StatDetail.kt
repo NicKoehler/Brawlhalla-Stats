@@ -1,7 +1,6 @@
 package com.nickoehler.brawlhalla.ranking.domain
 
 data class StatDetail(
-
     val brawlhallaId: Long,
     val name: String,
     val xp: Long?,
@@ -20,5 +19,5 @@ data class StatDetail(
     val koSidekick: Int?,
     val koSnowball: Int?,
     val legends: List<StatLegend>,
-    val clan: StatClan? = null,
+    val guild: PlayerGuild?,
 )

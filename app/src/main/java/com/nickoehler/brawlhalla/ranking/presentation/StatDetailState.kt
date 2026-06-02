@@ -10,6 +10,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.models.StatDetailUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatLegendSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatType
+import com.nickoehler.brawlhalla.ranking.presentation.models.TeamDetailUi
 
 @Immutable
 data class StatDetailState(
@@ -17,6 +18,7 @@ data class StatDetailState(
     val isStatDetailFavorite: Boolean = false,
     val isRankingDetailLoading: Boolean = false,
     val isClanDetailLoading: Boolean = false,
+    val isTeamDetailLoading: Boolean = false,
     val isClanDetailFavorite: Boolean = false,
     val selectedStatDetail: StatDetailUi? = null,
     val selectedRankingDetail: RankingDetailUi? = null,
@@ -25,12 +27,11 @@ data class StatDetailState(
     val selectedRankingFilterType: RankingFilterType = RankingFilterType.Stat,
     val rankingEnabled: Boolean = true,
     val modalType: RankingModalType? = null,
-
     val statLegendSortType: StatLegendSortType = StatLegendSortType.Time,
     val rankedLegendSortType: GeneralRankingSortType = GeneralRankingSortType.Rating,
     val teamSortType: GeneralRankingSortType = GeneralRankingSortType.Rating,
-
     val statLegendSortReversed: Boolean = true,
+    val teams: List<TeamDetailUi> = emptyList(),
     val rankedLegendSortReversed: Boolean = true,
     val teamSortReversed: Boolean = true,
     val error: NetworkError? = null,

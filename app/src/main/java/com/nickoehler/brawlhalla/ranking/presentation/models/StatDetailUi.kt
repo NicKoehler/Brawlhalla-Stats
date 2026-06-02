@@ -30,8 +30,8 @@ data class StatDetailUi(
     val koSidekick: DisplayableInt?,
     val koSnowball: DisplayableInt?,
     val legends: List<StatLegendUi>,
-    val clan: StatClanUi?,
-    val matchTime: DisplayableTime
+    val matchTime: DisplayableTime,
+    val guild: PlayerGuildUi?
 )
 
 
@@ -56,9 +56,7 @@ fun StatDetail.toStatDetailUi(): StatDetailUi {
         koSidekick?.toDisplayableNumber(),
         koSnowball?.toDisplayableNumber(),
         legends.map { it.toStatLegendUi() },
-        clan = if (this.clan != null) {
-            clan.toStatClanUi()
-        } else null,
-        matchTime = legends.sumOf { it.matchTime ?: 0L }.toDisplayableTime()
+        legends.sumOf { it.matchTime ?: 0L }.toDisplayableTime(),
+        guild?.toPlayerGuildUi()
     )
 }

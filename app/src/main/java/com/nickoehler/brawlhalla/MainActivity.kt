@@ -40,14 +40,14 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.nickoehler.brawlhalla.clans.presentation.ClanAction
-import com.nickoehler.brawlhalla.clans.presentation.ClanViewModel
-import com.nickoehler.brawlhalla.clans.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
+import com.nickoehler.brawlhalla.guilds.presentation.ClanAction
+import com.nickoehler.brawlhalla.guilds.presentation.ClanViewModel
+import com.nickoehler.brawlhalla.guilds.presentation.screens.ClanDetailScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
