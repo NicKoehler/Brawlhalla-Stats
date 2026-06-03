@@ -255,7 +255,6 @@ fun RankingListScreen(
                                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                                         ) {
                                             items(GameMode.entries.sortedBy { it != state.selectedGameMode }
-                                                .filter { if (state.searchedQuery.isNotBlank()) it != GameMode.TWO_VS_TWO else true }
                                                 .map {
                                                     it.toBracketUi()
                                                 }, { it.value }) {
