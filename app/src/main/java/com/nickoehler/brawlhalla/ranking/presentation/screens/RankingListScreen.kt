@@ -308,7 +308,6 @@ fun RankingListScreen(
                                         modifier = Modifier
                                             .animateItem()
                                             .fillMaxWidth(),
-                                        selectedGameMode = state.selectedGameMode.toBracketUi()
                                     )
                                 }
                             } else if (state.searchedQuery.isNotBlank()) {

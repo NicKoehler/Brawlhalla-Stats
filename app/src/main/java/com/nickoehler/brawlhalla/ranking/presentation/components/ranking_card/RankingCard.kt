@@ -1,13 +1,21 @@
 package com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,15 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.ranking.domain.GameMode
 import com.nickoehler.brawlhalla.ranking.domain.Player
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
 import com.nickoehler.brawlhalla.ranking.domain.Region
 import com.nickoehler.brawlhalla.ranking.domain.Tier
 import com.nickoehler.brawlhalla.ranking.presentation.RankingAction
-import com.nickoehler.brawlhalla.ranking.presentation.models.BracketUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
-import com.nickoehler.brawlhalla.ranking.presentation.models.toBracketUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.toRankingUi
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.delay
@@ -36,7 +41,6 @@ import kotlinx.coroutines.delay
 fun RankingCard(
     modifier: Modifier = Modifier,
     ranking: RankingUi? = null,
-    selectedGameMode: BracketUi = GameMode.ONE_VS_ONE.toBracketUi(),
     onRankingAction: (RankingAction) -> Unit = {}
 ) {
 
@@ -46,10 +50,10 @@ fun RankingCard(
         visible = true
     }
 
-    val animatedFloat by animateFloatAsState(if (visible) 1f else 0.9f)
+    var expanded by remember { mutableStateOf(false) }
 
     CustomCard(
-        modifier = modifier,
+        modifier = modifier.animateContentSize(),
         horizontalArrangement = Arrangement.SpaceBetween,
         contentPadding = PaddingValues(10.dp),
         onClick = {
@@ -60,23 +64,55 @@ fun RankingCard(
                             ranking.players.first().id
                         )
                     )
-
-                    else -> {}
+                    else -> expanded = !expanded
                 }
             }
         }
     ) {
-        RankCircle(ranking)
-        Spacer(Modifier.size(10.dp))
         Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-
+            modifier = Modifier.fillMaxWidth()
         ) {
-            RankNameRatingRow(ranking)
-            RankWinRateRow(
-                ranking?.winRate
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RankCircle(ranking)
+
+                Spacer(Modifier.size(10.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    RankNameRatingRow(ranking)
+                    RankWinRateRow(ranking?.winRate)
+                }
+            }
+
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column {
+                    Spacer(Modifier.size(12.dp))
+
+                    ranking?.players?.forEach { player ->
+                        FilledTonalButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onRankingAction(
+                                    RankingAction.SelectRanking(player.id)
+                                )
+                            }
+                        ) {
+                            Text(player.username)
+                        }
+
+                        Spacer(Modifier.size(8.dp))
+                    }
+                }
+            }
         }
     }
 }
@@ -99,17 +135,44 @@ internal val rankingSoloSample = Ranking(
 
 @PreviewLightDark
 @Composable
-private fun RankingCardPreview() {
+private fun RankingCardSinglePreview() {
     BrawlhallaTheme {
         Surface {
             Column {
                 RankingCard(
                     modifier = Modifier.fillMaxWidth(),
                     ranking = rankingSoloSample.toRankingUi(),
-                    selectedGameMode = GameMode.ONE_VS_ONE.toBracketUi()
                 )
             }
         }
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun RankingCardDuoPreview() {
+    BrawlhallaTheme {
+        Surface {
+            Column {
+                RankingCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    ranking = rankingSoloSample.copy(
+                        players = listOf(
+                            Player(
+                                id = 1,
+                                username = "Kororonâ\u0098\u0086",
+                            ),
+                            Player(
+                                id = 2,
+                                username = "test",
+                            )
+                        ),
+                    ).toRankingUi(),
+                )
+            }
+        }
+    }
+}
+
+
 

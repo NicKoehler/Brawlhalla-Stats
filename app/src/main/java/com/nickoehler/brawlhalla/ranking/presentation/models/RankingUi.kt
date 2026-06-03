@@ -1,11 +1,14 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
+import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.ranking.domain.Player
 import com.nickoehler.brawlhalla.ranking.domain.Ranking
+import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
+@Immutable
 data class RankingUi(
     val rank: DisplayableInt,
     val players: List<Player>,
@@ -21,7 +24,7 @@ data class RankingUi(
 fun Ranking.toRankingUi() =
     RankingUi(
         rank.toDisplayableNumber(),
-        players,
+        players.map { it.copy(username = it.username.toFixedUtf8()) },
         rating.toDisplayableNumber(),
         tier.toTierUi(),
         wins.toDisplayableNumber(),
