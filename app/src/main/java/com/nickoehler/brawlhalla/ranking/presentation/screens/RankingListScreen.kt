@@ -165,40 +165,42 @@ fun RankingListScreen(
                 },
             contentAlignment = Alignment.Center
         ) {
+            SimpleSearchBar(
+                query = state.searchQuery,
+                focusManager = focusManager,
+                focusRequester = focusRequester,
+                lazyColumnState = lazyColumnState,
+                isFilterOpen = state.isFilterOpen,
+                enabled = state.error == null,
+
+                onFilterToggle = {
+                    onRankingAction(RankingAction.OnFilterToggle)
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                },
+                onSearch = {
+                    onRankingAction(RankingAction.Search(state.searchQuery))
+                },
+                onQueryChange = {
+                    onRankingAction(RankingAction.QueryChange(it))
+                },
+                placeholder = {
+                    Text(
+                        stringResource(
+                            if (state.selectedGameMode != GameMode.TWO_VS_TWO) {
+                                R.string.search_name_or_id
+                            } else {
+                                R.string.search_cant_search
+                            }
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .padding(horizontal = Spacing.scaffoldWindowInsets)
+            )
+        }
             AnimatedContent(state.error) { error ->
                 when (error) {
                     null -> {
-                        SimpleSearchBar(
-                            query = state.searchQuery,
-                            focusManager = focusManager,
-                            focusRequester = focusRequester,
-                            lazyColumnState = lazyColumnState,
-                            isFilterOpen = state.isFilterOpen,
-                            onFilterToggle = {
-                                onRankingAction(RankingAction.OnFilterToggle)
-                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                            },
-                            onSearch = {
-                                onRankingAction(RankingAction.Search(state.searchQuery))
-                            },
-                            onQueryChange = {
-                                onRankingAction(RankingAction.QueryChange(it))
-                            },
-                            placeholder = {
-                                Text(
-                                    stringResource(
-                                        if (state.selectedGameMode != GameMode.TWO_VS_TWO) {
-                                            R.string.search_name_or_id
-                                        } else {
-                                            R.string.search_cant_search
-                                        }
-                                    )
-                                )
-                            },
-                            enabled = state.selectedGameMode != GameMode.TWO_VS_TWO,
-                            modifier = Modifier
-                                .padding(horizontal = Spacing.scaffoldWindowInsets)
-                        )
                         LazyColumn(
                             state = lazyColumnState,
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -373,7 +375,6 @@ fun RankingListScreen(
                 }
             }
         }
-    }
 }
 
 @PreviewLightDark

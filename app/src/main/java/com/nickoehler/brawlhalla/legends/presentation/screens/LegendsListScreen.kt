@@ -125,53 +125,61 @@ fun LegendListScreen(
                 },
             contentAlignment = Alignment.Center
         ) {
-            AnimatedContent(state.error) { error ->
-                when (error) {
-                    null -> {
-                        SimpleSearchBar(
-                            query = state.searchQuery,
-                            focusManager = focusManager,
-                            focusRequester = focusRequester,
-                            lazyColumnState = lazyColumnState,
-                            isFilterOpen = state.isFilterOpen,
-                            isFilterEnabled = state.searchQuery.isBlank(),
-                            onFilterToggle = {
-                                onLegendAction(LegendAction.OnFilterToggle)
-                                coroutineScope.launch {
-                                    lazyColumnState.animateScrollToItem(0)
-                                }
-                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                            },
-                            onQueryChange = {
-                                onLegendAction(LegendAction.QueryChange(it))
-                            },
-                            placeholder = {
-                                Text(
-                                    stringResource(R.string.search)
-                                )
-                            },
-                            modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets)
-                        )
-                        LazyLegendsCards(
-                            state = state,
-                            modifier = Modifier
-                                .padding(horizontal = Spacing.scaffoldWindowInsets),
-                            lazyColumnState = lazyColumnState,
-                            onLegendAction = onLegendAction,
-                            onWeaponAction = onWeaponAction,
-                            searchBarHeight = searchBarHeight
-                        )
+            SimpleSearchBar(
+                query = state.searchQuery,
+                focusManager = focusManager,
+                focusRequester = focusRequester,
+                lazyColumnState = lazyColumnState,
+                isFilterOpen = state.isFilterOpen,
+                isFilterEnabled = state.searchQuery.isBlank(),
+                onFilterToggle = {
+                    onLegendAction(LegendAction.OnFilterToggle)
+                    coroutineScope.launch {
+                        lazyColumnState.animateScrollToItem(0)
                     }
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                },
+                onQueryChange = {
+                    onLegendAction(LegendAction.QueryChange(it))
+                },
+                enabled = state.error == null,
+                placeholder = {
+                    Text(
+                        stringResource(R.string.search)
+                    )
+                },
+                modifier = Modifier
+                    .padding(horizontal = Spacing.scaffoldWindowInsets)
+                    .semantics { isTraversalGroup = true }
+                    .offset {
+                        IntOffset(
+                            x = 0,
+                            y = toolbarOffsetHeightPx.roundToInt()
+                        )
+                    },
+            )
+        }
+        AnimatedContent(state.error) { error ->
+            when (error) {
+                null -> {
+                    LazyLegendsCards(
+                        state = state,
+                        modifier = Modifier
+                            .padding(horizontal = Spacing.scaffoldWindowInsets),
+                        lazyColumnState = lazyColumnState,
+                        onLegendAction = onLegendAction,
+                        onWeaponAction = onWeaponAction,
+                        searchBarHeight = searchBarHeight
+                    )
+                }
 
-                    else -> {
-                        ShowError(error, onClick = {
-                            onLegendAction(LegendAction.Reload)
-                        })
-                    }
+                else -> {
+                    ShowError(error, onClick = {
+                        onLegendAction(LegendAction.Reload)
+                    })
                 }
             }
         }
-
     }
 }
 

@@ -7,11 +7,11 @@ fun RankingDto.toRanking(): Ranking {
     return Ranking(
         rank,
         players.map { it.toPlayer() },
-        rating,
-        tier.toTier(),
-        losses,
-        wins,
-        region.toRegion(),
-        bestRating,
+        rating ?: 0,
+        (tier ?: "").toTier(),
+        losses ?: 0,
+        wins ?: 0,
+        (region ?: "").toRegion(),
+        bestRating ?: 0,
     )
 }
