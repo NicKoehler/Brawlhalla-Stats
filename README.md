@@ -34,8 +34,8 @@ Please note that I will not be updating the older versions available in the Play
   the current season).
 - **Search by Player ID**: Quickly find players using their unique ID.
 - **Comprehensive Player Stats**: View all relevant stats for any player.
-- **Clan Information**: Explore clan details and statistics.
-- **Favorites**: Mark players and clans as favorites for easy access.
+- **Guild Information**: Explore guild details and statistics.
+- **Favorites**: Mark players and guilds as favorites for easy access.
 - **Material 3**: Enjoy a clean and intuitive material design interface.
 - **Open-Source and Community-Driven**: Join a collaborative effort to enhance the app.
 

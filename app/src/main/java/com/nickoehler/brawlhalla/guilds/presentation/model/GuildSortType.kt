@@ -9,27 +9,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.nickoehler.brawlhalla.R
 
 
-enum class ClanSortType {
+enum class GuildSortType {
     JoinDate,
     Alpha,
     Rank,
     Xp,
 }
 
-fun ClanSortType.toStringResource(): Int {
+fun GuildSortType.toStringResource(): Int {
     return when (this) {
-        ClanSortType.JoinDate -> R.string.joinDate
-        ClanSortType.Alpha -> R.string.alphabetical
-        ClanSortType.Rank -> R.string.rank
-        ClanSortType.Xp -> R.string.xp
+        GuildSortType.JoinDate -> R.string.joinDate
+        GuildSortType.Alpha -> R.string.alphabetical
+        GuildSortType.Rank -> R.string.rank
+        GuildSortType.Xp -> R.string.xp
     }
 }
 
-fun ClanSortType.toIcon(): ImageVector {
+fun GuildSortType.toIcon(): ImageVector {
     return when (this) {
-        ClanSortType.JoinDate -> Icons.Default.DateRange
-        ClanSortType.Alpha -> Icons.Default.SortByAlpha
-        ClanSortType.Rank -> Icons.Default.Flag
-        ClanSortType.Xp -> Icons.Default.Numbers
+        GuildSortType.JoinDate -> Icons.Default.DateRange
+        GuildSortType.Alpha -> Icons.Default.SortByAlpha
+        GuildSortType.Rank -> Icons.Default.Flag
+        GuildSortType.Xp -> Icons.Default.Numbers
     }
 }

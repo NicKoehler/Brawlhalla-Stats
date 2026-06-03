@@ -152,7 +152,7 @@ fun RankingListScreen(
         floatingActionButton = {
             CustomFloatingActionButton(lazyColumnState)
         },
-    ) { padding ->
+    ) { spadding ->
         Box(
             modifier = Modifier
                 .semantics { isTraversalGroup = true }
@@ -198,140 +198,122 @@ fun RankingListScreen(
                     .padding(horizontal = Spacing.scaffoldWindowInsets)
             )
         }
-            AnimatedContent(state.error) { error ->
-                when (error) {
-                    null -> {
-                        LazyColumn(
-                            state = lazyColumnState,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            contentPadding = PaddingValues(bottom = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Spacing.scaffoldWindowInsets)
-                        ) {
-                            item {
-                                Spacer(Modifier.height(height))
-                                AnimatedVisibility(
-                                    state.isFilterOpen,
-                                    label = "openFilters",
-                                    enter = fadeIn() + slideInVertically { -it } + expandVertically(),
-                                    exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
-                                ) {
-                                    Column {
-                                        LazyHorizontalStaggeredGrid(
-                                            state = gridState,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .heightIn(min = 40.dp, max = 65.dp),
-                                            rows = StaggeredGridCells.FixedSize(30.dp),
-                                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                                            horizontalItemSpacing = 4.dp,
-                                        ) {
-                                            items(Region.entries.filter { it != Region.UNKNOWN }
-                                                .sortedBy { it != state.selectedRegion }.map {
-                                                    it.toRegionUi()
-                                                }, { it.value }) {
-                                                FilterChip(
-                                                    state.selectedRegion == it.value,
-                                                    enabled = !state.isListLoading,
-                                                    onClick = {
-                                                        onRankingAction(
-                                                            RankingAction.SelectRegion(it.value)
-                                                        )
-                                                        coroutineScope.launch {
-                                                            gridState.animateScrollToItem(index = 0)
-                                                        }
-                                                    },
-                                                    label = { Text(it.toString(context)) },
-                                                    modifier = Modifier.animateItem()
-                                                )
-                                            }
-                                        }
-                                        LazyRow(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .heightIn(min = 40.dp, max = 100.dp),
-                                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                        ) {
-                                            items(GameMode.entries.sortedBy { it != state.selectedGameMode }
-                                                .map {
-                                                    it.toBracketUi()
-                                                }, { it.value }) {
-                                                FilterChip(
-                                                    state.selectedGameMode == it.value,
-                                                    enabled = !state.isListLoading,
-                                                    onClick = {
-                                                        onRankingAction(
-                                                            RankingAction.SelectBracket(
-                                                                it.value
-                                                            )
-                                                        )
-                                                    },
-                                                    label = { Text(it.toString(context)) },
-                                                    modifier = Modifier.animateItem()
-                                                )
-                                            }
+        AnimatedContent(state.error) { error ->
+            when (error) {
+                null -> {
+                    LazyColumn(
+                        state = lazyColumnState,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(bottom = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Spacing.scaffoldWindowInsets)
+                    ) {
+                        item {
+                            Spacer(Modifier.height(height))
+                            AnimatedVisibility(
+                                state.isFilterOpen,
+                                label = "openFilters",
+                                enter = fadeIn() + slideInVertically { -it } + expandVertically(),
+                                exit = fadeOut() + slideOutVertically { -it } + shrinkVertically()
+                            ) {
+                                Column {
+                                    LazyHorizontalStaggeredGrid(
+                                        state = gridState,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(min = 40.dp, max = 65.dp),
+                                        rows = StaggeredGridCells.FixedSize(30.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalItemSpacing = 4.dp,
+                                    ) {
+                                        items(Region.entries.filter { it != Region.UNKNOWN }
+                                            .sortedBy { it != state.selectedRegion }.map {
+                                                it.toRegionUi()
+                                            }, { it.value }) {
+                                            FilterChip(
+                                                state.selectedRegion == it.value,
+                                                enabled = !state.isListLoading,
+                                                onClick = {
+                                                    onRankingAction(
+                                                        RankingAction.SelectRegion(it.value)
+                                                    )
+                                                    coroutineScope.launch {
+                                                        gridState.animateScrollToItem(index = 0)
+                                                    }
+                                                },
+                                                label = { Text(it.toString(context)) },
+                                                modifier = Modifier.animateItem()
+                                            )
                                         }
                                     }
-                                }
-                                if (state.searchedQuery.isNotBlank()) {
-                                    Row(Modifier.fillMaxWidth()) {
-                                        AssistChip(
-                                            enabled = !state.isListLoading,
-                                            leadingIcon = {
-                                                Icon(
-                                                    Icons.Default.Cancel,
-                                                    stringResource(R.string.cancel)
-                                                )
-                                            },
-                                            onClick = { onRankingAction(RankingAction.ResetSearch) },
-                                            label = {
-                                                Text(state.searchedQuery)
-                                            }
-                                        )
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(min = 40.dp, max = 100.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    ) {
+                                        items(GameMode.entries.sortedBy { it != state.selectedGameMode }
+                                            .map {
+                                                it.toBracketUi()
+                                            }, { it.value }) {
+                                            FilterChip(
+                                                state.selectedGameMode == it.value,
+                                                enabled = !state.isListLoading,
+                                                onClick = {
+                                                    onRankingAction(
+                                                        RankingAction.SelectBracket(
+                                                            it.value
+                                                        )
+                                                    )
+                                                },
+                                                label = { Text(it.toString(context)) },
+                                                modifier = Modifier.animateItem()
+                                            )
+                                        }
                                     }
-                                }
-                                AnimatedVisibility(
-                                    visible = state.isListLoading,
-                                    enter = slideInVertically { -it } + expandVertically(),
-                                    exit = slideOutVertically { -it } + shrinkVertically()
-                                ) {
-                                    LoadingIndicator()
                                 }
                             }
-
-                            if (state.isListLoading) {
-                                items(10) {
-                                    RankingCard(
-                                        modifier = Modifier
-                                            .animateItem()
-                                            .fillMaxWidth(),
+                            if (state.searchedQuery.isNotBlank()) {
+                                Row(Modifier.fillMaxWidth()) {
+                                    AssistChip(
+                                        enabled = !state.isListLoading,
+                                        leadingIcon = {
+                                            Icon(
+                                                Icons.Default.Cancel,
+                                                stringResource(R.string.cancel)
+                                            )
+                                        },
+                                        onClick = { onRankingAction(RankingAction.ResetSearch) },
+                                        label = {
+                                            Text(state.searchedQuery)
+                                        }
                                     )
                                 }
-                            } else if (state.searchedQuery.isNotBlank()) {
-                                if (state.searchResults.isNotEmpty()) {
-                                    items(state.searchResults, { ranking ->
-                                        ranking.rank.value
-                                    }) { ranking ->
-                                        RankingCard(
-                                            ranking = ranking,
-                                            modifier = Modifier
-                                                .animateItem()
-                                                .fillMaxWidth(),
-                                            onRankingAction = onRankingAction
-                                        )
-                                    }
-                                } else {
-                                    item {
-                                        Text(stringResource(R.string.no_players_found))
-                                    }
-                                }
-                            } else if (state.players.isNotEmpty()) {
-                                items(
-                                    state.players, { ranking ->
-                                        ranking.rank.value
-                                    }) { ranking ->
+                            }
+                            AnimatedVisibility(
+                                visible = state.isListLoading,
+                                enter = slideInVertically { -it } + expandVertically(),
+                                exit = slideOutVertically { -it } + shrinkVertically()
+                            ) {
+                                LoadingIndicator()
+                            }
+                        }
+
+                        if (state.isListLoading) {
+                            items(10) {
+                                RankingCard(
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .fillMaxWidth(),
+                                )
+                            }
+                        } else if (state.searchedQuery.isNotBlank()) {
+                            if (state.searchResults.isNotEmpty()) {
+                                items(state.searchResults, { ranking ->
+                                    ranking.rank.value
+                                }) { ranking ->
                                     RankingCard(
                                         ranking = ranking,
                                         modifier = Modifier
@@ -340,39 +322,57 @@ fun RankingListScreen(
                                         onRankingAction = onRankingAction
                                     )
                                 }
-                                item {
-                                    if (state.isLoadingMore) {
-                                        RankingCard(
-                                            modifier = Modifier
-                                                .animateItem()
-                                                .fillMaxWidth(),
-                                        )
-                                    }
-                                }
-
-                                item {
-                                    if (state.shouldLoadMore) {
-                                        LaunchedEffect(Unit) {
-                                            onRankingAction(RankingAction.LoadMore)
-                                        }
-                                    }
-                                }
                             } else {
                                 item {
                                     Text(stringResource(R.string.no_players_found))
                                 }
                             }
+                        } else if (state.players.isNotEmpty()) {
+                            items(
+                                state.players, { ranking ->
+                                    ranking.rank.value
+                                }) { ranking ->
+                                RankingCard(
+                                    ranking = ranking,
+                                    modifier = Modifier
+                                        .animateItem()
+                                        .fillMaxWidth(),
+                                    onRankingAction = onRankingAction
+                                )
+                            }
+                            item {
+                                if (state.isLoadingMore) {
+                                    RankingCard(
+                                        modifier = Modifier
+                                            .animateItem()
+                                            .fillMaxWidth(),
+                                    )
+                                }
+                            }
+
+                            item {
+                                if (state.shouldLoadMore) {
+                                    LaunchedEffect(Unit) {
+                                        onRankingAction(RankingAction.LoadMore)
+                                    }
+                                }
+                            }
+                        } else {
+                            item {
+                                Text(stringResource(R.string.no_players_found))
+                            }
                         }
                     }
+                }
 
-                    else -> {
-                        ShowError(error = error, onClick = {
-                            onRankingAction(RankingAction.ResetSearch)
-                        })
-                    }
+                else -> {
+                    ShowError(error = error, onClick = {
+                        onRankingAction(RankingAction.ResetSearch)
+                    })
                 }
             }
         }
+    }
 }
 
 @PreviewLightDark

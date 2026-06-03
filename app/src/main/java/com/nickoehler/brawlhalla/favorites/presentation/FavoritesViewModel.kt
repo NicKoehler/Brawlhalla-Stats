@@ -7,13 +7,13 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteType
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoritesState
-import com.nickoehler.brawlhalla.widgets.ClansWidget
+import com.nickoehler.brawlhalla.widgets.GuildsWidget
 import com.nickoehler.brawlhalla.widgets.PlayersWidget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,13 +42,13 @@ class FavoritesViewModel(
         when (action) {
             is FavoriteAction.SelectFavorite -> selectFavorite(action.fav)
             is FavoriteAction.DeletePlayer -> deletePlayer(action.brawlhallaId)
-            is FavoriteAction.DeleteClan -> deleteClan(action.clanId)
+            is FavoriteAction.DeleteGuild -> deleteGuild(action.guildId)
             is FavoriteAction.RestorePlayer -> restorePlayer(action.player)
-            is FavoriteAction.RestoreClan -> restoreClan(action.clan)
+            is FavoriteAction.RestoreGuild -> restoreGuild(action.guild)
             is FavoriteAction.PlayerDragged -> playerDragged(action.fromIndex, action.toIndex)
-            is FavoriteAction.ClanDragged -> clanDragged(action.fromIndex, action.toIndex)
+            is FavoriteAction.GuildDragged -> guildDragged(action.fromIndex, action.toIndex)
             is FavoriteAction.PersistPlayers -> persistPlayers()
-            is FavoriteAction.PersistClans -> persistClans()
+            is FavoriteAction.PersistGuilds -> persistGuilds()
             else -> Unit
         }
     }
@@ -70,16 +70,16 @@ class FavoritesViewModel(
         }
     }
 
-    private fun persistClans() {
+    private fun persistGuilds() {
         viewModelScope.launch {
-            database.updateClans(state.value.clans)
+            database.updateGuilds(state.value.guilds)
         }
     }
 
-    private fun clanDragged(fromIndex: Int, toIndex: Int) {
+    private fun guildDragged(fromIndex: Int, toIndex: Int) {
         _state.update { state ->
             state.copy(
-                clans = state.clans.toMutableList()
+                guilds = state.guilds.toMutableList()
                     .apply {
                         add(toIndex, removeAt(fromIndex))
                     }
@@ -94,22 +94,22 @@ class FavoritesViewModel(
         }
     }
 
-    private fun restoreClan(clan: Clan) {
+    private fun restoreGuild(guild: Guild) {
         viewModelScope.launch {
-            database.saveClan(clan)
+            database.saveGuild(guild)
         }
     }
 
     private fun loadData() {
         viewModelScope.launch {
-            combine(database.getAllPlayers(), database.getAllClans())
-            { players, clans ->
-                updateWidgetState(players, clans)
+            combine(database.getAllPlayers(), database.getAllGuilds())
+            { players, guilds ->
+                updateWidgetState(players, guilds)
                 val favoriteType = if (_state.value.selectedFavoriteType == null) {
                     if (players.isNotEmpty()) {
                         FavoriteType.Players
-                    } else if (clans.isNotEmpty()) {
-                        FavoriteType.Clans
+                    } else if (guilds.isNotEmpty()) {
+                        FavoriteType.Guilds
                     } else {
                         null
                     }
@@ -118,7 +118,7 @@ class FavoritesViewModel(
                 }
                 _state.value.copy(
                     players = players,
-                    clans = clans,
+                    guilds = guilds,
                     selectedFavoriteType = favoriteType
                 )
             }.collect { state ->
@@ -131,12 +131,12 @@ class FavoritesViewModel(
 
     private suspend fun updateWidgetState(
         players: List<Player>,
-        clans: List<Clan>
+        guilds: List<Guild>
     ) {
         val playersGlanceIds = GlanceAppWidgetManager(context)
             .getGlanceIds(PlayersWidget::class.java)
-        val clansGlanceIds = GlanceAppWidgetManager(context)
-            .getGlanceIds(ClansWidget::class.java)
+        val guildsGlanceIds = GlanceAppWidgetManager(context)
+            .getGlanceIds(GuildsWidget::class.java)
         playersGlanceIds.forEach { id ->
             updateAppWidgetState(context, id) { prefs ->
                 prefs[stringPreferencesKey("players")] = Json.encodeToString(players)
@@ -144,11 +144,11 @@ class FavoritesViewModel(
             PlayersWidget().update(context, id)
         }
 
-        clansGlanceIds.forEach { id ->
+        guildsGlanceIds.forEach { id ->
             updateAppWidgetState(context, id) { prefs ->
-                prefs[stringPreferencesKey("clans")] = Json.encodeToString(clans)
+                prefs[stringPreferencesKey("clans")] = Json.encodeToString(guilds)
             }
-            ClansWidget().update(context, id)
+            GuildsWidget().update(context, id)
         }
     }
 
@@ -164,9 +164,9 @@ class FavoritesViewModel(
         }
     }
 
-    private fun deleteClan(clanId: Long) {
+    private fun deleteGuild(guildId: Long) {
         viewModelScope.launch {
-            database.deleteClan(clanId)
+            database.deleteGuild(guildId)
         }
     }
 

@@ -31,15 +31,15 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.nickoehler.brawlhalla.MainActivity
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.widgets.components.EmptyFavorites
 import kotlinx.serialization.json.Json
 
-class ClansWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = ClansWidget()
+class GuildsWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = GuildsWidget()
 }
 
-class ClansWidget : GlanceAppWidget() {
+class GuildsWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -47,14 +47,14 @@ class ClansWidget : GlanceAppWidget() {
 
             val prefs = currentState<Preferences>()
 
-            val clans = prefs[
+            val guilds = prefs[
                 stringPreferencesKey("clans")
             ]?.let {
-                Json.decodeFromString<List<Clan>>(it)
+                Json.decodeFromString<List<Guild>>(it)
             }.orEmpty()
 
             GlanceTheme {
-                if (clans.isEmpty()) {
+                if (guilds.isEmpty()) {
                     EmptyFavorites(context)
                 } else {
                     LazyColumn(
@@ -66,31 +66,31 @@ class ClansWidget : GlanceAppWidget() {
                     ) {
                         item {
                             Text(
-                                text = context.getString(R.string.clans),
+                                text = context.getString(R.string.guilds),
                                 maxLines = 1,
                                 style = TextStyle(color = GlanceTheme.colors.onBackground)
                             )
                         }
-                        clans(clans, context)
+                        guilds(guilds, context)
                     }
                 }
             }
         }
     }
 
-    private fun LazyListScope.clans(
-        clans: List<Clan>,
+    private fun LazyListScope.guilds(
+        guilds: List<Guild>,
         context: Context
     ) {
-        items(clans, { it.id.toLong() }) { clan ->
+        items(guilds, { it.id }) { guild ->
             Column {
                 Spacer(GlanceModifier.height(8.dp))
                 Button(
-                    text = clan.name,
+                    text = guild.name,
                     maxLines = 1,
                     onClick = actionStartActivity(
                         Intent(context, MainActivity::class.java).apply {
-                            putExtra("OPEN_CLAN", clan.id)
+                            putExtra("OPEN_GUILD", guild.id)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
                     ),

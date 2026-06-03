@@ -8,10 +8,16 @@ plugins {
     alias(libs.plugins.aboutlibraries)
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
+
+
     namespace = "com.nickoehler.brawlhalla"
     compileSdk = 37
 

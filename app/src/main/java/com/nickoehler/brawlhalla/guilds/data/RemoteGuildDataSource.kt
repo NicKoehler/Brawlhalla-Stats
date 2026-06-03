@@ -8,7 +8,7 @@ import com.nickoehler.brawlhalla.guilds.data.dto.GuildDetailDto
 import com.nickoehler.brawlhalla.guilds.data.dto.GuildMemberResponseDto
 import com.nickoehler.brawlhalla.guilds.data.mappers.toGuildDetail
 import com.nickoehler.brawlhalla.guilds.data.mappers.toGuildMember
-import com.nickoehler.brawlhalla.guilds.domain.ClanDataSource
+import com.nickoehler.brawlhalla.guilds.domain.GuildDataSource
 import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -18,7 +18,7 @@ import kotlinx.coroutines.coroutineScope
 
 class RemoteGuildDataSource(
     private val httpClient: HttpClient,
-) : ClanDataSource {
+) : GuildDataSource {
     override suspend fun getGuild(guildId: Long): Result<GuildDetail, NetworkError> {
         return coroutineScope {
             val guild = async {

@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Entity(tableName = "clans")
-data class Clan(
+@Entity(tableName = "guilds")
+data class Guild(
     @PrimaryKey val id: Long,
     val name: String,
     val order: Int

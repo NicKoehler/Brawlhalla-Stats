@@ -1,7 +1,7 @@
 package com.nickoehler.brawlhalla.core.data
 
 import com.nickoehler.brawlhalla.core.data.database.AppDatabase
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,7 @@ class DatabaseDataSource(
 ) : LocalDataSource {
 
     private val playerDao = database.playerDao()
-    private val clanDao = database.clanDao()
+    private val guildDao = database.guildDao()
 
     override suspend fun savePlayer(player: Player) {
         playerDao.insertPlayer(player)
@@ -29,28 +29,28 @@ class DatabaseDataSource(
         return playerDao.getAllPlayers()
     }
 
-    override suspend fun saveClan(clan: Clan) {
-        clanDao.insertClan(clan)
+    override suspend fun saveGuild(guild: Guild) {
+        guildDao.insertGuild(guild)
     }
 
-    override suspend fun deleteClan(clanId: Long) {
-        clanDao.deleteClan(clanId)
+    override suspend fun deleteGuild(guildId: Long) {
+        guildDao.deleteGuild(guildId)
     }
 
-    override fun getClan(clanId: Long): Flow<Clan?> {
-        return clanDao.getClan(clanId)
+    override fun getGuild(guildId: Long): Flow<Guild?> {
+        return guildDao.getGuild(guildId)
     }
 
-    override fun getAllClans(): Flow<List<Clan>> {
-        return clanDao.getAllClans()
+    override fun getAllGuilds(): Flow<List<Guild>> {
+        return guildDao.getAllGuilds()
     }
 
     override suspend fun updatePlayers(players: List<Player>) {
         playerDao.updatePlayers(players.withIndex().map { (i, player) -> player.copy(order = i) })
     }
 
-    override suspend fun updateClans(clans: List<Clan>) {
-        clanDao.updateClans(clans.withIndex().map { (i, clan) -> clan.copy(order = i) })
+    override suspend fun updateGuilds(guilds: List<Guild>) {
+        guildDao.updateGuilds(guilds.withIndex().map { (i, guild) -> guild.copy(order = i) })
 
     }
 

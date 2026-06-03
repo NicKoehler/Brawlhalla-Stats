@@ -48,7 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.presentation.components.draggableItems
 import com.nickoehler.brawlhalla.core.presentation.components.rememberDraggableListState
@@ -73,7 +73,7 @@ fun FavoritesScreen(
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val dismissPlayersStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
-    val dismissClansStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
+    val dismissGuildsStateMap = remember { mutableStateMapOf<Long, SwipeToDismissBoxState>() }
 
     val draggablePlayersState = rememberDraggableListState(
         onMove = { fromIndex, toIndex ->
@@ -85,17 +85,17 @@ fun FavoritesScreen(
         },
     )
 
-    val draggableClansState = rememberDraggableListState(
+    val draggableGuildsState = rememberDraggableListState(
         onMove = { fromIndex, toIndex ->
-            onFavoriteAction(FavoriteAction.ClanDragged(fromIndex, toIndex))
+            onFavoriteAction(FavoriteAction.GuildDragged(fromIndex, toIndex))
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         },
         onMoveCompleted = {
-            onFavoriteAction(FavoriteAction.PersistClans)
+            onFavoriteAction(FavoriteAction.PersistGuilds)
         },
     )
     val players = state.players
-    val clans = state.clans
+    val guilds = state.guilds
 
     Scaffold(
         modifier
@@ -114,7 +114,7 @@ fun FavoritesScreen(
             )
         },
     ) {
-        if (state.players.isEmpty() && state.clans.isEmpty()) {
+        if (state.players.isEmpty() && state.guilds.isEmpty()) {
             Box(
                 modifier = Modifier
                     .padding(it)
@@ -137,7 +137,7 @@ fun FavoritesScreen(
         ) {
             FlowRow(
                 modifier = Modifier.padding(horizontal = Spacing.scaffoldWindowInsets),
-                horizontalArrangement = if (players.isEmpty() && clans.isEmpty()) {
+                horizontalArrangement = if (players.isEmpty() && guilds.isEmpty()) {
                     Arrangement.spacedBy(8.dp)
                 } else {
                     Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
@@ -147,7 +147,7 @@ fun FavoritesScreen(
                 ToggleButton(
                     checked = state.selectedFavoriteType == FavoriteType.Players && players.isNotEmpty(),
                     onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Players)) },
-                    shapes = if (players.isEmpty() && clans.isEmpty()) {
+                    shapes = if (players.isEmpty() && guilds.isEmpty()) {
                         ToggleButtonDefaults.shapes()
                     } else {
                         ButtonGroupDefaults.connectedLeadingButtonShapes()
@@ -165,9 +165,9 @@ fun FavoritesScreen(
                 }
 
                 ToggleButton(
-                    checked = state.selectedFavoriteType == FavoriteType.Clans && clans.isNotEmpty(),
-                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Clans)) },
-                    shapes = if (players.isEmpty() && clans.isEmpty()) {
+                    checked = state.selectedFavoriteType == FavoriteType.Guilds && guilds.isNotEmpty(),
+                    onCheckedChange = { onFavoriteAction(FavoriteAction.SelectFavorite(FavoriteType.Guilds)) },
+                    shapes = if (players.isEmpty() && guilds.isEmpty()) {
                         ToggleButtonDefaults.shapes()
                     } else {
                         ButtonGroupDefaults.connectedTrailingButtonShapes()
@@ -175,13 +175,13 @@ fun FavoritesScreen(
                     modifier = Modifier
                         .weight(1f)
                         .semantics { role = Role.RadioButton },
-                    enabled = state.clans.isNotEmpty(),
+                    enabled = state.guilds.isNotEmpty(),
                 ) {
                     Icon(
                         Icons.Default.People,
-                        stringResource(R.string.clans)
+                        stringResource(R.string.guilds)
                     )
-                    Text(stringResource(R.string.clans))
+                    Text(stringResource(R.string.guilds))
                 }
             }
             Spacer(Modifier.height(10.dp))
@@ -189,7 +189,7 @@ fun FavoritesScreen(
                 LazyColumn(
                     state = when (state.selectedFavoriteType) {
                         FavoriteType.Players -> draggablePlayersState.listState
-                        FavoriteType.Clans -> draggableClansState.listState
+                        FavoriteType.Guilds -> draggableGuildsState.listState
                     },
                     modifier = Modifier
                         .padding(horizontal = Spacing.scaffoldWindowInsets)
@@ -236,36 +236,36 @@ fun FavoritesScreen(
                                 )
                             }
 
-                        FavoriteType.Clans ->
+                        FavoriteType.Guilds ->
                             draggableItems(
-                                draggableClansState,
-                                clans,
-                                { clan -> clan.id }
-                            ) { clan, isDragging ->
+                                draggableGuildsState,
+                                guilds,
+                                { guild -> guild.id }
+                            ) { guild, isDragging ->
                                 val dismissState =
-                                    dismissClansStateMap.getOrPut(clan.id) { rememberSwipeToDismissBoxState() }
+                                    dismissGuildsStateMap.getOrPut(guild.id) { rememberSwipeToDismissBoxState() }
                                 FavoritesItem(
-                                    clan.id,
-                                    clan.name,
+                                    guild.id,
+                                    guild.name,
                                     Icons.Default.People,
                                     coroutineScope,
                                     snackBarHostState,
                                     dismissState,
-                                    draggableClansState,
+                                    draggableGuildsState,
                                     {
                                         onFavoriteAction(
-                                            FavoriteAction.DeleteClan(clan.id)
+                                            FavoriteAction.DeleteGuild(guild.id)
                                         )
                                         haptic.performHapticFeedback(HapticFeedbackType.Reject)
                                     },
                                     {
                                         onFavoriteAction(
-                                            FavoriteAction.RestoreClan(clan)
+                                            FavoriteAction.RestoreGuild(guild)
                                         )
                                     },
                                     {
                                         onFavoriteAction(
-                                            FavoriteAction.ClanClicked(clan.id)
+                                            FavoriteAction.GuildClicked(guild.id)
                                         )
                                     },
                                     Modifier
@@ -289,8 +289,8 @@ private fun FavoritesScreenPreview() {
                 state = FavoritesState(
                     players = (1L..100L).map
                     { Player(it, name = "Nic", 0) },
-                    clans = (1L..3L).map
-                    { Clan(it, name = "Nic", 0) },
+                    guilds = (1L..3L).map
+                    { Guild(it, name = "Nic", 0) },
                     selectedFavoriteType = FavoriteType.Players
                 ),
                 SnackbarHostState()

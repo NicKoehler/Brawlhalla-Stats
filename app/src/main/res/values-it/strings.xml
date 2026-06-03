@@ -42,9 +42,9 @@
     <string name="prefRemovedFavorites">Rimosso dai preferiti</string>
     <string name="prefAddedFavorites">Aggiunto ai preferiti</string>
     <string name="favoritePlayers">Giocatori preferiti</string>
-    <string name="favoriteClans">Clan preferiti</string>
-    <string name="favoritesHint">Puoi aggiungere giocatori e clan preferiti nella sezione classifiche</string>
-    <string name="clans">Clan</string>
+    <string name="favoriteGuilds">Gilde preferite</string>
+    <string name="favoritesHint">Puoi aggiungere giocatori e gilde preferite nella sezione classifiche</string>
+    <string name="guilds">Gilde</string>
     <string name="players">Giocatori</string>
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>

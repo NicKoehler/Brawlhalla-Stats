@@ -124,7 +124,7 @@ fun StatDetailScreen(
     state: StatDetailState,
     onBack: () -> Unit,
     onPlayerSelection: (Long) -> Unit,
-    onClanSelection: (Long) -> Unit,
+    onGuildSelection: (Long) -> Unit,
     onLegendSelection: (Long) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -352,7 +352,7 @@ fun StatDetailScreen(
                     ) {
 
                         item(span = { GridItemSpan(columns) }) {
-                            StatDetailHeader(state, onClanSelection, onStatDetailAction)
+                            StatDetailHeader(state, onGuildSelection, onStatDetailAction)
                         }
                         stats(state, columns, playerStat, onStatDetailAction, playerRanking)
                     }
@@ -707,7 +707,7 @@ private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
 @Composable
 private fun StatDetailHeader(
     state: StatDetailState,
-    onClanSelection: (Long) -> Unit,
+    onGuildSelection: (Long) -> Unit,
     onStatDetailAction: (StatDetailAction) -> Unit,
 ) {
     Column(
@@ -739,7 +739,7 @@ private fun StatDetailHeader(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     contentPadding = PaddingValues(vertical = 10.dp, horizontal = 20.dp),
                     onClick = {
-                        onClanSelection(state.selectedStatDetail.guild.guildId)
+                        onGuildSelection(state.selectedStatDetail.guild.guildId)
                     }
                 ) {
                     Text(state.selectedStatDetail.guild.guildName)

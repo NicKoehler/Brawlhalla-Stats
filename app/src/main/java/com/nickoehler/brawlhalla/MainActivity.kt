@@ -45,9 +45,9 @@ import com.nickoehler.brawlhalla.core.presentation.WeaponAction
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.model.FavoriteAction
 import com.nickoehler.brawlhalla.favorites.presentation.screens.FavoritesScreen
-import com.nickoehler.brawlhalla.guilds.presentation.ClanAction
-import com.nickoehler.brawlhalla.guilds.presentation.ClanViewModel
-import com.nickoehler.brawlhalla.guilds.presentation.screens.ClanDetailScreen
+import com.nickoehler.brawlhalla.guilds.presentation.GuildAction
+import com.nickoehler.brawlhalla.guilds.presentation.GuildViewModel
+import com.nickoehler.brawlhalla.guilds.presentation.screens.GuildDetailScreen
 import com.nickoehler.brawlhalla.legends.presentation.LegendAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendDetailAction
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
@@ -157,7 +157,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val playerId = intent.extras?.getLong("OPEN_STAT")
-                    val clanId = intent.extras?.getLong("OPEN_CLAN")
+                    val guildId = intent.extras?.getLong("OPEN_GUILD")
 
                     val windowAdaptiveInfo = currentWindowAdaptiveInfoV2()
                     val directive = remember(windowAdaptiveInfo) {
@@ -178,10 +178,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    LaunchedEffect(clanId) {
-                        if (clanId != null && clanId != 0L) {
+                    LaunchedEffect(guildId) {
+                        if (guildId != null && guildId != 0L) {
                             backStack.clear()
-                            backStack.add(Route.Clan(clanId))
+                            backStack.add(Route.Guild(guildId))
                         }
                     }
                     NavDisplay(
@@ -201,26 +201,28 @@ class MainActivity : ComponentActivity() {
                         },
                         sceneStrategies = listOf(listDetailStrategy),
                         entryProvider = entryProvider {
-                            entry<Route.Clan> {
-                                val clanViewModel =
-                                    koinViewModel<ClanViewModel>(parameters = {
-                                        parametersOf(
-                                            it.clanId
-                                        )
-                                    })
-                                val clanState by clanViewModel.state.collectAsStateWithLifecycle()
+                            entry<Route.Guild> {
+                                val guildViewModel =
+                                    koinViewModel<GuildViewModel>(
+                                        key = it.guildId.toString(),
+                                        parameters = {
+                                            parametersOf(
+                                                it.guildId
+                                            )
+                                        })
+                                val guildState by guildViewModel.state.collectAsStateWithLifecycle()
 
-                                ClanDetailScreen(
-                                    clanState,
-                                    onClanAction = { action ->
-                                        clanViewModel.onClanAction(action)
-                                        if (action is ClanAction.SelectMember) {
+                                GuildDetailScreen(
+                                    guildState,
+                                    onGuildAction = { action ->
+                                        guildViewModel.onGuildAction(action)
+                                        if (action is GuildAction.SelectMember) {
                                             backStack.add(
                                                 Route.Stat(action.memberId)
                                             )
                                         }
                                     },
-                                    events = clanViewModel.uiEvents,
+                                    events = guildViewModel.uiEvents,
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     }
@@ -237,8 +239,8 @@ class MainActivity : ComponentActivity() {
                                     onFavoriteAction = { action ->
                                         favoritesViewModel.onFavoriteAction(action)
                                         when (action) {
-                                            is FavoriteAction.ClanClicked -> backStack.add(
-                                                Route.Clan(clanId = action.clanId)
+                                            is FavoriteAction.GuildClicked -> backStack.add(
+                                                Route.Guild(guildId = action.guildId)
                                             )
 
                                             is FavoriteAction.PlayerClicked -> backStack.add(
@@ -390,8 +392,8 @@ class MainActivity : ComponentActivity() {
                                             )
                                         )
                                     },
-                                    onClanSelection = { clanId ->
-                                        backStack.add(Route.Clan(clanId))
+                                    onGuildSelection = { guildId ->
+                                        backStack.add(Route.Guild(guildId))
                                     }
                                 )
                             }

@@ -42,9 +42,9 @@
     <string name="prefRemovedFavorites">removed from favorites</string>
     <string name="prefAddedFavorites">added to favorites</string>
     <string name="favoritePlayers">Favorites Players</string>
-    <string name="favoriteClans">Favorite Clans</string>
-    <string name="favoritesHint">You can add favorites players and clans in the ranking section</string>
-    <string name="clans">Clans</string>
+    <string name="favoriteGuilds">Favorite Guilds</string>
+    <string name="favoritesHint">You can add favorites players and guilds in the ranking section</string>
+    <string name="guilds">Guilds</string>
     <string name="players">Players</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>

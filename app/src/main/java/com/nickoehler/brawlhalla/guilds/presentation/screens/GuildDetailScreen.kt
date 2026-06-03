@@ -57,14 +57,14 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDown
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
-import com.nickoehler.brawlhalla.guilds.domain.ClanRankType
 import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
 import com.nickoehler.brawlhalla.guilds.domain.GuildMember
-import com.nickoehler.brawlhalla.guilds.presentation.ClanAction
-import com.nickoehler.brawlhalla.guilds.presentation.ClanState
-import com.nickoehler.brawlhalla.guilds.presentation.components.ClanMemberCard
-import com.nickoehler.brawlhalla.guilds.presentation.model.ClanSortType
-import com.nickoehler.brawlhalla.guilds.presentation.model.toClanDetailUi
+import com.nickoehler.brawlhalla.guilds.domain.GuildRankType
+import com.nickoehler.brawlhalla.guilds.presentation.GuildAction
+import com.nickoehler.brawlhalla.guilds.presentation.GuildState
+import com.nickoehler.brawlhalla.guilds.presentation.components.GuildMemberCard
+import com.nickoehler.brawlhalla.guilds.presentation.model.GuildSortType
+import com.nickoehler.brawlhalla.guilds.presentation.model.toGuildDetailUi
 import com.nickoehler.brawlhalla.guilds.presentation.model.toIcon
 import com.nickoehler.brawlhalla.guilds.presentation.model.toStringResource
 import com.nickoehler.brawlhalla.ranking.presentation.util.toString
@@ -75,10 +75,10 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClanDetailScreen(
-    state: ClanState,
+fun GuildDetailScreen(
+    state: GuildState,
     onBack: () -> Unit,
-    onClanAction: (ClanAction) -> Unit,
+    onGuildAction: (GuildAction) -> Unit,
     modifier: Modifier = Modifier,
     events: Flow<UiEvent> = emptyFlow()
 ) {
@@ -110,7 +110,7 @@ fun ClanDetailScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    val clan = state.selectedClan
+    val guild = state.selectedGuild
 
     Scaffold(
         modifier = modifier
@@ -132,7 +132,7 @@ fun ClanDetailScreen(
                     }
                 },
                 title = {
-                    if (state.isClanDetailLoading) {
+                    if (state.isGuildDetailLoading) {
                         Box(
                             Modifier
                                 .padding(12.dp)
@@ -142,9 +142,9 @@ fun ClanDetailScreen(
                                 .clip(CircleShape)
                                 .shimmerEffect()
                         )
-                    } else if (clan != null) {
+                    } else if (guild != null) {
                         Text(
-                            clan.name,
+                            guild.name,
                             fontSize = 30.sp,
                             lineHeight = 30.sp,
                             fontWeight = FontWeight.Bold,
@@ -156,10 +156,10 @@ fun ClanDetailScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (clan != null) {
-                                onClanAction(
-                                    ClanAction.ToggleClanFavorites(
-                                        clan.id, clan.name
+                            if (guild != null) {
+                                onGuildAction(
+                                    GuildAction.ToggleGuildFavorites(
+                                        guild.id, guild.name
                                     )
                                 )
                                 haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
@@ -169,7 +169,7 @@ fun ClanDetailScreen(
                         Icon(
                             Icons.Default.Favorite,
                             stringResource(R.string.favorites),
-                            tint = if (state.isClanDetailFavorite)
+                            tint = if (state.isGuildDetailFavorite)
                                 MaterialTheme.colorScheme.primary else
                                 MaterialTheme.colorScheme.onBackground
                         )
@@ -186,7 +186,7 @@ fun ClanDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (state.isClanDetailLoading) {
+            if (state.isGuildDetailLoading) {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(8.dp),
@@ -243,7 +243,7 @@ fun ClanDetailScreen(
                     }
                 }
 
-            } else if (clan != null) {
+            } else if (guild != null) {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(8.dp),
@@ -256,8 +256,8 @@ fun ClanDetailScreen(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("XP ${clan.xp.formatted}")
-                            Text(stringResource(R.string.createDate, clan.createDate.formatted))
+                            Text("XP ${guild.xp.formatted}")
+                            Text(stringResource(R.string.createDate, guild.createDate.formatted))
                         }
                     }
                     item(span = { GridItemSpan(columns) }) {
@@ -270,30 +270,30 @@ fun ClanDetailScreen(
                                 expanded = !expanded
                             },
                             onReversedClick = {
-                                onClanAction(ClanAction.ReverseSortType)
+                                onGuildAction(GuildAction.ReverseSortType)
                             },
                             selected = {
                                 Text(stringResource(state.sortType.toStringResource()))
                             },
                         ) {
-                            ClanSortType.entries.forEach { sort ->
+                            GuildSortType.entries.forEach { sort ->
                                 DropdownMenuItem(
                                     leadingIcon = { Icon(sort.toIcon(), null) },
                                     text = { Text(stringResource(sort.toStringResource())) },
                                     onClick = {
                                         expanded = false
-                                        onClanAction(ClanAction.SelectSortType(sort))
+                                        onGuildAction(GuildAction.SelectSortType(sort))
                                     }
                                 )
                             }
                         }
                     }
-                    items(clan.members, { it.brawlhallaId }) { member ->
-                        ClanMemberCard(
+                    items(guild.members, { it.brawlhallaId }) { member ->
+                        GuildMemberCard(
                             member,
                             onClick = { id ->
-                                onClanAction(
-                                    ClanAction.SelectMember(id)
+                                onGuildAction(
+                                    GuildAction.SelectMember(id)
                                 )
                             },
                             modifier = Modifier.animateItem()
@@ -307,12 +307,12 @@ fun ClanDetailScreen(
 
 @Preview
 @Composable
-private fun ClanDetailScreenPreviewLoaded() {
+private fun GuildDetailScreenPreviewLoaded() {
     BrawlhallaTheme {
         Surface {
-            ClanDetailScreen(
-                state = ClanState(
-                    selectedClan = clanDetailSample.toClanDetailUi()
+            GuildDetailScreen(
+                state = GuildState(
+                    selectedGuild = guildDetailSample.toGuildDetailUi()
                 ),
                 {},
                 {}
@@ -323,12 +323,12 @@ private fun ClanDetailScreenPreviewLoaded() {
 
 @Preview
 @Composable
-private fun ClanDetailScreenPreviewLoading() {
+private fun GuildDetailScreenPreviewLoading() {
     BrawlhallaTheme {
         Surface {
-            ClanDetailScreen(
-                state = ClanState(
-                    isClanDetailLoading = true,
+            GuildDetailScreen(
+                state = GuildState(
+                    isGuildDetailLoading = true,
                 ),
                 {},
                 {}
@@ -337,7 +337,7 @@ private fun ClanDetailScreenPreviewLoading() {
     }
 }
 
-internal val clanDetailSample =
+internal val guildDetailSample =
     GuildDetail(
         1,
         "Blue Mammoth Games",
@@ -358,7 +358,7 @@ internal val clanDetailSample =
             GuildMember(
                 3,
                 "[BMG] Chill Penguin X",
-                ClanRankType.Leader,
+                GuildRankType.Leader,
                 1464206400L.toLocalDateTime(),
                 6664,
                 6664,
@@ -366,7 +366,7 @@ internal val clanDetailSample =
             GuildMember(
                 2,
                 "bmg | dan",
-                ClanRankType.Officer,
+                GuildRankType.Officer,
                 1464221047L.toLocalDateTime(),
                 4492,
                 4492,

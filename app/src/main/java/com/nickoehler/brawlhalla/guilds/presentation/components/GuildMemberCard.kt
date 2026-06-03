@@ -29,16 +29,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
-import com.nickoehler.brawlhalla.guilds.presentation.model.ClanMemberUi
-import com.nickoehler.brawlhalla.guilds.presentation.model.toClanMemberUi
+import com.nickoehler.brawlhalla.guilds.presentation.model.GuildMemberUi
 import com.nickoehler.brawlhalla.guilds.presentation.model.toColor
-import com.nickoehler.brawlhalla.guilds.presentation.screens.clanDetailSample
+import com.nickoehler.brawlhalla.guilds.presentation.model.toGuildMemberUi
+import com.nickoehler.brawlhalla.guilds.presentation.screens.guildDetailSample
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
 import kotlinx.coroutines.delay
 
 @Composable
-fun ClanMemberCard(
-    member: ClanMemberUi,
+fun GuildMemberCard(
+    member: GuildMemberUi,
     onClick: (id: Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -108,11 +108,11 @@ fun ClanMemberCard(
 
 @Preview
 @Composable
-private fun ClanMemberCardPreview() {
+private fun GuildMemberCardPreview() {
     BrawlhallaTheme {
         Surface {
-            ClanMemberCard(
-                clanDetailSample.members.first().toClanMemberUi(),
+            GuildMemberCard(
+                guildDetailSample.members.first().toGuildMemberUi(),
                 {}
             )
         }

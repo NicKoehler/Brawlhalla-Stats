@@ -1,6 +1,6 @@
 package com.nickoehler.brawlhalla.core.domain
 
-import com.nickoehler.brawlhalla.core.data.database.entities.Clan
+import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import kotlinx.coroutines.flow.Flow
 
@@ -13,16 +13,16 @@ interface LocalDataSource {
 
     fun getAllPlayers(): Flow<List<Player>>
 
-    suspend fun saveClan(clan: Clan)
+    suspend fun saveGuild(guild: Guild)
 
-    suspend fun deleteClan(clanId: Long)
+    suspend fun deleteGuild(guildId: Long)
 
-    fun getClan(clanId: Long): Flow<Clan?>
+    fun getGuild(guildId: Long): Flow<Guild?>
 
-    fun getAllClans(): Flow<List<Clan>>
+    fun getAllGuilds(): Flow<List<Guild>>
 
     suspend fun updatePlayers(players: List<Player>)
 
-    suspend fun updateClans(clans: List<Clan>)
+    suspend fun updateGuilds(guilds: List<Guild>)
 
 }

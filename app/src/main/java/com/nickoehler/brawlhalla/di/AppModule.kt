@@ -10,8 +10,8 @@ import com.nickoehler.brawlhalla.core.domain.LocalPreferences
 import com.nickoehler.brawlhalla.core.presentation.ThemeViewModel
 import com.nickoehler.brawlhalla.favorites.presentation.FavoritesViewModel
 import com.nickoehler.brawlhalla.guilds.data.RemoteGuildDataSource
-import com.nickoehler.brawlhalla.guilds.domain.ClanDataSource
-import com.nickoehler.brawlhalla.guilds.presentation.ClanViewModel
+import com.nickoehler.brawlhalla.guilds.domain.GuildDataSource
+import com.nickoehler.brawlhalla.guilds.presentation.GuildViewModel
 import com.nickoehler.brawlhalla.legends.data.RemoteLegendsDataSource
 import com.nickoehler.brawlhalla.legends.domain.LegendsDataSource
 import com.nickoehler.brawlhalla.legends.presentation.LegendsViewModel
@@ -34,13 +34,13 @@ val appModule = module {
     singleOf(::DatabaseDataSource) { bind<LocalDataSource>() }
     singleOf(::RemoteLegendsDataSource) { bind<LegendsDataSource>() }
     singleOf(::RemoteRankingDataSource) { bind<RankingsDataSource>() }
-    singleOf(::RemoteGuildDataSource) { bind<ClanDataSource>() }
+    singleOf(::RemoteGuildDataSource) { bind<GuildDataSource>() }
     singleOf(::AppLocaleManager)
     viewModelOf(::ThemeViewModel)
     viewModelOf(::LegendsViewModel)
     viewModelOf(::StatDetailViewModel)
     viewModelOf(::RankingViewModel)
-    viewModelOf(::ClanViewModel)
+    viewModelOf(::GuildViewModel)
     viewModelOf(::FavoritesViewModel)
     viewModelOf(::SettingsViewModel)
 }

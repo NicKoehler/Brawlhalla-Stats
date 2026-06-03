@@ -5,34 +5,34 @@ import com.nickoehler.brawlhalla.core.presentation.models.DisplayableLong
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableZonedDateTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableZonedDateTime
-import com.nickoehler.brawlhalla.guilds.domain.ClanRankType
 import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
+import com.nickoehler.brawlhalla.guilds.domain.GuildRankType
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
-data class ClanDetailUi(
+data class GuildDetailUi(
     val id: Long,
     val name: String,
     val createDate: DisplayableZonedDateTime,
     val xp: DisplayableLong,
-    val members: List<ClanMemberUi>
+    val members: List<GuildMemberUi>
 )
 
-fun GuildDetail.toClanDetailUi(): ClanDetailUi {
-    return ClanDetailUi(
+fun GuildDetail.toGuildDetailUi(): GuildDetailUi {
+    return GuildDetailUi(
         id,
         name.toFixedUtf8(),
         createDate.toDisplayableZonedDateTime(),
         xp.toDisplayableNumber(),
-        members.map { it.toClanMemberUi() }
+        members.map { it.toGuildMemberUi() }
     )
 }
 
-fun ClanRankType.toColor(): Color {
+fun GuildRankType.toColor(): Color {
     return when (this) {
-        ClanRankType.Leader -> Color(0xFFFF5252)
-        ClanRankType.Member -> Color(0xFF40C4FF)
-        ClanRankType.Officer -> Color(0xFF69F0AE)
-        ClanRankType.Recruit -> Color(0xFFFFAB40)
-        ClanRankType.Unknown -> Color(0xFFC2C2C2)
+        GuildRankType.Leader -> Color(0xFFFF5252)
+        GuildRankType.Member -> Color(0xFF40C4FF)
+        GuildRankType.Officer -> Color(0xFF69F0AE)
+        GuildRankType.Recruit -> Color(0xFFFFAB40)
+        GuildRankType.Unknown -> Color(0xFFC2C2C2)
     }
 }
