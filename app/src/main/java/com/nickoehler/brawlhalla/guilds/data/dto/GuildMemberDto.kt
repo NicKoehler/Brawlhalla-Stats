@@ -13,14 +13,14 @@ data class GuildMemberDto(
     val name: String,
 
     @SerialName("rank")
-    val rank: String,
+    val rank: String? = null,
 
     @SerialName("join_date")
-    val joinDate: Long,
+    val joinDate: Long? = null,
 
     @SerialName("xp")
     val xp: Long,
 
     @SerialName("guild_points")
-    val guildPoints: Int,
+    val guildPoints: Int? = null,
 )

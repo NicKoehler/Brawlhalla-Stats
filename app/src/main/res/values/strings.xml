@@ -102,4 +102,5 @@
     <string name="general">General</string>
     <string name="reload">Reload</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="members">%s members</string>
 </resources>

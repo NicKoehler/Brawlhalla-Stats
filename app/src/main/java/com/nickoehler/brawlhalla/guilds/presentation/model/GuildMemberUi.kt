@@ -12,7 +12,7 @@ data class GuildMemberUi(
     val brawlhallaId: Long,
     val name: String,
     val rank: GuildRankType,
-    val joinDate: DisplayableZonedDateTime,
+    val joinDate: DisplayableZonedDateTime?,
     val xp: DisplayableLong
 )
 
@@ -21,7 +21,7 @@ fun GuildMember.toGuildMemberUi(): GuildMemberUi {
         brawlhallaId,
         name.toFixedUtf8(),
         rank,
-        joinDate.toDisplayableZonedDateTime(),
+        joinDate?.toDisplayableZonedDateTime(),
         xp.toDisplayableNumber()
     )
 }

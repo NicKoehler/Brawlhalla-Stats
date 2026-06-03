@@ -102,5 +102,6 @@
     <string name="general">Generali</string>
     <string name="reload">Ricarica</string>
     <string name="something_went_wrong">Qualcosa è andato storto</string>
+    <string name="members">%s membri</string>
 </resources>
 

@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.guilds.presentation.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,12 +124,23 @@ fun GuildDetailScreen(
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
+                ),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            stringResource(R.string.back),
-                        )
+                    Box(modifier = Modifier.padding(start = 8.dp)) {
+                        IconButton(
+                            onClick = onBack,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceContainer)
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                stringResource(R.string.back),
+                            )
+                        }
                     }
                 },
                 title = {
@@ -143,36 +155,53 @@ fun GuildDetailScreen(
                                 .shimmerEffect()
                         )
                     } else if (guild != null) {
-                        Text(
-                            guild.name,
-                            fontSize = 30.sp,
-                            lineHeight = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 12.dp)
+                        ) {
+                            Text(
+                                guild.name,
+                                fontSize = 32.sp,
+                                lineHeight = 36.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Text(
+                                stringResource(R.string.members, state.selectedGuild.members.size),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            if (guild != null) {
-                                onGuildAction(
-                                    GuildAction.ToggleGuildFavorites(
-                                        guild.id, guild.name
+                    Box(modifier = Modifier.padding(end = 8.dp)) {
+                        IconButton(
+                            onClick = {
+                                if (guild != null) {
+                                    onGuildAction(
+                                        GuildAction.ToggleGuildFavorites(
+                                            guild.id, guild.name
+                                        )
                                     )
-                                )
-                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                            }
+                                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                                }
+                            },
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceContainer)
+                        ) {
+                            Icon(
+                                Icons.Default.Favorite,
+                                stringResource(R.string.favorites),
+                                tint = if (state.isGuildDetailFavorite)
+                                    MaterialTheme.colorScheme.primary else
+                                    MaterialTheme.colorScheme.onBackground
+                            )
                         }
-                    ) {
-                        Icon(
-                            Icons.Default.Favorite,
-                            stringResource(R.string.favorites),
-                            tint = if (state.isGuildDetailFavorite)
-                                MaterialTheme.colorScheme.primary else
-                                MaterialTheme.colorScheme.onBackground
-                        )
                     }
                 }
             )
@@ -189,10 +218,10 @@ fun GuildDetailScreen(
             if (state.isGuildDetailLoading) {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(8.dp),
+                    contentPadding = PaddingValues(16.dp),
                     columns = GridCells.Fixed(columns),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item(span = { GridItemSpan(columns) }) {
                         Column(
@@ -246,18 +275,26 @@ fun GuildDetailScreen(
             } else if (guild != null) {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(8.dp),
+                    contentPadding = PaddingValues(16.dp),
                     columns = GridCells.Fixed(columns),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item(span = { GridItemSpan(columns) }) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("XP ${guild.xp.formatted}")
-                            Text(stringResource(R.string.createDate, guild.createDate.formatted))
+                            Text(
+                                "XP ${guild.xp.formatted}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                stringResource(R.string.createDate, guild.createDate.formatted),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                     item(span = { GridItemSpan(columns) }) {

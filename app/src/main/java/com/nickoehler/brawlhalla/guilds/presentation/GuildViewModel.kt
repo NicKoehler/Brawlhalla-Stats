@@ -122,7 +122,7 @@ class GuildViewModel(
 
         val result = when (sort) {
             GuildSortType.Alpha -> members.sortedBy { it.name }
-            GuildSortType.JoinDate -> members.sortedBy { it.joinDate.value }
+            GuildSortType.JoinDate -> members.sortedBy { it.joinDate?.value }
             GuildSortType.Rank -> members.sortedBy { it.rank.name }
             GuildSortType.Xp -> members.sortedBy { it.xp.value }
         }

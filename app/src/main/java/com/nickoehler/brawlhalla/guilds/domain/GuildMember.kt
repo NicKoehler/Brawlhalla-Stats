@@ -6,7 +6,7 @@ data class GuildMember(
     val brawlhallaId: Long,
     val name: String,
     val rank: GuildRankType,
-    val joinDate: LocalDateTime,
+    val joinDate: LocalDateTime?,
     val xp: Long,
-    val guildPoints: Int
+    val guildPoints: Int?
 )

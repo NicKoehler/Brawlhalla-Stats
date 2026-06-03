@@ -35,7 +35,7 @@ fun GuildMemberDto.toGuildMember(): GuildMember {
             "Recruit" -> GuildRankType.Recruit
             else -> GuildRankType.Unknown
         },
-        joinDate.toLocalDateTime(),
+        joinDate?.toLocalDateTime(),
         xp,
         guildPoints
     )

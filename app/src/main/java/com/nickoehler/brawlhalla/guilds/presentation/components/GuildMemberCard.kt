@@ -95,11 +95,13 @@ fun GuildMemberCard(
                         maxLines = 1
                     )
                 }
-                Text(
-                    member.joinDate.formatted,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                if (member.joinDate != null) {
+                    Text(
+                        member.joinDate.formatted,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         }
     }
