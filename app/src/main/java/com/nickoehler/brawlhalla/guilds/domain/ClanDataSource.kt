@@ -5,6 +5,6 @@ import com.nickoehler.brawlhalla.core.domain.util.Result
 
 interface ClanDataSource {
 
-    suspend fun getClan(clanId: Long): Result<ClanDetail, NetworkError>
+    suspend fun getGuild(guildId: Long): Result<GuildDetail, NetworkError>
 
 }

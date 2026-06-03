@@ -19,5 +19,8 @@ data class GuildMemberDto(
     val joinDate: Long,
 
     @SerialName("xp")
-    val xp: Long
+    val xp: Long,
+
+    @SerialName("guild_points")
+    val guildPoints: Int,
 )

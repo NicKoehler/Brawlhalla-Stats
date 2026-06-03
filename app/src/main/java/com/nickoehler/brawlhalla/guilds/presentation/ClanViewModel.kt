@@ -46,7 +46,7 @@ class ClanViewModel(
         _state.update { state -> state.copy(isClanDetailLoading = true, error = null) }
 
         viewModelScope.launch {
-            clanDataSource.getClan(clanId).onSuccess { clanDetail ->
+            clanDataSource.getGuild(clanId).onSuccess { clanDetail ->
                 database.getClan(clanId).collect { clan ->
                     _state.update { state ->
                         val clanDetailUi = clanDetail.toClanDetailUi()

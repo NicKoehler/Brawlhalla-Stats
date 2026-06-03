@@ -3,22 +3,29 @@ package com.nickoehler.brawlhalla.guilds.data.mappers
 import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.guilds.data.dto.GuildDetailDto
 import com.nickoehler.brawlhalla.guilds.data.dto.GuildMemberDto
-import com.nickoehler.brawlhalla.guilds.domain.ClanDetail
-import com.nickoehler.brawlhalla.guilds.domain.ClanMember
 import com.nickoehler.brawlhalla.guilds.domain.ClanRankType
+import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
+import com.nickoehler.brawlhalla.guilds.domain.GuildMember
 
-fun GuildDetailDto.toClanDetail(): ClanDetail {
-    return ClanDetail(
+fun GuildDetailDto.toGuildDetail(members: List<GuildMember>): GuildDetail {
+    return GuildDetail(
         id,
         name,
         createDate.toLocalDateTime(),
         xp,
-        members.map { it.toClanMember() }
+        legacyXp,
+        notice,
+        tags,
+        discordInviteCode,
+        guildPoints,
+        rank,
+        isRecruiting,
+        members
     )
 }
 
-fun GuildMemberDto.toClanMember(): ClanMember {
-    return ClanMember(
+fun GuildMemberDto.toGuildMember(): GuildMember {
+    return GuildMember(
         brawlhallaId,
         name,
         when (rank) {
@@ -29,6 +36,7 @@ fun GuildMemberDto.toClanMember(): ClanMember {
             else -> ClanRankType.Unknown
         },
         joinDate.toLocalDateTime(),
-        xp
+        xp,
+        guildPoints
     )
 }

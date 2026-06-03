@@ -57,9 +57,9 @@ import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDown
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
-import com.nickoehler.brawlhalla.guilds.domain.ClanDetail
-import com.nickoehler.brawlhalla.guilds.domain.ClanMember
 import com.nickoehler.brawlhalla.guilds.domain.ClanRankType
+import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
+import com.nickoehler.brawlhalla.guilds.domain.GuildMember
 import com.nickoehler.brawlhalla.guilds.presentation.ClanAction
 import com.nickoehler.brawlhalla.guilds.presentation.ClanState
 import com.nickoehler.brawlhalla.guilds.presentation.components.ClanMemberCard
@@ -338,25 +338,38 @@ private fun ClanDetailScreenPreviewLoading() {
 }
 
 internal val clanDetailSample =
-    ClanDetail(
+    GuildDetail(
         1,
         "Blue Mammoth Games",
         1464206400L.toLocalDateTime(),
         86962,
+        4620759,
+        "Meets every Thursday!",
         listOf(
-            ClanMember(
+            "Social",
+            "Friendly",
+            "NightOwls"
+        ),
+        "alwaysbecreasing",
+        114953,
+        6184,
+        true,
+        listOf(
+            GuildMember(
                 3,
                 "[BMG] Chill Penguin X",
                 ClanRankType.Leader,
                 1464206400L.toLocalDateTime(),
-                6664
+                6664,
+                6664,
             ),
-            ClanMember(
+            GuildMember(
                 2,
                 "bmg | dan",
                 ClanRankType.Officer,
                 1464221047L.toLocalDateTime(),
-                4492
+                4492,
+                4492,
             )
         )
     )

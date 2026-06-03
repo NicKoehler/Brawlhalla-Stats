@@ -2,10 +2,11 @@ package com.nickoehler.brawlhalla.guilds.domain
 
 import java.time.LocalDateTime
 
-data class ClanMember(
+data class GuildMember(
     val brawlhallaId: Long,
     val name: String,
     val rank: ClanRankType,
     val joinDate: LocalDateTime,
-    val xp: Long
+    val xp: Long,
+    val guildPoints: Int
 )

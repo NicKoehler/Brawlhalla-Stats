@@ -5,8 +5,8 @@ import com.nickoehler.brawlhalla.core.presentation.models.DisplayableLong
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableZonedDateTime
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableNumber
 import com.nickoehler.brawlhalla.core.presentation.models.toDisplayableZonedDateTime
-import com.nickoehler.brawlhalla.guilds.domain.ClanDetail
 import com.nickoehler.brawlhalla.guilds.domain.ClanRankType
+import com.nickoehler.brawlhalla.guilds.domain.GuildDetail
 import com.nickoehler.brawlhalla.ranking.presentation.util.toFixedUtf8
 
 data class ClanDetailUi(
@@ -17,7 +17,7 @@ data class ClanDetailUi(
     val members: List<ClanMemberUi>
 )
 
-fun ClanDetail.toClanDetailUi(): ClanDetailUi {
+fun GuildDetail.toClanDetailUi(): ClanDetailUi {
     return ClanDetailUi(
         id,
         name.toFixedUtf8(),
