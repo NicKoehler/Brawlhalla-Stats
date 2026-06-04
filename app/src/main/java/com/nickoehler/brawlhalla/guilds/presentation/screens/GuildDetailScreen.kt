@@ -3,6 +3,7 @@ package com.nickoehler.brawlhalla.guilds.presentation.screens
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.scrollbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -95,6 +98,8 @@ fun GuildDetailScreen(
             screenWidth.div(itemSize).toInt().coerceAtLeast(1)
         }
     }
+
+    val scrollState = rememberLazyGridState()
 
     ObserveAsEvents(events) { event ->
         when (event) {
@@ -210,7 +215,7 @@ fun GuildDetailScreen(
         }
     ) { paddingValues ->
         AnimatedContent(state.error) { error ->
-            when(error) {
+            when (error) {
                 null -> {
                     Column(
                         modifier = Modifier
@@ -279,7 +284,13 @@ fun GuildDetailScreen(
 
                         } else if (guild != null) {
                             LazyVerticalGrid(
-                                modifier = Modifier.fillMaxWidth(),
+                                state = scrollState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .scrollbar(
+                                        scrollState.scrollIndicatorState,
+                                        orientation = Orientation.Vertical
+                                    ),
                                 contentPadding = PaddingValues(16.dp),
                                 columns = GridCells.Fixed(columns),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -296,7 +307,10 @@ fun GuildDetailScreen(
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            stringResource(R.string.createDate, guild.createDate.formatted),
+                                            stringResource(
+                                                R.string.createDate,
+                                                guild.createDate.formatted
+                                            ),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -345,8 +359,9 @@ fun GuildDetailScreen(
                         }
                     }
                 }
+
                 else -> {
-                    ShowError(error, {onGuildAction(GuildAction.Reload)})
+                    ShowError(error, { onGuildAction(GuildAction.Reload) })
                 }
             }
         }
