@@ -75,7 +75,6 @@ class GuildViewModel(
 
     fun onGuildAction(action: GuildAction) {
         when (action) {
-            GuildAction.ReverseSortType -> reverseSortType()
             is GuildAction.SelectGuild -> selectGuild(action.guildId)
             is GuildAction.ToggleGuildFavorites -> toggleGuildFavorites(
                 action.guildId,
@@ -83,6 +82,8 @@ class GuildViewModel(
             )
 
             is GuildAction.SelectSortType -> selectSortType(action.sort)
+            GuildAction.ReverseSortType -> reverseSortType()
+            GuildAction.Reload -> selectGuild(guildId)
             else -> {}
         }
     }
@@ -122,7 +123,7 @@ class GuildViewModel(
 
         val result = when (sort) {
             GuildSortType.Alpha -> members.sortedBy { it.name }
-            GuildSortType.JoinDate -> members.sortedBy { it.joinDate?.value }
+            GuildSortType.JoinDate -> members.sortedWith(compareBy(nullsLast()) { it.joinDate?.value })
             GuildSortType.Rank -> members.sortedBy { it.rank.name }
             GuildSortType.Xp -> members.sortedBy { it.xp.value }
         }

@@ -1,6 +1,7 @@
 package com.nickoehler.brawlhalla.guilds.presentation.screens
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
 import com.nickoehler.brawlhalla.core.presentation.components.CustomSortDropDownMenu
+import com.nickoehler.brawlhalla.core.presentation.components.ShowError
 import com.nickoehler.brawlhalla.core.presentation.components.shimmerEffect
 import com.nickoehler.brawlhalla.core.presentation.models.toLocalDateTime
 import com.nickoehler.brawlhalla.core.presentation.util.ObserveAsEvents
@@ -207,135 +209,144 @@ fun GuildDetailScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues)
-                .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (state.isGuildDetailLoading) {
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    columns = GridCells.Fixed(columns),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    item(span = { GridItemSpan(columns) }) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Box(
-                                Modifier
-                                    .size(150.dp, 25.dp)
-                                    .clip(CircleShape)
-                                    .shimmerEffect()
-                            )
-                            Box(
-                                Modifier
-                                    .size(350.dp, 25.dp)
-                                    .clip(CircleShape)
-                                    .shimmerEffect()
-                            )
-                        }
-                    }
-                    item(span = { GridItemSpan(columns) }) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Box(
-                                Modifier
-                                    .size(130.dp, 50.dp)
-                                    .clip(CircleShape)
-                                    .shimmerEffect()
-                            )
-                            Box(
-                                Modifier
-                                    .size(50.dp, 50.dp)
-                                    .clip(CircleShape)
-                                    .shimmerEffect()
-                            )
-                        }
-                    }
-                    items(20) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(90.dp)
-                                .clip(CircleShape)
-                                .shimmerEffect()
-                        )
-                    }
-                }
-
-            } else if (guild != null) {
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    columns = GridCells.Fixed(columns),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    item(span = { GridItemSpan(columns) }) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                "XP ${guild.xp.formatted}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                stringResource(R.string.createDate, guild.createDate.formatted),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                    item(span = { GridItemSpan(columns) }) {
-                        var expanded by remember { mutableStateOf(false) }
-                        CustomSortDropDownMenu(
-                            reversed = state.reversedSortType,
-                            expanded = expanded,
-                            icon = Icons.AutoMirrored.Filled.Sort,
-                            onSortClick = {
-                                expanded = !expanded
-                            },
-                            onReversedClick = {
-                                onGuildAction(GuildAction.ReverseSortType)
-                            },
-                            selected = {
-                                Text(stringResource(state.sortType.toStringResource()))
-                            },
-                        ) {
-                            GuildSortType.entries.forEach { sort ->
-                                DropdownMenuItem(
-                                    leadingIcon = { Icon(sort.toIcon(), null) },
-                                    text = { Text(stringResource(sort.toStringResource())) },
-                                    onClick = {
-                                        expanded = false
-                                        onGuildAction(GuildAction.SelectSortType(sort))
+        AnimatedContent(state.error) { error ->
+            when(error) {
+                null -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(paddingValues)
+                            .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (state.isGuildDetailLoading) {
+                            LazyVerticalGrid(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(16.dp),
+                                columns = GridCells.Fixed(columns),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                item(span = { GridItemSpan(columns) }) {
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Box(
+                                            Modifier
+                                                .size(150.dp, 25.dp)
+                                                .clip(CircleShape)
+                                                .shimmerEffect()
+                                        )
+                                        Box(
+                                            Modifier
+                                                .size(350.dp, 25.dp)
+                                                .clip(CircleShape)
+                                                .shimmerEffect()
+                                        )
                                     }
-                                )
+                                }
+                                item(span = { GridItemSpan(columns) }) {
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Box(
+                                            Modifier
+                                                .size(130.dp, 50.dp)
+                                                .clip(CircleShape)
+                                                .shimmerEffect()
+                                        )
+                                        Box(
+                                            Modifier
+                                                .size(50.dp, 50.dp)
+                                                .clip(CircleShape)
+                                                .shimmerEffect()
+                                        )
+                                    }
+                                }
+                                items(20) {
+                                    Box(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(90.dp)
+                                            .clip(CircleShape)
+                                            .shimmerEffect()
+                                    )
+                                }
+                            }
+
+                        } else if (guild != null) {
+                            LazyVerticalGrid(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(16.dp),
+                                columns = GridCells.Fixed(columns),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                            ) {
+                                item(span = { GridItemSpan(columns) }) {
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            "XP ${guild.xp.formatted}",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            stringResource(R.string.createDate, guild.createDate.formatted),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                                item(span = { GridItemSpan(columns) }) {
+                                    var expanded by remember { mutableStateOf(false) }
+                                    CustomSortDropDownMenu(
+                                        reversed = state.reversedSortType,
+                                        expanded = expanded,
+                                        icon = Icons.AutoMirrored.Filled.Sort,
+                                        onSortClick = {
+                                            expanded = !expanded
+                                        },
+                                        onReversedClick = {
+                                            onGuildAction(GuildAction.ReverseSortType)
+                                        },
+                                        selected = {
+                                            Text(stringResource(state.sortType.toStringResource()))
+                                        },
+                                    ) {
+                                        GuildSortType.entries.forEach { sort ->
+                                            DropdownMenuItem(
+                                                leadingIcon = { Icon(sort.toIcon(), null) },
+                                                text = { Text(stringResource(sort.toStringResource())) },
+                                                onClick = {
+                                                    expanded = false
+                                                    onGuildAction(GuildAction.SelectSortType(sort))
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                                items(guild.members, { it.brawlhallaId }) { member ->
+                                    GuildMemberCard(
+                                        member,
+                                        onClick = { id ->
+                                            onGuildAction(
+                                                GuildAction.SelectMember(id)
+                                            )
+                                        },
+                                        modifier = Modifier.animateItem()
+                                    )
+                                }
                             }
                         }
                     }
-                    items(guild.members, { it.brawlhallaId }) { member ->
-                        GuildMemberCard(
-                            member,
-                            onClick = { id ->
-                                onGuildAction(
-                                    GuildAction.SelectMember(id)
-                                )
-                            },
-                            modifier = Modifier.animateItem()
-                        )
-                    }
+                }
+                else -> {
+                    ShowError(error, {onGuildAction(GuildAction.Reload)})
                 }
             }
         }

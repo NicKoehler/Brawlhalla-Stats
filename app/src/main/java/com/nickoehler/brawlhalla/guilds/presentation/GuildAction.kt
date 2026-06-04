@@ -8,4 +8,5 @@ sealed interface GuildAction {
     data class ToggleGuildFavorites(val guildId: Long, val name: String) : GuildAction
     data class SelectSortType(val sort: GuildSortType) : GuildAction
     data object ReverseSortType : GuildAction
+    data object Reload : GuildAction
 }
