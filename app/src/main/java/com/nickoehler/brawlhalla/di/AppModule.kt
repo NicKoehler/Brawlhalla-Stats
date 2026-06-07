@@ -20,6 +20,8 @@ import com.nickoehler.brawlhalla.ranking.domain.RankingsDataSource
 import com.nickoehler.brawlhalla.ranking.presentation.RankingViewModel
 import com.nickoehler.brawlhalla.ranking.presentation.StatDetailViewModel
 import com.nickoehler.brawlhalla.settings.presentation.SettingsViewModel
+import com.nickoehler.brawlhalla.widgets.WidgetUpdateManager
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -28,9 +30,11 @@ import org.koin.dsl.module
 
 
 val appModule = module {
-    single { HttpClientFactory.create(CIO.create()) }
-    single { provideDataBase(get()) }
+    single<HttpClientEngine> { CIO.create() }
+    singleOf(HttpClientFactory::create)
+    singleOf(::provideDataBase)
     singleOf(::Settings) { bind<LocalPreferences>() }
+    singleOf(::WidgetUpdateManager)
     singleOf(::DatabaseDataSource) { bind<LocalDataSource>() }
     singleOf(::RemoteLegendsDataSource) { bind<LegendsDataSource>() }
     singleOf(::RemoteRankingDataSource) { bind<RankingsDataSource>() }

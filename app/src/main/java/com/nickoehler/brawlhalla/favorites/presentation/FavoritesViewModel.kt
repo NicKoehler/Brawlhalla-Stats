@@ -2,9 +2,6 @@ package com.nickoehler.brawlhalla.favorites.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nickoehler.brawlhalla.core.data.database.entities.Guild
@@ -26,8 +23,7 @@ import kotlinx.serialization.json.Json
 
 @SuppressLint("StaticFieldLeak")
 class FavoritesViewModel(
-    private val database: LocalDataSource,
-    private val context: Context
+    private val database: LocalDataSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(FavoritesState())
     val state = _state.onStart {
@@ -104,7 +100,6 @@ class FavoritesViewModel(
         viewModelScope.launch {
             combine(database.getAllPlayers(), database.getAllGuilds())
             { players, guilds ->
-                updateWidgetState(players, guilds)
                 val favoriteType = if (_state.value.selectedFavoriteType == null) {
                     if (players.isNotEmpty()) {
                         FavoriteType.Players
@@ -126,29 +121,6 @@ class FavoritesViewModel(
                     state
                 }
             }
-        }
-    }
-
-    private suspend fun updateWidgetState(
-        players: List<Player>,
-        guilds: List<Guild>
-    ) {
-        val playersGlanceIds = GlanceAppWidgetManager(context)
-            .getGlanceIds(PlayersWidget::class.java)
-        val guildsGlanceIds = GlanceAppWidgetManager(context)
-            .getGlanceIds(GuildsWidget::class.java)
-        playersGlanceIds.forEach { id ->
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[stringPreferencesKey("players")] = Json.encodeToString(players)
-            }
-            PlayersWidget().update(context, id)
-        }
-
-        guildsGlanceIds.forEach { id ->
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[stringPreferencesKey("clans")] = Json.encodeToString(guilds)
-            }
-            GuildsWidget().update(context, id)
         }
     }
 

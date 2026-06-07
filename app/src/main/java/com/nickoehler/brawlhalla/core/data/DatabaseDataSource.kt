@@ -4,10 +4,13 @@ import com.nickoehler.brawlhalla.core.data.database.AppDatabase
 import com.nickoehler.brawlhalla.core.data.database.entities.Guild
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
+import com.nickoehler.brawlhalla.widgets.WidgetUpdateManager
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 class DatabaseDataSource(
-    database: AppDatabase
+    database: AppDatabase,
+    private val widgetUpdateManager: WidgetUpdateManager
 ) : LocalDataSource {
 
     private val playerDao = database.playerDao()
@@ -15,10 +18,12 @@ class DatabaseDataSource(
 
     override suspend fun savePlayer(player: Player) {
         playerDao.insertPlayer(player)
+        widgetUpdateManager.updatePlayers(playerDao.getAllPlayers().first())
     }
 
     override suspend fun deletePlayer(brawlhallaId: Long) {
         playerDao.deletePlayer(brawlhallaId)
+        widgetUpdateManager.updatePlayers(playerDao.getAllPlayers().first())
     }
 
     override fun getPlayer(brawlhallaId: Long): Flow<Player?> {
@@ -31,10 +36,12 @@ class DatabaseDataSource(
 
     override suspend fun saveGuild(guild: Guild) {
         guildDao.insertGuild(guild)
+        widgetUpdateManager.updateGuilds(guildDao.getAllGuilds().first())
     }
 
     override suspend fun deleteGuild(guildId: Long) {
         guildDao.deleteGuild(guildId)
+        widgetUpdateManager.updateGuilds(guildDao.getAllGuilds().first())
     }
 
     override fun getGuild(guildId: Long): Flow<Guild?> {
@@ -46,13 +53,14 @@ class DatabaseDataSource(
     }
 
     override suspend fun updatePlayers(players: List<Player>) {
-        playerDao.updatePlayers(players.withIndex().map { (i, player) -> player.copy(order = i) })
+        val updatedPlayers = players.withIndex().map { (i, player) -> player.copy(order = i) }
+        playerDao.updatePlayers(updatedPlayers)
+        widgetUpdateManager.updatePlayers(updatedPlayers)
     }
 
     override suspend fun updateGuilds(guilds: List<Guild>) {
-        guildDao.updateGuilds(guilds.withIndex().map { (i, guild) -> guild.copy(order = i) })
-
+        val updatedGuilds = guilds.withIndex().map { (i, guild) -> guild.copy(order = i) }
+        guildDao.updateGuilds(updatedGuilds)
+        widgetUpdateManager.updateGuilds(updatedGuilds)
     }
-
-
 }

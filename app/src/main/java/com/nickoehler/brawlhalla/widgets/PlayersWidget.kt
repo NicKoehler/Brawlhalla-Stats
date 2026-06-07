@@ -34,51 +34,68 @@ import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.widgets.components.EmptyFavorites
 import kotlinx.serialization.json.Json
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class PlayersWidgetReceiver : GlanceAppWidgetReceiver() {
+class PlayersWidgetReceiver : GlanceAppWidgetReceiver(), KoinComponent {
     override val glanceAppWidget: GlanceAppWidget = PlayersWidget()
+
+    private val widgetUpdateManager by inject<WidgetUpdateManager>()
+
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        widgetUpdateManager.syncAll()
+    }
 }
 
 class PlayersWidget : GlanceAppWidget() {
     override var stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        provideContent {
+        try {
+            provideContent {
 
-            val prefs = currentState<Preferences>()
+                val prefs = currentState<Preferences>()
 
-            val players = prefs[
-                stringPreferencesKey("players")
-            ]?.let {
-                Json.decodeFromString<List<Player>>(it)
-            }.orEmpty()
+                val players = prefs[
+                    stringPreferencesKey("players")
+                ]?.let {
+                    Json.decodeFromString<List<Player>>(it)
+                }.orEmpty()
 
-            GlanceTheme {
-                if (players.isEmpty()) {
-                    EmptyFavorites(context)
-                } else {
-                    LazyColumn(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = GlanceModifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                            .background(GlanceTheme.colors.widgetBackground)
-                    ) {
-                        item {
-                            Text(
-                                text = context.getString(R.string.players),
-                                maxLines = 1,
-                                style = TextStyle(color = GlanceTheme.colors.onBackground)
-                            )
+                GlanceTheme {
+                    if (players.isEmpty()) {
+                        EmptyFavorites(context)
+                    } else {
+                        LazyColumn(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = GlanceModifier
+                                .fillMaxSize()
+                                .padding(12.dp)
+                                .background(GlanceTheme.colors.widgetBackground)
+                        ) {
+                            item {
+                                Text(
+                                    text = context.getString(R.string.players),
+                                    maxLines = 1,
+                                    style = TextStyle(color = GlanceTheme.colors.onBackground)
+                                )
+                            }
+                            players(players, context)
                         }
-                        players(players, context)
                     }
                 }
+            }
+        } catch (e: Exception) {
+            provideContent {
+                Text(
+                    text = e.stackTraceToString().take(1000)
+                )
             }
         }
     }
 
-    fun LazyListScope.players(players: List<Player>, context: Context) {
+    private fun LazyListScope.players(players: List<Player>, context: Context) {
         items(players, { it.id }) { player ->
             Column {
                 Spacer(GlanceModifier.height(8.dp))
@@ -97,4 +114,3 @@ class PlayersWidget : GlanceAppWidget() {
         }
     }
 }
-
