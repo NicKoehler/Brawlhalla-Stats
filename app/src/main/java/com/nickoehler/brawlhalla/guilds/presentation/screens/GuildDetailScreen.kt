@@ -219,9 +219,8 @@ fun GuildDetailScreen(
                 null -> {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(paddingValues)
-                            .padding(horizontal = Spacing.scaffoldWindowInsets - 8.dp),
+                            .padding(top = paddingValues.calculateTopPadding())
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -290,8 +289,9 @@ fun GuildDetailScreen(
                                     .scrollbar(
                                         scrollState.scrollIndicatorState,
                                         orientation = Orientation.Vertical
-                                    ),
-                                contentPadding = PaddingValues(16.dp),
+                                    )
+                                    .padding(horizontal = Spacing.scaffoldWindowInsets),
+                                contentPadding = PaddingValues(vertical = 16.dp),
                                 columns = GridCells.Fixed(columns),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -417,22 +417,14 @@ internal val guildDetailSample =
         114953,
         6184,
         true,
-        listOf(
+        (0..100).map {
             GuildMember(
-                3,
-                "[BMG] Chill Penguin X",
-                GuildRankType.Leader,
-                1464206400L.toLocalDateTime(),
-                6664,
-                6664,
-            ),
-            GuildMember(
-                2,
+                it.toLong(),
                 "bmg | dan",
                 GuildRankType.Officer,
                 1464221047L.toLocalDateTime(),
                 4492,
                 4492,
             )
-        )
+        }
     )
