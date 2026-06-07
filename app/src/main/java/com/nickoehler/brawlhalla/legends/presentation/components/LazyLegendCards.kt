@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -26,6 +28,7 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.scrollbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -46,6 +49,7 @@ import com.nickoehler.brawlhalla.legends.presentation.models.toLegendDetailUi
 import com.nickoehler.brawlhalla.legends.presentation.models.toLocalizedString
 import com.nickoehler.brawlhalla.ranking.presentation.models.StatFilterType
 import com.nickoehler.brawlhalla.ui.theme.BrawlhallaTheme
+import com.nickoehler.brawlhalla.ui.theme.Spacing
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -58,9 +62,14 @@ fun LazyLegendsCards(
     onWeaponAction: (WeaponAction) -> Unit = {}
 ) {
     val height by animateDpAsState(if (state.isFilterOpen) searchBarHeight else searchBarHeight - 16.dp)
-
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .scrollbar(
+                lazyColumnState.scrollIndicatorState,
+                orientation = Orientation.Vertical
+            )
+            .padding(horizontal = Spacing.scaffoldWindowInsets),
         state = lazyColumnState,
         contentPadding = PaddingValues(bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -161,7 +170,9 @@ private fun LazyLegendsCardsPreview() {
             LazyLegendsCards(
                 LegendsListState(
                     isFilterOpen = true,
-                    legends = listOf(legendSample.toLegendDetailUi()),
+                    legends = (1..100).map {
+                        legendSample.copy(legendId = it.toLong()).toLegendDetailUi()
+                    },
                     weapons = listOf("sword".toWeaponUi()),
                 ),
                 searchBarHeight = 80.dp

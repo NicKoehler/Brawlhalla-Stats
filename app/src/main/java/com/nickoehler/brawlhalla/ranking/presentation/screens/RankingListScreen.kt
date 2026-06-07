@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.scrollbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -208,6 +210,10 @@ fun RankingListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier
                             .fillMaxWidth()
+                            .scrollbar(
+                                lazyColumnState.scrollIndicatorState,
+                                orientation = Orientation.Vertical
+                            )
                             .padding(horizontal = Spacing.scaffoldWindowInsets)
                     ) {
                         item {
@@ -223,7 +229,11 @@ fun RankingListScreen(
                                         state = gridState,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .heightIn(min = 40.dp, max = 65.dp),
+                                            .heightIn(min = 40.dp, max = 65.dp)
+                                            .scrollbar(
+                                                gridState.scrollIndicatorState,
+                                                orientation = Orientation.Vertical
+                                            ),
                                         rows = StaggeredGridCells.FixedSize(30.dp),
                                         verticalArrangement = Arrangement.spacedBy(4.dp),
                                         horizontalItemSpacing = 4.dp,

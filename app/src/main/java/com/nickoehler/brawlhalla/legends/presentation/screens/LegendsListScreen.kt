@@ -114,7 +114,6 @@ fun LegendListScreen(
     ) { padding ->
         Box(
             modifier = Modifier
-                .padding(padding)
                 .semantics { isTraversalGroup = true }
                 .zIndex(1f)
                 .offset {
@@ -164,8 +163,6 @@ fun LegendListScreen(
                 null -> {
                     LazyLegendsCards(
                         state = state,
-                        modifier = Modifier
-                            .padding(horizontal = Spacing.scaffoldWindowInsets),
                         lazyColumnState = lazyColumnState,
                         onLegendAction = onLegendAction,
                         onWeaponAction = onWeaponAction,
