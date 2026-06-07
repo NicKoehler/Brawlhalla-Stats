@@ -8,7 +8,7 @@ enum class Region(val num: Int) {
     BRZ(5),
     AUS(6),
     US_W(7),
-    JPN(8),
+    JPS(8),
     SA(9),
     ME(10),
     UNKNOWN(11),

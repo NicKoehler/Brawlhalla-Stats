@@ -26,7 +26,7 @@ data class RegionUi(
                 Region.BRZ -> "BRZ"
                 Region.AUS -> "AUS"
                 Region.US_W -> "US-W"
-                Region.JPN -> "JPN"
+                Region.JPS -> "JPS"
                 Region.SA -> "SA"
                 Region.ME -> "ME"
             }
@@ -44,7 +44,7 @@ fun Region.toRegionUi(): RegionUi {
             Region.BRZ -> "🇧🇷"
             Region.AUS -> "🇦🇺"
             Region.US_W -> "🇺🇸"
-            Region.JPN -> "🇯🇵"
+            Region.JPS -> "🇯🇵"
             Region.SA -> "🇿🇦"
             Region.ME -> "🇰🇼"
             Region.ALL -> "🌍"

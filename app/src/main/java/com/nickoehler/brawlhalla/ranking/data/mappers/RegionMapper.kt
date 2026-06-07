@@ -11,7 +11,7 @@ fun Region.toUrlString(): String {
         Region.BRZ -> "BRZ"
         Region.AUS -> "AUS"
         Region.US_W -> "US_W"
-        Region.JPN -> "JPN"
+        Region.JPS -> "JPS"
         Region.SA -> "SA"
         Region.ME -> "ME"
         Region.UNKNOWN -> "?"
@@ -26,7 +26,7 @@ fun String.toRegion(): Region {
         "BRZ" -> Region.BRZ
         "AUS" -> Region.AUS
         "US-W" -> Region.US_W
-        "JPN" -> Region.JPN
+        "JPS" -> Region.JPS
         "SA" -> Region.SA
         "ME" -> Region.ME
         else -> Region.UNKNOWN
