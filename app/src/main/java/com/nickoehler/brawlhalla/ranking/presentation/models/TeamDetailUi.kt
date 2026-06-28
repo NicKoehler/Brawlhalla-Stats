@@ -1,8 +1,10 @@
 package com.nickoehler.brawlhalla.ranking.presentation.models
 
+import androidx.compose.runtime.Immutable
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableDouble
 import com.nickoehler.brawlhalla.core.presentation.models.DisplayableInt
 
+@Immutable
 data class TeamDetailUi(
     val brawlhallaIdOne: Long,
     val brawlhallaIdTwo: Long,

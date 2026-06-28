@@ -103,4 +103,6 @@
     <string name="reload">Reload</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="members">%s members</string>
+    <string name="rankings_not_found">Rankings not found</string>
+    <string name="teams_not_found">Teams not found</string>
 </resources>

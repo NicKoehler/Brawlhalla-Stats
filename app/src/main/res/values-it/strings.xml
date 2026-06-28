@@ -103,5 +103,7 @@
     <string name="reload">Ricarica</string>
     <string name="something_went_wrong">Qualcosa è andato storto</string>
     <string name="members">%s membri</string>
+    <string name="rankings_not_found">Non hai partite classificate</string>
+    <string name="teams_not_found">Compagni di squadra non trovati</string>
 </resources>
 

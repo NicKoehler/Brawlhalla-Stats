@@ -41,6 +41,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -101,6 +102,7 @@ import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingIt
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendRankingItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.LegendStatItemDetail
+import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItem
 import com.nickoehler.brawlhalla.ranking.presentation.components.TeamItemDetail
 import com.nickoehler.brawlhalla.ranking.presentation.models.GeneralRankingSortType
 import com.nickoehler.brawlhalla.ranking.presentation.models.RankingDetailUi
@@ -327,7 +329,8 @@ fun StatDetailScreen(
                                                 clipboard.setClipEntry(
                                                     ClipEntry(
                                                         ClipData.newPlainText(
-                                                            "",state.selectedStatDetail.brawlhallaId.toString()
+                                                            "",
+                                                            state.selectedStatDetail.brawlhallaId.toString()
                                                         )
                                                     )
                                                 )
@@ -363,7 +366,6 @@ fun StatDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-
                         item(span = { GridItemSpan(columns) }) {
                             StatDetailHeader(state, onGuildSelection, onStatDetailAction)
                         }
@@ -375,10 +377,7 @@ fun StatDetailScreen(
                     ShowError(error, { onStatDetailAction(StatDetailAction.Reload) })
                 }
             }
-
         }
-
-
     }
 }
 
@@ -415,7 +414,7 @@ private fun LazyGridScope.stats(
                 )
 
                 RankingFilterType.Teams -> rankingTeams(
-                    playerRanking,
+                    state,
                     state.teamSortType,
                     state.teamSortReversed,
                     columns,
@@ -426,14 +425,15 @@ private fun LazyGridScope.stats(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun LazyGridScope.rankingTeams(
-    playerRanking: RankingDetailUi?,
+    statDetailState: StatDetailState?,
     sortType: GeneralRankingSortType,
     reversed: Boolean,
     columns: Int,
     onStatDetailAction: (StatDetailAction) -> Unit
 ) {
-    if (playerRanking != null) {
+    if (statDetailState != null) {
         item(span = { GridItemSpan(columns) }) {
             CustomRankedDropDown(
                 sortType,
@@ -446,21 +446,27 @@ private fun LazyGridScope.rankingTeams(
                 }
             )
         }
-//        items(
-//            playerRanking.teams,
-//            { team -> "${team.brawlhallaIdOne}-${team.brawlhallaIdTwo}" }
-//        ) { team ->
-//            TeamItem(
-//                team,
-//                modifier = Modifier.animateItem()
-//            ) {
-//                onStatDetailAction(
-//                    StatDetailAction.SelectRankingModalType(
-//                        RankingModalType.Team(team)
-//                    )
-//                )
-//            }
-//        }
+        if (statDetailState.isTeamDetailLoading) {
+            item(span = { GridItemSpan(columns) }) {
+                LoadingIndicator(modifier = Modifier.size(100.dp))
+            }
+        } else {
+            items(
+                statDetailState.teams,
+                { team -> "${team.brawlhallaIdOne}-${team.brawlhallaIdTwo}" }
+            ) { team ->
+                TeamItem(
+                    team = team,
+                    modifier = Modifier.animateItem()
+                ) {
+                    onStatDetailAction(
+                        StatDetailAction.SelectRankingModalType(
+                            RankingModalType.Team(team)
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -654,7 +660,6 @@ private fun CustomRankedDropDown(
 
 
 private fun LazyGridScope.generalStat(playerStat: StatDetailUi?) {
-
     items(
         items = listOf(
             Pair(
@@ -873,7 +878,6 @@ private fun StatDetailHeader(
                                     .weight(1f)
                                     .semantics { role = Role.RadioButton },
                             ) {
-
                                 Text(
                                     stringResource(
                                         when (statType) {

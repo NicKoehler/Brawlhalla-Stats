@@ -32,24 +32,23 @@ import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.presentation.components.CustomCard
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.RankWinRateRow
 import com.nickoehler.brawlhalla.ranking.presentation.components.ranking_card.TierBox
-import com.nickoehler.brawlhalla.ranking.presentation.models.RankingUi
 import com.nickoehler.brawlhalla.ranking.presentation.models.TeamDetailUi
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TeamItem(
-    team: RankingUi,
+    team: TeamDetailUi,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        delay(100L)
+        delay(100L.milliseconds)
         visible = true
     }
 
     val animatedFloat by animateFloatAsState(if (visible) 1f else 0f)
-
 
     CustomCard(
         onClick = onClick,
@@ -68,7 +67,7 @@ fun TeamItem(
             ) {
                 Text(team.region.flag)
                 Text(
-                    team.players.joinToString(" + ") { it.username },
+                    "${team.usernameOne} + ${team.usernameTwo}",
                     maxLines = 1,
                     textAlign = TextAlign.Center,
                     overflow = TextOverflow.Ellipsis,
@@ -96,8 +95,6 @@ fun TeamItemDetail(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
-
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically

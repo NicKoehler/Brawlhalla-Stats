@@ -2,8 +2,10 @@ package com.nickoehler.brawlhalla.ranking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nickoehler.brawlhalla.R
 import com.nickoehler.brawlhalla.core.data.database.entities.Player
 import com.nickoehler.brawlhalla.core.domain.LocalDataSource
+import com.nickoehler.brawlhalla.core.domain.util.NetworkError
 import com.nickoehler.brawlhalla.core.domain.util.onError
 import com.nickoehler.brawlhalla.core.domain.util.onSuccess
 import com.nickoehler.brawlhalla.core.presentation.UiEvent
@@ -119,6 +121,14 @@ class StatDetailViewModel(
                     )
                 }
             }.onError { error ->
+                val error: NetworkError? = when (error) {
+                    NetworkError.NOT_FOUND -> {
+                        _uiEvents.send(UiEvent.Message(RankingMessage.Message(R.string.rankings_not_found)))
+                        null
+                    }
+
+                    else -> error
+                }
                 _state.update { state ->
                     state.copy(
                         isRankingDetailLoading = false,
@@ -238,6 +248,7 @@ class StatDetailViewModel(
                 }
 
                 is RankingSortType.Team -> {
+                    val currentTeams = currentTeams.reversed()
                     val reversed = state.teamSortReversed
                     state.copy(
                         teamSortType = sortType.team,
@@ -247,10 +258,8 @@ class StatDetailViewModel(
                             currentTeams
                         )
                     )
-                    state
                 }
             }
-
         }
     }
 
@@ -318,13 +327,14 @@ class StatDetailViewModel(
         }
 
         if (type == RankingFilterType.Teams) {
-
             if (state.value.teams.isNotEmpty()) {
                 return
             }
-
-            _state.update { state -> state.copy(isTeamDetailLoading = true) }
-
+            _state.update { state ->
+                state.copy(
+                    isTeamDetailLoading = true,
+                )
+            }
             viewModelScope.launch {
                 rankingsDataSource.getTeams(brawlhallaId).onSuccess { teams ->
                     _state.update { state ->
@@ -334,6 +344,15 @@ class StatDetailViewModel(
                         )
                     }
                 }.onError { error ->
+
+                    val error: NetworkError? = when (error) {
+                        NetworkError.NOT_FOUND -> {
+                            _uiEvents.send(UiEvent.Message(RankingMessage.Message(R.string.teams_not_found)))
+                            null
+                        }
+
+                        else -> error
+                    }
                     _state.update { state ->
                         state.copy(
                             isTeamDetailLoading = false,
@@ -343,7 +362,6 @@ class StatDetailViewModel(
                 }
             }
         }
-
     }
 
     private fun selectRankingModalType(modalType: RankingModalType?) {
