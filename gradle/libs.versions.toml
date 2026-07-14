@@ -1,5 +1,5 @@
 [versions]
-agp = "9.2.1"
+agp = "9.3.0"
 ksp = "2.3.10"
 room = "2.8.4"
 ktor = "3.5.1"
