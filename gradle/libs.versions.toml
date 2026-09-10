@@ -1,7 +1,7 @@
 [versions]
 agp = "9.4.0"
 ksp = "2.3.11"
-room = "2.8.4"
+room = "2.8.5"
 ktor = "3.5.2"
 coil = "3.6.2"
 koin = "4.2.2"
